@@ -99,7 +99,7 @@ wheels = [
 
 [[package]]
 name = "dd-parser-cleaner"
-version = "0.4.6"
+version = "0.4.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
@@ -112,9 +112,9 @@ dependencies = [
     { name = "rich" },
     { name = "tabulate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/07/53/b3a6fb17b5e03f743038c0c52d73959ef49510d9187c7fc401e9f9359dbc/dd_parser_cleaner-0.4.6.tar.gz", hash = "sha256:45fe940ecdb812550014bd9f5f7260a606261077fed99ea0831e9de90eef9841", size = 21720218, upload-time = "2026-06-04T07:49:05.538Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b3/43/e154f2d46ae8a34612140a558444ce5dfe1289a6a732f76848d788b1d2d4/dd_parser_cleaner-0.4.8.tar.gz", hash = "sha256:624b64a1d8c416d5ca7c751a4f85051e5e4217ca3de6238eaf3ca14c80c4739a", size = 1563511, upload-time = "2026-06-06T05:15:38.321Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/08/76/5e784d526b17d1fdc1dfedaf0af59bf1adf50417c8c726ea453ff905a499/dd_parser_cleaner-0.4.6-py3-none-any.whl", hash = "sha256:c133b9fd67c5d43ff0fd5729e81f3629759c1efdab9ced7e531f2ee51851cb94", size = 60102, upload-time = "2026-06-04T07:49:08.461Z" },
+    { url = "https://files.pythonhosted.org/packages/88/a2/53cf1a0da9c98231c74ffe55a812f6814bc2d60539a36b335156701a96fd/dd_parser_cleaner-0.4.8-py3-none-any.whl", hash = "sha256:50db3c531a403b1326c5eb18e2138f5fe457e9175f606574d214ca5393f3f5d9", size = 61251, upload-time = "2026-06-06T05:15:40.58Z" },
 ]
 
 [[package]]
@@ -465,7 +465,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "dd-parser-cleaner", specifier = "==0.4.6" }]
+requires-dist = [{ name = "dd-parser-cleaner", specifier = "==0.4.8" }]
 
 [[package]]
 name = "six"

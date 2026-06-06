@@ -5,5 +5,5 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "dd-parser-cleaner==0.4.6",
+    "dd-parser-cleaner==0.4.8",
 ]
