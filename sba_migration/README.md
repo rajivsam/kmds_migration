@@ -23,3 +23,7 @@ https://github.com/rajivsam/dd-parser-cleaner/
 ## Notes
 
 Treat this folder as a self-contained example. Keep updates reproducible and document any workflow changes in the local docs.
+
+For a senior-engineer view of the KMDS toolkit architecture, see `documents/KMDS_toolkit_summary.md`.
+
+A screenshot of the generated KMDS knowledge graph workbench is available at `images/kmds-sba-migration_kg.png`.

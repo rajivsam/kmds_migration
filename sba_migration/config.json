@@ -1,0 +1,28 @@
+{
+  "models": [
+    {
+      "title": "Gemini 1.5 Pro",
+      "provider": "google-palm",
+      "model": "gemini-1.5-pro",
+      "apiKey": "YOUR_API_KEY_HERE"
+    }
+  ],
+  "customCommands": [
+    {
+      "name": "check_migration_rules",
+      "prompt": "Review this code to ensure it adheres to the SBA Migration Golden Rule: Raw data must remain immutable and transformations must be vectorized Pandas logic.",
+      "description": "Check code against project-specific migration constraints"
+    }
+  ],
+  "contextProviders": [
+    {
+      "name": "code",
+      "params": {}
+    },
+    {
+      "name": "docs",
+      "params": {}
+    }
+  ],
+  "slashCommands": []
+}

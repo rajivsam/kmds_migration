@@ -8,9 +8,18 @@ wheels/
 
 # Virtual environments
 .venv/
+.kg_env/
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Generated/output directories
+output/
+path/
+workspaces/
+
+# Experiment-specific knowledge graph data
+data/KMDS/
 
 # Large/generated dataset artifacts (do not commit)
 data/sba_loans_raw.csv

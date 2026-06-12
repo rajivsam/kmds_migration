@@ -2,6 +2,24 @@
 
 This document provides a practical walkthrough of how to use `dd_parser_cleaner` and demonstrates why it is useful.
 
+## Initialization
+
+The first workspace setup step is to create the KMDS directory skeleton using the package CLI.
+
+- Command: `dd-parser-cleaner init-workspace`
+- Run from the workspace root containing `config.yaml` or `provisional_config.yaml`
+- Creates the expected structure for raw inputs, dictionaries, documents, and output artifacts
+
+Expected directories after initialization:
+
+- `data/`
+- `data_dictionary/`
+- `documents/`
+- `models/`
+- `notebooks/`
+
+After running `init-workspace`, place your source files into the appropriate folders before continuing with bootstrapping, classification, and cleaning.
+
 ## The Dataset
 
 The dataset used in this illustration is the SBA 7(a) loan dataset, available from government data catalogs. For background, see [this page](https://www.sba.gov/funding-programs/loans/7a-loans).

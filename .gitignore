@@ -1,0 +1,29 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+.kg_env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Generated/output directories
+output/
+path/
+workspaces/
+
+# Local experiment and toolkit artifacts
+data/KMDS/
+.continueignore
+
+# VS Code / editors
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+*.swp
+*~

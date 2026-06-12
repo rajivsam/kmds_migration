@@ -1,0 +1,35 @@
+data:
+  working_dir: "."
+  index_column: "record_id"
+  model_ready_data_file: "model_ready_numeric_data.csv"
+  featurization_output_dir: "featurization"
+  modeling_output_dir: "models"
+
+project:
+  name: "sba_modeling_experiment"
+  experiment_version: "0.1.0"
+  target_variable: "loan_status_r"
+
+experiment_settings:
+  cross_validation:
+    splits: 5
+    random_state: 42
+  validation_fraction: 0.2
+  primary_metric: "roc_auc"
+
+candidates:
+  - name: "gradient_boosting"
+    class_path: "models.sba_example.candidates.GradientBoostingCandidate"
+    hyperparameters:
+      n_estimators: 100
+      learning_rate: 0.1
+      max_depth: 3
+  - name: "random_forest"
+    class_path: "models.sba_example.candidates.RandomForestCandidate"
+    hyperparameters:
+      n_estimators: 100
+      max_depth: 8
+
+production_target:
+  champion_candidate_name: "gradient_boosting"
+  export_directory: "output/mlops_bundle"
