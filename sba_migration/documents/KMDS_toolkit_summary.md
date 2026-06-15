@@ -33,40 +33,22 @@ Finally, the project enters the **KMDS Design Governance Framework**. Here, `kmd
 
 ## KMDS Design Governance Framework
 
-**Architecture Status**: Approved for LLM-Based Feature Implementation
+Machine learning projects often involve a daunting number of modeling choices. For someone who hasn't built a specific type of solution before, this volume of options can be overwhelming. The purpose of the **KMDS Modeling Advisor** is to understand your specific problem and your priorities for the solution. It then provides a clear set of guidelines that you can read, understand, and use alongside a coding assistant to implement your model.
 
-### Philosophy: The Governance Guardrail
+### Supported Modeling Themes
 
-Unlike traditional black-box AutoML platforms, `kmds-modeling` solves the "Too Many Knobs" problem by constraining the design space based on the structural properties of the data and the explicit intent of the user. It is built for the **Junior Data Scientist Persona**, ensuring that even less experienced practitioners produce enterprise-grade, audit-ready models by following a **Metadata Schema Contract**.
+KMDS currently focuses on tabular data and recognizes several commonly encountered modeling themes in enterprise machine learning. When you provide your project details, the assistant assesses whether your problem falls within these supported themes:
 
-### Core Governance Pillars
+1.  **Classification**: Including workflows for imbalanced classification.
+2.  **Regression**: Standard prediction of continuous values.
+3.  **Graph-based Learning**: 
+    *   **Homogeneous Graphs** (single entity types)
+    *   **Bipartite Graphs** (two entity types)
+    *   **Heterogeneous Graphs** (multiple entity and relationship types)
 
-To ensure a narrow and accurate funnel of choices, the framework restricts its governance engine to four core pillars:
+If your problem is within these themes, the advisor provides tailored guidance. If it isn't currently supported, the assistant will inform you directly so you can plan accordingly. 
 
-#### Pillar A: Classification (Class Imbalance Workflows)
-
-The engine measures the target variable vector distribution (e.g., the SBA default rate).
-
-* **Mild Imbalance (20-30%)**: Strategy: Stratified Cross-Validation.
-* **Moderate Imbalance (1-10%)**: Strategy: Cost-sensitive learning (e.g., `scale_pos_weight`). **Resampling is forbidden.**
-* **Extreme Imbalance (<1%)**: Strategy: Pivot to Anomaly Detection (Isolation Forests).
-
-#### Pillar B: Regression (Featurization-Linked Workflows)
-
-Directly integrates with `kmds-featurizer`.
-
-* **Interpretability Branch**: Mandates Generalized Additive Models (GAMs) or Gaussian Processes to provide visual partial dependence curves for stakeholders.
-* **Max Accuracy Branch**: Mandates high-capacity architectures like XGBoost or TabPFN, explicitly barring simple linear models.
-
-#### Pillar C: Graph Modeling (Relational Data-Linked Workflows)
-
-Utilizes entity tags from `dd-parser-cleaner` to define topology.
-
-* **Heterogeneous Graphs**: For complex datasets like SBA (linking Borrowers, Banks, and Loans), the system mandates Heterogeneous GNNs (RGCN/HAN). This natively accounts for multi-level population variances, bypassing the need for complex Hierarchical Regression.
-
-#### Pillar D: Unsupervised Learning (Operational Structure)
-
-Focuses on understanding population heterogeneity. It forbids "flat pool" training; instead, it mandates isolating unique sub-populations (e.g., different loan programs) so each receives its own contextual model path.
+Experts can use these guidelines as a standard checklist to ensure best practices, while also having the flexibility to bypass them if a custom approach is required.
 
 ## Operational Integration: The Finished Product
 
