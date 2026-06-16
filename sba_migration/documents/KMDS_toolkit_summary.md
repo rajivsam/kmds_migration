@@ -3,11 +3,13 @@
 - `kmds-modeling`
 - `kmds-data-helper`
 
-## The Agent-Human Symphony: A Real-World Walkthrough
+## The Agent-Human Collaboration: A Real-World Walkthrough
 
-The journey from a raw, messy dataset to a production-ready Early Warning System (EWS) is no longer a manual process of trial and error. Instead, it is a **governed round-trip** where a human expert provides high-level intent, and an ecosystem of specialized agents handles the technical implementation through strict contracts.
+Developing a data science product involves getting answers to a significant number of questions—a number in the low tens is not an unrealistic lower bound for the questions required to build a viable product. These questions are deeply interconnected; getting any one of them wrong translates to a product that fails to deliver the desired result. Furthermore, these questions are often developed and answered by different stakeholders over varying timelines.
 
-In the SBA 7(a) loan example, we see this ecosystem in action:
+As humans, the ownership and responsibility for delivering the product, and taking accountability for its performance, rests entirely with us. However, LLMs are exceptionally well-suited for: (1) retrieving context, (2) generating boilerplate code, and (3) allowing for greater control over behavioral errors when provided with sufficient task resolution.
+
+The KMDS ecosystem leverages these facts to deliver repeatable, auditable, and transparent solutions to data science projects. In the SBA 7(a) loan example, we see this collaboration in action:
 
 ### 1. The Semantic Foundation (`dd-parser-cleaner`)
 
