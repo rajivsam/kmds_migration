@@ -4,6 +4,8 @@
 
 KMDS is a toolkit of related packages and components that support enterprise-grade machine learning development with auditability, transparency, and clear separation of concerns.
 
+KMDS transforms analytical projects from collections of files, notebooks, and documents into a queryable institutional knowledge asset. The resulting knowledge can be accessed through agents, reused by future teams, and preserved even as personnel change over time.
+
 This repository demonstrates the KMDS pattern through a set of packages that each handle a distinct stage of the workflow:
 
 - data ingestion and semantic tagging with `dd-parser-cleaner`
@@ -68,14 +70,15 @@ If a problem matches one of these themes, the advisor provides tailored guidance
 
 ## Responsibilities
 
-| Role                  | Data Scientist                                                                        | KMDS Packages                                                                          | Agent                                                                                  |
-| --------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Data sourcing         | Decide which raw datasets to use and which sources are trusted                        | Provide directory structure and metadata conventions                                   | Ingest repository content via helper, map sources to tool input paths                  |
-| Entity selection      | Choose which entities to featurize, such as geographic or temporal entities           | Offer featurization components that support logical types and domain-specific features | Route the data into the right KMDS package and ensure the right entity types are used  |
-| Feature engineering   | Decide how to encode categorical entities, handle missing values, and select features | Implement reusable featurization transforms and target-aware feature logic             | Apply the correct sequence of package operations and preserve separation of concerns   |
-| Data cleaning         | Define domain rules and cleaning strategy                                             | Provide parser/cleaner outputs, metadata tags, and recommended cleaning actions        | Coordinate cleaner stage and produce clean inputs for featurization                    |
-| Modeling workflow     | Choose algorithms, validation strategies, and model thresholds                        | Provide model evaluation, export interfaces, and artifact serialization                | Orchestrate `kmds-modeling` and ensure generated artifacts are usable operationally    |
-| Audit & documentation | Interpret results, verify assumptions, and review model readiness                     | Provide knowledge graph and audit metadata generation tools                            | Convert the repo into an auditable knowledge graph for query and inspection            |
+
+| Role                  | Data Scientist                                                                        | KMDS Packages                                                                          | Agent                                                                                 |
+| ----------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Data sourcing         | Decide which raw datasets to use and which sources are trusted                        | Provide directory structure and metadata conventions                                   | Ingest repository content via helper, map sources to tool input paths                 |
+| Entity selection      | Choose which entities to featurize, such as geographic or temporal entities           | Offer featurization components that support logical types and domain-specific features | Route the data into the right KMDS package and ensure the right entity types are used |
+| Feature engineering   | Decide how to encode categorical entities, handle missing values, and select features | Implement reusable featurization transforms and target-aware feature logic             | Apply the correct sequence of package operations and preserve separation of concerns  |
+| Data cleaning         | Define domain rules and cleaning strategy                                             | Provide parser/cleaner outputs, metadata tags, and recommended cleaning actions        | Coordinate cleaner stage and produce clean inputs for featurization                   |
+| Modeling workflow     | Choose algorithms, validation strategies, and model thresholds                        | Provide model evaluation, export interfaces, and artifact serialization                | Orchestrate`kmds-modeling` and ensure generated artifacts are usable operationally    |
+| Audit & documentation | Interpret results, verify assumptions, and review model readiness                     | Provide knowledge graph and audit metadata generation tools                            | Convert the repo into an auditable knowledge graph for query and inspection           |
 
 ## KMDS Toolkit Principles
 
