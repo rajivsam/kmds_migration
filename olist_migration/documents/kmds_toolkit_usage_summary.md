@@ -70,6 +70,9 @@ It covers the core workflow components, the actual execution path taken in this 
 - The spectral coclustering notebook and modeling wrapper perform the unsupervised clustering.
 - The model advisor helps choose the graph-based clustering approach.
 - Final artifacts from this stage include notebook outputs and model summary observations.
+- The analysis found a dominant week cluster of 21 weeks, a second significant cluster of 11 weeks, and several smaller seasonal week clusters.
+- Product cluster sizes were highly imbalanced, with a baseline cluster of about 8,661 products, a mid-sized cluster of 420 products, another cluster of 150 products, and many very small specialized clusters.
+- These results emphasize a strong baseline demand regime plus distinct temporal and product-specific seasonal patterns, supporting both steady-state inventory planning and cluster-triggered surge planning.
 
 ### Step 4: Build the KMDS helper output
 
