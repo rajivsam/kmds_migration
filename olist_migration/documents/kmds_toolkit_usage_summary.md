@@ -29,6 +29,8 @@ It covers the core workflow components, the actual execution path taken in this 
 
 5. Modeling implementation
    - The modeling layer executes the actual unsupervised algorithm.
+   - The implementation follows the clustering modeling guidelines from the `kmds-modeling` package, documented here: [kmds-modeling modeling contracts](https://github.com/rajivsam/kmds-modeling/tree/main/documents/modeling_contracts)
+   - The actual design input for this project is the detailed rationale document [Rationale for Spectral Clustering](documents/rationale_for_spectral_clustering.md), rather than the example code alone.
    - In this repository, the pipeline is a TF-IDF normalized spectral coclustering of the SP 2017 product-week matrix.
    - The output is represented by the KMDS artifact generation flow and supporting notebooks.
 
