@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "kmds_migration",
+  "project_id": "679e3728-f665-4c20-86fa-b71ca07d52c5"
+}
