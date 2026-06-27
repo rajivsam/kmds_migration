@@ -10,19 +10,13 @@ This repository is set up to illustrate the KMDS toolkit applied to real dataset
 
 ## Contents
 
-- `olist_migration/` — the main dataset project for Olist SP 2017
-- `data/` — raw data extracts and prepared artifacts
-- `models/` — clustering and profiling implementation plus generated outputs
-- `notebooks/` — analysis and modeling notebooks for execution and inspection
-- `agent_documents/` — agent-facing instructions and task setup for KMDS workflows
-- `documents/` — supporting reports, summaries, and domain analysis notes
-
-## How to use
-
-1. Open `olist_migration/` as the primary workspace.
-2. Activate the Python environment in `olist_migration/.venv`.
-3. Follow the KMDS project workflow in `olist_migration/copilot_init.md` for cleaning, featurization, modeling, and artifact generation.
+1. The SBA dataset: This dataset is from the SBA. It provides the financial standing of 7a loans gauranteed by the SBA, nationwide. It is published on a monthly schedule. This represents an imbalanced classification problem. Please see [this document](https://github.com/rajivsam/kmds_migration/blob/main/sba_migration/documents/sba_development_example_full_doc.md) for a complete description of how a solution is developed for this example. This example is in the financial domain, however, the methodology used here can be applied to other classifiers that have the same imbalance characteristics and are applied on some temporal cadence in a batch manner. Examples include:
+   1. Churn Prediction
+   2. Fraud detection
+   3. Adverse reaction to a drug
+2. The Olist dataset: This dataset is from Olist (sourced from Kaggle). In the supply chain world, segmentation of sales is an important use case, please see [this document](olist_migration/documents/segmentation_as_usecase.md) for the reason machine learning is applied to develop a solution for this model.
+3. The ITSM dataset: This dataset is used to develop a survival analysis solution to capture the performance characteristics of various support groups . Details coming soon.
 
 ## Why this repository exists
 
-This repo is intended as a practical example of KMDS applied to a complex, noisy real dataset. It is not a polished product release; it is a working illustration of KMDS data workflows, from raw data issues to longitudinal modeling and cluster analysis.
+This repository provides an illustration of how machine learning solutions can be replicated following a standard methodology for a range of enterprise problems. While the modeling approach can be very different, the process from a documentation perspective can be standardized.  This is not to take away focus from the solution techniques for the individual use case. Constructive feedback and comments are welcome.
