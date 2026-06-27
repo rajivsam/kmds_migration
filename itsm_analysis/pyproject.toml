@@ -1,0 +1,13 @@
+[project]
+name = "itsm-analysis"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dd-parser-cleaner>=0.5.0",
+    "kmds>=0.4.2",
+    "kmds-featurization>=0.2.0",
+    "kmds-ui>=0.1.0",
+    "pandas>=3.0.3",
+]
