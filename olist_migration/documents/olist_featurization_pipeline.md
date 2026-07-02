@@ -8,7 +8,12 @@ The goal is to build the exact dataset required by the final spectral coclusteri
 
 ## PathCoordinator and configuration
 
-The pipeline uses `featurizer_config.yaml` to centralize paths, raw file names, and output artifacts. The `PathCoordinator` abstraction resolves the raw data directory, output directory, and target file names so stage logic remains simple.
+The pipeline uses `featurizer_config.yaml` to centralize paths, raw file names, and output artifacts. The implementation now uses the KMDS `dd_cleaner.notebook_utils` `PathCoordinator` contract instead of hardcoded file paths. That means the pipeline resolves all input files through the KMDS workspace configuration and loads the cleaned orders dataset directly from the cleaner output when available.
+
+The current workflow is:
+- `classify-entities` and `clean-dataset --config config.yaml --action full` run for orders and customers data to generate the cleaned authority dataset.
+- `olist_order_items_dataset_raw.csv` remains a simple raw join input and does not require cleaning.
+- `featurization_scripts/featurization.py` now uses the `PathCoordinator` interface to load the cleaned dataset from `data/dd_cleaner/olist_daily_orders_prepared_clean.csv` when present, and falls back to raw input only if needed.
 
 ## Stage contract
 

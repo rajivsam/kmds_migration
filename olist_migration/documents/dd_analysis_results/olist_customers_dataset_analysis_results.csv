@@ -1,6 +1,6 @@
 attribute,description,physical_type,logical_type,attribute_name,provisional_entity_assignment,is_geographic
 customer_id,Unique customer identifier assigned by Olist for each order record.,str,text,customer_id,Customer Demographics,False
-customer_unique_id,Canonical customer identity linking multiple orders to the same shopper.,str,text,customer_unique_id,Customer Identity,False
-customer_zip_code_prefix,Five-digit Brazilian postal code prefix for the customer address.,int,numeric,customer_zip_code_prefix,Customer Location,True
-customer_city,Customer city name from the shipping address in lowercase.,str,text,customer_city,Customer Location,True
-customer_state,Two-letter Brazilian state code for the customer (e.g. SP for São Paulo).,str,categorical,customer_state,Customer Location,True
+customer_unique_id,Canonical customer identity linking multiple orders to the same shopper.,str,text,customer_unique_id,Customer Identity Management,False
+customer_zip_code_prefix,Five-digit Brazilian postal code prefix for the customer address.,int,numeric,customer_zip_code_prefix,Customer Address Metadata,True
+customer_city,Customer city name from the shipping address in lowercase.,str,text,customer_city,Customer Address Metadata,True
+customer_state,Two-letter Brazilian state code for the customer (e.g. SP for São Paulo).,str,categorical,customer_state,Customer Demographics,True

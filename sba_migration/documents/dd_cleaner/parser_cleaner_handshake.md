@@ -1,10 +1,10 @@
 # 📑 Data Dictionary: Provisional Entity Assignment Report
-**Generation Timestamp:** `2026-06-23 08:33:18`
+**Generation Timestamp:** `2026-07-02 09:10:47`
 **Source Blueprint:** `sba_dd.csv`
 
 ### 🏗️ Structural Assessment
-- **Inferred Dataset Type:** `cross-sectional`
-> ⚠️ **Note:** This inference is an automated suggestion based on schema patterns and may be incorrect. The `dataset_type` must be explicitly confirmed or defined in `config.yaml` before the Cleaner phase begins.
+- **Dataset Type:** `cross-sectional`
+> ⚠️ **Note:** This dataset type is provided by configuration and should match your workspace settings. Update `cleaner.structural_assessment.dataset_type` in `config.yaml` if the dataset is actually a panel or longitudinal dataset.
 
 ### 📊 Classification Summary
 - **Borrower**: 11 fields

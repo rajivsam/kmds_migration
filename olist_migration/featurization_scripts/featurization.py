@@ -2,25 +2,32 @@ from pathlib import Path
 import pandas as pd
 import yaml
 
+from dd_cleaner.notebook_utils import (
+    PathCoordinator as CleanerPathCoordinator,
+    get_cleaned_data,
+    get_raw_data,
+)
 
-class PathCoordinator:
+
+class FeaturizationPathCoordinator:
     def __init__(self, config):
         self.config = config
         self.working_dir = Path(config["working_dir"])
-        self.raw_dir = self.working_dir / config.get("raw_data_dir", "data")
+        self.cleaner_coord = CleanerPathCoordinator(working_dir=self.working_dir)
         self.output_dir = self.working_dir / config.get("featurization_output_dir", "data")
+        self.output_dir.mkdir(parents=True, exist_ok=True)
 
     @property
-    def orders_path(self):
-        return self.raw_dir / self.config["orders_file"]
+    def raw_dataset_path(self):
+        return self.cleaner_coord.raw_dataset_path
 
     @property
-    def order_items_path(self):
-        return self.raw_dir / self.config["order_items_file"]
+    def clean_dataset_output_path(self):
+        return self.cleaner_coord.clean_dataset_output_path
 
     @property
-    def customers_path(self):
-        return self.raw_dir / self.config["customers_file"]
+    def metadata_table_path(self):
+        return self.cleaner_coord.metadata_table_path
 
     @property
     def featurized_path(self):
@@ -56,17 +63,23 @@ def load_config(config_path: Path):
 
 
 def load_raw_data(context, stage_cfg=None):
-    df_orders = pd.read_csv(context.coord.orders_path, parse_dates=["order_purchase_timestamp"])
-    df_order_items = pd.read_csv(context.coord.order_items_path)
-    df_customers = pd.read_csv(context.coord.customers_path)
-    context.df = (
-        pd.merge(df_orders, df_order_items, on="order_id", how="inner")
-          .loc[:, ["order_id", "customer_id", "order_purchase_timestamp", "order_item_id", "product_id", "price"]]
-          .merge(df_customers[["customer_id", "customer_zip_code_prefix", "customer_city", "customer_state"]], on="customer_id", how="left")
-          .sort_values(["order_id", "order_item_id"])
-          .reset_index(drop=True)
+    coord = context.coord
+    if coord.clean_dataset_output_path.exists():
+        print(f"Loading cleaned dataset via notebook utils from {coord.clean_dataset_output_path}")
+        context.df = get_cleaned_data(coord.cleaner_coord)
+        context.df["order_purchase_timestamp"] = pd.to_datetime(context.df["order_purchase_timestamp"])
+        return context.df
+
+    if coord.raw_dataset_path.exists():
+        print(f"Loading raw dataset via notebook utils from {coord.raw_dataset_path}")
+        context.df = get_raw_data(coord.cleaner_coord)
+        context.df["order_purchase_timestamp"] = pd.to_datetime(context.df["order_purchase_timestamp"])
+        return context.df
+
+    raise FileNotFoundError(
+        f"Neither cleaned nor raw input dataset could be found."
+        f" Expected cleaned file at {coord.clean_dataset_output_path} or raw file at {coord.raw_dataset_path}."
     )
-    return context.df
 
 
 def build_order_level_dataset(context, stage_cfg=None):
@@ -107,7 +120,7 @@ def build_sp_weekly_product_matrix(context, stage_cfg=None):
 
 def run_pipeline(config_path: Path):
     config = load_config(config_path)
-    coord = PathCoordinator(config)
+    coord = FeaturizationPathCoordinator(config)
     context = SimpleContext(config, coord)
     for stage_cfg in config.get("pipeline", []):
         method = globals()[stage_cfg["method"]]

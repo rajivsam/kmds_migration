@@ -63,6 +63,8 @@ source .venv/bin/activate
    .venv/bin/classify-entities --config config.yaml
    .venv/bin/clean-dataset --config config.yaml --action full
    ```
+   - The featurization pipeline now uses the KMDS `dd_cleaner.notebook_utils` PathCoordinator to resolve input datasets.
+   - It reads the cleaned dataset from `data/dd_cleaner/olist_daily_orders_prepared_clean.csv` when available.
 2. Run the featurization pipeline:
    ```bash
    python featurization_scripts/featurization.py

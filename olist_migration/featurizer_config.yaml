@@ -5,7 +5,8 @@ raw_data_dir: data
 orders_file: olist_orders_dataset_raw.csv
 order_items_file: olist_order_items_dataset_raw.csv
 customers_file: olist_customers_dataset_raw.csv
-dd_cleaner_output_dir: ""
+dd_cleaner_output_dir: data/dd_cleaner
+clean_output_filename: olist_daily_orders_prepared_clean.csv
 metadata_file: ../data_dictionary/data_dictionary.csv
 featurization_input_data: olist_daily_orders_prepared.csv
 featurization_output_dir: data

@@ -18,25 +18,6 @@ parser:
   - geographic
   prompts:
     entity_classifier:
-      dataset_type_template: 'Analyze this data dictionary snippet to determine the
-        dataset''s structural type.
-
-        Data: {sample_fields}
-
-
-        CRITERIA:
-
-        1. ''panel'': Schema contains repeating attribute sets for different time
-        periods in one row.
-
-        2. ''cross-sectional'': Data represents a single snapshot. A single reference
-        date column (like ''asOfDate'' or ''ReportDate'') indicates a snapshot, NOT
-        a panel.
-
-
-        Return a strict JSON object:
-
-        {{"dataset_type": "cross-sectional" | "panel"}}'
       macro_domain_template: 'You are a master data architect. Scan this snippet of
         a data dictionary blueprint:
 
@@ -106,10 +87,9 @@ parser:
         \ be at the root of the \"constants\" object."
 cleaner:
   raw_dataset_file: sba_loans_raw.csv
-  custom_logic_path: scripts/domain_logic.py
-  metadata_table_filename: sba_loans_metadata_table.csv
-  user_cleaned_output_filename: sba_loans_user_cleaned.csv
   clean_output_filename: sba_loans_raw_clean.csv
+  metadata_table_filename: sba_loans_raw_metadata_table.csv
+  user_cleaned_output_filename: sba_loans_raw_user_cleaned.csv
   dd_cleaner_output_dir: dd_cleaner
   handshake_file: parser_cleaner_handshake.md
   profiling_report_filename: sba_loans_raw_profiling_report.md
@@ -117,17 +97,11 @@ cleaner:
   quarantine_filename: sba_loans_raw_quarantine.csv
   pipeline:
   - integrity
-  - row_filter
   - profile
   - assessment
-  row_filters:
-    attribute_overrides:
-      PlumbingCheck: "custom:smoke_test_filter"
-      DisbursedLoansOnly: "custom:filter_null_disbursements"
-      InvalidFirstDisbursementDate: "custom:invalid_first_disbursement_date"
   structural_assessment:
     auto_drop_constant: false
-    dataset_type: cross-sectional (inferred)
+    dataset_type: cross-sectional
     null_threshold: 0.95
   missing_values:
     prompts:

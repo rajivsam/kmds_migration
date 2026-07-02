@@ -1,10 +1,5 @@
 attribute,description,physical_type,logical_type,attribute_name,provisional_entity_assignment,is_geographic
-order_id,Unique identifier for each order in the Olist dataset.,str,text,order_id,Orders,False
-customer_id,Customer identifier assigned by Olist; a single customer may have multiple orders.,str,text,customer_id,Customers,False
-order_purchase_timestamp,Timestamp when the order was placed.,datetime,datetime,order_purchase_timestamp,Orders,False
-order_item_id,Line item number inside the order; orders may contain multiple items.,int,numeric,order_item_id,OrderItems,False
-product_id,Unique identifier for the ordered product.,str,text,product_id,Products,False
-price,Sale price paid for the order item.,float,numeric,price,OrderItems,False
-customer_zip_code_prefix,Customer postal code prefix (Brazilian ZIP prefix).,int,numeric,customer_zip_code_prefix,Customers,True
-customer_city,Customer city name from the customer record.,str,text,customer_city,Customers,True
-customer_state,Two-letter Brazilian state code for the customer (e.g. SP for São Paulo).,str,categorical,customer_state,Customers,True
+customer_id,Unique customer identifier assigned by Olist for each order record.,str,text,customer_id,CustomerDemographics,False
+customer_zip_code_prefix,Five-digit Brazilian postal code prefix for the customer address.,int,numeric,customer_zip_code_prefix,CustomerLocation,True
+customer_city,Customer city name from the shipping address in lowercase.,str,text,customer_city,CustomerLocation,True
+customer_state,Two-letter Brazilian state code for the customer (e.g. SP for São Paulo).,str,categorical,customer_state,CustomerLocation,True

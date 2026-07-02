@@ -1,40 +1,38 @@
 # 📑 Data Dictionary: Provisional Entity Assignment Report
-**Generation Timestamp:** `2026-06-18 09:39:13`
-**Source Blueprint:** `data_dictionary.csv`
+**Generation Timestamp:** `2026-07-02 10:08:43`
+**Source Blueprint:** `customer_data_dictionary.csv`
 
 ### 🏗️ Structural Assessment
-- **Inferred Dataset Type:** `cross-sectional`
-> ⚠️ **Note:** This inference is an automated suggestion based on schema patterns and may be incorrect. The `dataset_type` must be explicitly confirmed or defined in `config.yaml` before the Cleaner phase begins.
+- **Dataset Type:** `cross-sectional`
+> ⚠️ **Note:** This dataset type is provided by configuration and should match your workspace settings. Update `cleaner.structural_assessment.dataset_type` in `config.yaml` if the dataset is actually a panel or longitudinal dataset.
 
 ### 📊 Classification Summary
-- **Customers**: 4 fields
-- **Orders**: 2 fields
-- **OrderItems**: 2 fields
-- **Products**: 1 fields
+- **CustomerLocation**: 3 fields
+- **CustomerDemographics**: 1 fields
 
 ### ⚠️ Orphans in Data Dictionary
 > These attributes exist in the dictionary but were **not found** in the raw data file. They have been excluded from the assignments below.
 
-- `freq_cust`
-- `freq_purch_prod`
-- `year`
-- `month`
-- `woy`
+- `customer_unique_id`
+
+### 👻 Orphans in Data (Ghosts)
+> These headers exist in the raw data file but have **no corresponding entry** in the data dictionary.
+
+- `order_id`
+- `order_purchase_timestamp`
+- `order_item_id`
+- `product_id`
+- `price`
 
 ---
 
 ### 📋 Detailed Assignments
-| Attribute                  | Assignment   | Logical Type   | Physical Type   | Flag: Geographic   |
-|----------------------------|--------------|----------------|-----------------|--------------------|
-| `order_id`                 | `Orders`     | `text`         | `str`           | `False`            |
-| `customer_id`              | `Customers`  | `text`         | `str`           | `False`            |
-| `order_purchase_timestamp` | `Orders`     | `datetime`     | `datetime`      | `False`            |
-| `order_item_id`            | `OrderItems` | `numeric`      | `int`           | `False`            |
-| `product_id`               | `Products`   | `text`         | `str`           | `False`            |
-| `price`                    | `OrderItems` | `numeric`      | `float`         | `False`            |
-| `customer_zip_code_prefix` | `Customers`  | `numeric`      | `int`           | `True`             |
-| `customer_city`            | `Customers`  | `text`         | `str`           | `True`             |
-| `customer_state`           | `Customers`  | `categorical`  | `str`           | `True`             |
+| Attribute                  | Assignment             | Logical Type   | Physical Type   | Flag: Geographic   |
+|----------------------------|------------------------|----------------|-----------------|--------------------|
+| `customer_id`              | `CustomerDemographics` | `text`         | `str`           | `False`            |
+| `customer_zip_code_prefix` | `CustomerLocation`     | `numeric`      | `int`           | `True`             |
+| `customer_city`            | `CustomerLocation`     | `text`         | `str`           | `True`             |
+| `customer_state`           | `CustomerLocation`     | `categorical`  | `str`           | `True`             |
 
 ---
 *Report generated via automated dd-parser post-processing.*
