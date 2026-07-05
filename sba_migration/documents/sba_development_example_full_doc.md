@@ -2,6 +2,10 @@
 
 This guide shows the main KMDS workflow for SBA data migration, from repository setup through the featurization and modeling decisions that establish a production-ready solution.
 
+<p align="center">
+  <img src="../images/sba_workflow.png" alt="SBA workflow schematic" width="700" />
+</p>
+
 **1. Repository Setup:**
 
 Create a new Git repository for your SBA migration project. This will serve as the foundation for your work.  
@@ -9,8 +13,6 @@ Create a new Git repository for your SBA migration project. This will serve as t
 **2. UV Project Initialization:**
 
 Since UV (Ultraviolet) is used for KMDS, initialize a UV project for your model. This ensures the necessary environment is set up. *The KMDS SBA migration diagram above shows the workflow.*
-
-![SBA workflow schematic](../images/sba_workflow.png)
 
 **3. Install KMDS & Dependencies:**
 
