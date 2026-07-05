@@ -10,6 +10,8 @@ Create a new Git repository for your SBA migration project. This will serve as t
 
 Since UV (Ultraviolet) is used for KMDS, initialize a UV project for your model. This ensures the necessary environment is set up. *The KMDS SBA migration diagram above shows the workflow.*
 
+![SBA workflow schematic](../images/sba_workflow.png)
+
 **3. Install KMDS & Dependencies:**
 
 Install KMDS and its supporting packages. Refer to the KMDS GitHub repository ([https://github.com/rajivsam/kmds](https://github.com/rajivsam/kmds)) for detailed installation instructions.  Specifically, include the `kmds-ui` package for visualizing the resulting knowledge graph. *The KMDS SBA migration diagram above shows the same overall workflow.*
