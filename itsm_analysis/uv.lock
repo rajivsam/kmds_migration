@@ -762,7 +762,7 @@ wheels = [
 
 [[package]]
 name = "dd-parser-cleaner"
-version = "0.6.0"
+version = "1.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
@@ -775,9 +775,9 @@ dependencies = [
     { name = "rich" },
     { name = "tabulate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d8/af/9adc2768a5536d57e94c2b9c76647a8a5ec12014bd58a703ac7d550da044/dd_parser_cleaner-0.6.0.tar.gz", hash = "sha256:7d18494a9589d66cb89c2624b075581ecb20733485705b4beb73ea4de1859aec", size = 1598879, upload-time = "2026-07-01T02:46:22.408Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/eb/a08b103db77a4f76780e910adb71ab5d334e98d2ef68ebf5f11ebb18adac/dd_parser_cleaner-1.0.1.tar.gz", hash = "sha256:9161c29d13f1e31784a335070dda581023d74f4d33e1082aab47d714866f282b", size = 1606412, upload-time = "2026-07-04T05:17:01.91Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1d/e7/ecc2f166281f51efd480577e6ed0325026fea8d31f5445c9a9672f9043e3/dd_parser_cleaner-0.6.0-py3-none-any.whl", hash = "sha256:b8ca8060eb356aa4d7e62362d372818f9d0b7960c46abc8dd625671ee28494b4", size = 61050, upload-time = "2026-07-01T02:46:24.837Z" },
+    { url = "https://files.pythonhosted.org/packages/c2/14/94f14e3c539d3235a93d11069a696706a9e1a53d836b0d5ed434150cbee2/dd_parser_cleaner-1.0.1-py3-none-any.whl", hash = "sha256:7a99c23f27c90f4992c830687c1f67215ad0954bbec43a6d9bacf71c07769dde", size = 68319, upload-time = "2026-07-04T05:16:59.018Z" },
 ]
 
 [[package]]
@@ -1185,9 +1185,9 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dd-parser-cleaner", specifier = ">=0.5.0" },
+    { name = "dd-parser-cleaner", specifier = "==1.0.1" },
     { name = "kmds", specifier = ">=0.4.2" },
-    { name = "kmds-featurization", specifier = "==0.3.2" },
+    { name = "kmds-featurization", specifier = "==0.4.0" },
     { name = "kmds-ui", specifier = ">=0.1.0" },
     { name = "pandas", specifier = ">=3.0.3" },
 ]
@@ -1336,7 +1336,7 @@ wheels = [
 
 [[package]]
 name = "kmds-featurization"
-version = "0.3.2"
+version = "0.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "category-encoders" },
@@ -1349,9 +1349,9 @@ dependencies = [
     { name = "scikit-learn" },
     { name = "tabulate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/be/d5/38f6ad2ddabd719f3c14abd4cd72831274a0c3e24337144a46e16778e6e8/kmds_featurization-0.3.2.tar.gz", hash = "sha256:8a0e46640a273a78f7f28cb9a76065f819439948ff97cbd315d56dd1c463bdac", size = 105627, upload-time = "2026-06-29T06:59:11.702Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4b/c8/9967fde18b7d974d24049bbd53664b2cd8fac848b570df060fcb0d839d18/kmds_featurization-0.4.tar.gz", hash = "sha256:e475680c37125c7ed4ff03b12a9357eb03f0180ae3be651e87f2aab91c368b17", size = 42541, upload-time = "2026-07-01T02:31:45.592Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1b/4d/42a091f2ee01bab6ba0f2220e111189e6f20bae52bd76b85dd6d0a7ef795/kmds_featurization-0.3.2-py3-none-any.whl", hash = "sha256:5c1c5a5d9eae5a47d307fe7135ab64582d036aa66226f04b1ae1091675b99b14", size = 78696, upload-time = "2026-06-29T06:59:10.239Z" },
+    { url = "https://files.pythonhosted.org/packages/b6/04/f72e6d461b646ad104f60853bec1b94134855be5d4ae79b2bbb96b43a900/kmds_featurization-0.4-py3-none-any.whl", hash = "sha256:eab289f76915d873581e057c2f11bd519018790cde488384fde6627d72a4aa29", size = 38874, upload-time = "2026-07-01T02:31:44.238Z" },
 ]
 
 [[package]]

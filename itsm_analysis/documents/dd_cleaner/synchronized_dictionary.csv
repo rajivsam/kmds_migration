@@ -1,6 +1,7 @@
 Field Name,Data Type,Description,physical_type,logical_type,attribute_name,provisional_entity_assignment,is_geographic
-number,Numeric/String,Incident identifier (24918 different values),str,categorical,number,unassigned,False
-opened_at,Datetime,Incident user opening date and time,datetime,datetime,opened_at,unassigned,False
-assignment_group,String/Identifier,Identifier of the support group in charge of the incident,str,categorical,assignment_group,unassigned,False
-resolved_at,Datetime,Incident user resolution date and time (dependent variable),datetime,datetime,resolved_at,unassigned,False
-closed_at,Datetime,Incident user close date and time (dependent variable),datetime,datetime,closed_at,unassigned,False
+number,Numeric/String,Incident identifier (24918 different values),str,categorical,number,Incident Management,False
+incident_state,Categorical,Eight levels controlling the incident management process transitions from opening until closing the case,str,categorical,incident_state,Incident Management,False
+opened_at,Datetime,Incident user opening date and time,datetime,datetime,opened_at,Incident Management,False
+assignment_group,String/Identifier,Identifier of the support group in charge of the incident,str,categorical,assignment_group,Support Group,False
+resolved_at,Datetime,Incident user resolution date and time (dependent variable),datetime,datetime,resolved_at,Incident Management,False
+closed_at,Datetime,Incident user close date and time (dependent variable),datetime,datetime,closed_at,Incident Management,False

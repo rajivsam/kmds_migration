@@ -1,0 +1,68 @@
+[
+  {
+    "attribute_name": "number",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "incident_state",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "opened_at",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "assignment_group",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "resolved_at",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "closed_at",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  }
+]

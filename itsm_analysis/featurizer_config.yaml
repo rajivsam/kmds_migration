@@ -1,0 +1,51 @@
+working_dir: /home/rajiv/programming/kmds_migration/itsm_analysis
+structural_type: survival
+country_code: us
+
+dd_cleaner_output_dir: dd_cleaner
+metadata_file: itsm_group_analysis_metadata_table.csv
+featurization_input_data: itsm_group_analysis_clean.csv
+
+script_dir: featurization_scripts
+script_name: featurization.py
+
+featurization_output_dir: featurization
+featurized_data_file: itsm_survival_featurized_data.csv
+model_ready_data_file: itsm_survival_model_ready_numeric_data.csv
+quarantine_dir: featurization/quarantine
+
+MIN_SUPPORT_THRESHOLD_CAT_VARS: 5
+VALIDATION_SIZE: 0.2
+FEATURE_SELECTION_MIN_NON_NULL_RATE: 0.01
+FEATURE_SELECTION_METHOD: tree_ensemble
+FEATURE_SELECTION_TOP_K: 50
+FEATURE_SELECTION_TOP_K_MODE: fixed
+FEATURE_SELECTION_TOP_K_MIN: 1
+FEATURE_SELECTION_TOP_K_MIN_RATIO: 0.0
+FEATURE_SELECTION_MIN_FEATURE_COUNT: 0
+FEATURE_SELECTION_TOP_K_MAX: 0
+FEATURE_SELECTION_TARGET_FEATURE_COUNT: 0
+FEATURE_SELECTION_KNEEDLE_SENSITIVITY: 1.0
+FEATURE_SELECTION_KNEEDLE_CURVE: convex
+FEATURE_SELECTION_KNEEDLE_DIRECTION: decreasing
+FEATURE_SELECTION_REQUIRE_KNEEDLE: false
+FEATURE_SELECTION_IMPORTANCE_FLOOR: 0.0
+FEATURE_SELECTION_TREE_MODEL: gbm
+FEATURE_SELECTION_TREE_N_ESTIMATORS: 200
+FEATURE_SELECTION_TREE_LEARNING_RATE: 0.05
+FEATURE_SELECTION_TREE_MAX_DEPTH: 3
+FEATURE_SELECTION_TREE_SUBSAMPLE: 0.8
+FEATURE_SELECTION_TREE_RANDOM_STATE: 42
+MODEL_READY_NUMERIC_ONLY: true
+MIN_EVENT_COUNT_THRESHOLD: 20
+itsm_KM_data_file: itsm_KM_data.csv
+itsm_PR_data_file: itsm_PR_data.csv
+OLLAMA_MODEL: llama3.2:latest
+feature_selection_knee_curve_file: feature_selection_knee_curve.png
+
+pipeline:
+  - name: "Ticket Survival Summary"
+    method: "ticket_survival_summary"
+    entity: "System"
+    sub_filter: "survival"
+    allow_new_indices: true

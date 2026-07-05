@@ -1,0 +1,321 @@
+[
+  {
+    "attribute_name": "asofdate",
+    "role": "time_key",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "program",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "locationid",
+    "role": "subject_key",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "borrname",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "text",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "borrstreet",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "borrcity",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "borrstate",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "borrzip",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "grossapproval",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "approvaldate",
+    "role": "time_key",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "approvalfy",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "firstdisbursementdate",
+    "role": "time_key",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "processingmethod",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "subprogram",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "terminmonths",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "naicscode",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "naicsdescription",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "franchisecode",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "franchisename",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "projectcounty",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "projectstate",
+    "role": "time_key",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "sbadistrictoffice",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "congressionaldistrict",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "businesstype",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "businessage",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "geo_address",
+    "suggested_checks": [
+      "geo_parse"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "loanstatus",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "paidinfulldate",
+    "role": "time_key",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "chargeoffdate",
+    "role": "time_key",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "grosschargeoffamount",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "currency",
+    "suggested_checks": [
+      "range_consistency"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "jobssupported",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "collateralind",
+    "role": "feature",
+    "time_dependency": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  }
+]

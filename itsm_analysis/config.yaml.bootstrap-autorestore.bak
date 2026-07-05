@@ -11,10 +11,10 @@ temperature: 0.0
 dataset_type: panel
 dataset_id: itsm_group_analysis
 require_manifest_before_featurize: true
-enable_dataset_questionnaire: true
-interactive_mode: true
-questionnaire_schema_path: documents/config/dataset_questions.json
-handshake_require_questions: true
+enable_dataset_questionnaire: false
+interactive_mode: false
+questionnaire_schema_path: schemas/dataset_questions.json
+handshake_require_questions: false
 parser:
   data_dictionary_file: itsm_dd.csv
   data_dictionary_attribute_col_name: Field Name
@@ -23,7 +23,8 @@ parser:
   output_filename: itsm_group_analysis_analysis_results.csv
   dataset_manifest_filename: itsm_group_analysis_dataset_manifest.json
   attribute_manifest_filename: itsm_group_analysis_attribute_manifest.json
-  entity_tagging: []
+  entity_tagging:
+  - geographic
   prompts:
     entity_classifier:
       macro_domain_template: 'You are a master data architect. Scan this snippet of

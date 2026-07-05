@@ -1,6 +1,7 @@
-Field Name,Data Type,Description,physical_type,logical_type,attribute_name,provisional_entity_assignment,is_geographic
-number,Numeric/String,Incident identifier (24918 different values),str,categorical,number,unassigned,False
-opened_at,Datetime,Incident user opening date and time,datetime,datetime,opened_at,unassigned,False
-assignment_group,String/Identifier,Identifier of the support group in charge of the incident,str,categorical,assignment_group,unassigned,False
-resolved_at,Datetime,Incident user resolution date and time (dependent variable),datetime,datetime,resolved_at,unassigned,False
-closed_at,Datetime,Incident user close date and time (dependent variable),datetime,datetime,closed_at,unassigned,False
+Field Name,Data Type,Description,physical_type,logical_type,attribute_name,provisional_entity_assignment,static_dynamic
+number,Numeric/String,Incident identifier (24918 different values),str,categorical,number,Incident Management,dynamic
+incident_state,Categorical,Eight levels controlling the incident management process transitions from opening until closing the case,str,categorical,incident_state,Incident Management,dynamic
+opened_at,Datetime,Incident user opening date and time,datetime,datetime,opened_at,Incident Timeline,dynamic
+assignment_group,String/Identifier,Identifier of the support group in charge of the incident,str,categorical,assignment_group,Support Group,dynamic
+resolved_at,Datetime,Incident user resolution date and time (dependent variable),datetime,datetime,resolved_at,Incident Management,dynamic
+closed_at,Datetime,Incident user close date and time (dependent variable),datetime,datetime,closed_at,Incident Management,dynamic
