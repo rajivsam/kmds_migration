@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "dd-parser-cleaner==1.2.0",
+    "kmds-featurization>=0.4",
+    "kmds-modeling>=0.3",
 ]
 
 [dependency-groups]

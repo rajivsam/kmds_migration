@@ -69,7 +69,7 @@ class SBAModelPipeline:
         y_val = validation_df[self.config["project"]["target_variable"]]
 
         estimator.fit(X_train, y_train)
-        calibrator = CalibratedClassifierCV(base_estimator=estimator, method="isotonic", cv="prefit")
+        calibrator = CalibratedClassifierCV(estimator=estimator, method="isotonic", cv="prefit")
         calibrator.fit(X_val, y_val)
 
         self.models[model_name] = estimator

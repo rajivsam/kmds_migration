@@ -9,6 +9,9 @@ project:
   name: "sba_modeling_experiment"
   experiment_version: "0.1.0"
   target_variable: "loan_status_r"
+  task_type: "TABULAR_CLASSIFICATION"
+  strategy: "MAX_ACCURACY"
+  user_intent: "Imbalanced SBA loan status classification"
 
 experiment_settings:
   cross_validation:

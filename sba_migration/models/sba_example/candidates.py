@@ -24,6 +24,7 @@ class RandomForestCandidate:
             n_estimators=hyperparameters.get("n_estimators", 100),
             max_depth=hyperparameters.get("max_depth"),
             random_state=hyperparameters.get("random_state", 42),
+            class_weight=hyperparameters.get("class_weight", None),
         )
 
     def fit(self, X, y):
