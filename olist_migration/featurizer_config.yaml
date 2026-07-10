@@ -1,26 +1,15 @@
 working_dir: /home/rajiv/programming/kmds_migration/olist_migration
-structural_type: longitudinal
+structural_type: wide and short
 country_code: br
-raw_data_dir: data
-orders_file: olist_orders_dataset_raw.csv
-order_items_file: olist_order_items_dataset_raw.csv
-customers_file: olist_customers_dataset_raw.csv
-dd_cleaner_output_dir: data/dd_cleaner
-clean_output_filename: olist_daily_orders_prepared_clean.csv
-metadata_file: ../data_dictionary/data_dictionary.csv
-featurization_input_data: olist_daily_orders_prepared.csv
+featurization_input_data: data/dd_cleaner/olist_daily_orders_prepared_clean.csv
+metadata_file: data_dictionary/olist_example_dd.csv
 featurization_output_dir: data
-featurized_data_file: olist_daily_orders_prepared.csv
-sp_subset_file: SP_2017_orders_filtered_prepared.csv
-sp_weekly_revenue_file: SP_2017_weekly_revenue_prepared.csv
 sp_freq_prod_file: SP_2017_freq_prod_weekly_sales_prepared.csv
 sp_freq_prod_parquet: SP_2017_freq_prod_weekly_sales_prepared.parquet
 pipeline:
-  - name: "Load Raw Olist Data"
+  - name: "Load Featurization Input Dataset"
     method: "load_raw_data"
-  - name: "Build Prepared Order Dataset"
-    method: "build_order_level_dataset"
-  - name: "Derive SP 2017 Subset"
-    method: "derive_sp_2017_subset"
-  - name: "Create Weekly Product Matrix"
+  - name: "Drop incomplete order rows"
+    method: "validate_required_columns"
+  - name: "Build SP 2017 Weekly Product Matrix"
     method: "build_sp_weekly_product_matrix"

@@ -1,2 +1,1 @@
 attribute_name,logical_type,entity_context,null_ratio,cardinality,recommended_action,reason
-order_purchase_timestamp,datetime,Orders,0.0,98112,custom:datetime_to_numeric,"This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them."

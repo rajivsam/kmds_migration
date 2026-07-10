@@ -19,6 +19,15 @@ This document defines the development guidelines that an agent should follow whe
   - `project.task_type: CLUSTERING`
   - algorithm metadata such as `model_family`, `n_clusters`, and `embedding_dim`
 
+## 2.1. Required Modeling Spec Question Answers
+When the interface asks the modeling spec questions, provide these answers exactly:
+- `project.strategy`: `spectral_clustering`
+- `project.target_variable`: `none` (this is an unsupervised task)
+- `project.user_intent`: `we want to understand the temporal affinity of products over the year in the SP region for planning and acquisition`
+- `candidates`: one candidate named `spectral_clustering` with `class_path: models.spectral_clustering.run_spectral_clustering` and hyperparameters for `n_clusters`, `embedding_dim`, `random_state`, and `use_tfidf`
+- `production_target.champion_candidate_name`: `spectral_clustering`
+- `production_target.export_directory`: use the `modeling_config.yaml` value, typically `models`
+
 ## 3. Input Data Selection
 - Use the featurization output as the source of truth.
 - For this Olist clustering task, the correct input is `data/SP_2017_freq_prod_weekly_sales_prepared.parquet`.

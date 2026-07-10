@@ -1,0 +1,132 @@
+{
+  "columns": {
+    "customer_city": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 4119,
+      "logical_type": "text",
+      "is_mixed_type": false,
+      "samples": [
+        "sao paulo",
+        "barreiras",
+        "vianopolis",
+        "sao goncalo do amarante",
+        "santo andre"
+      ]
+    },
+    "customer_id": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 99441,
+      "logical_type": "text",
+      "is_mixed_type": false,
+      "samples": [
+        "9ef432eb6251297304e76186b10a928d",
+        "b0830fb4747a6c6d20dea0b8c802d7ef",
+        "41ce2a54c0b03bf3443c3d931a367089",
+        "f88197465ea7920adcdbec7375364d82",
+        "8ab97904e6daea8866dbdbc4fb7aad2c"
+      ]
+    },
+    "customer_state": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 27,
+      "logical_type": "categorical",
+      "is_mixed_type": false,
+      "samples": [
+        "SP",
+        "BA",
+        "GO",
+        "RN",
+        "PR"
+      ]
+    },
+    "customer_zip_code_prefix": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 14994,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "3149",
+        "47813",
+        "75265",
+        "59296",
+        "9195"
+      ]
+    },
+    "order_id": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 99441,
+      "logical_type": "text",
+      "is_mixed_type": false,
+      "samples": [
+        "e481f51cbdc54678b7cc49136f2d6af7",
+        "53cdb2fc8bc7dce0b6741e2150273451",
+        "47770eb9100c2d0c44946d9cf07ec65d",
+        "949d5b44dbf5de918fe9c16f97b45f8a",
+        "ad21c59c0840e6cb83a9ceb5573f8159"
+      ]
+    },
+    "order_item_id": {
+      "null_count": 775,
+      "null_ratio": 0.006832708838439497,
+      "cardinality": 21,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "1.0",
+        "2.0",
+        "3.0",
+        "4.0",
+        "5.0"
+      ]
+    },
+    "order_purchase_timestamp": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 98875,
+      "logical_type": "datetime",
+      "is_mixed_type": false,
+      "samples": [
+        "2017-10-02 10:56:33",
+        "2018-07-24 20:41:37",
+        "2018-08-08 08:38:49",
+        "2017-11-18 19:28:06",
+        "2018-02-13 21:18:39"
+      ]
+    },
+    "price": {
+      "null_count": 775,
+      "null_ratio": 0.006832708838439497,
+      "cardinality": 5968,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "29.99",
+        "118.7",
+        "159.9",
+        "45.0",
+        "19.9"
+      ]
+    },
+    "product_id": {
+      "null_count": 775,
+      "null_ratio": 0.006832708838439497,
+      "cardinality": 32951,
+      "logical_type": "text",
+      "is_mixed_type": false,
+      "samples": [
+        "87285b34884572647811a353c7ac498a",
+        "595fac2a385ac33a80bd5114aec74eb8",
+        "aa4383b373c6aca5d8797843e5594415",
+        "d0b61bfb1de832b15ba9d266ca96e5b0",
+        "65266b2da20d04dbe00c5c2d3bb7859e"
+      ]
+    }
+  },
+  "row_count": 113425,
+  "timestamp": "2026-07-06 11:30:16"
+}

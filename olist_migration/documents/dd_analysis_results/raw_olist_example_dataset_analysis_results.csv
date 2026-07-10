@@ -1,0 +1,10 @@
+attribute,description,physical_type,logical_type,attribute_name,provisional_entity_assignment,static_dynamic
+customer_city,Customer city name from the shipping address in lowercase.,str,text,customer_city,Shipping Addresses,none
+customer_id,Customer identifier assigned by Olist; a single customer may have multiple orders.,str,text,customer_id,Customer Demographics,none
+customer_state,Two-letter Brazilian state code for the customer (e.g. SP for São Paulo).,str,categorical,customer_state,Customer Demographics,none
+customer_zip_code_prefix,Five-digit Brazilian postal code prefix for the customer address.,int,numeric,customer_zip_code_prefix,Shipping Addresses,none
+order_id,Unique identifier for each order in the Olist dataset.,str,text,order_id,Order Details,none
+order_item_id,Line item number inside the order; orders may contain multiple items.,float,numeric,order_item_id,Order Details,none
+order_purchase_timestamp,Timestamp when the order was placed.,datetime,datetime,order_purchase_timestamp,Order Details,none
+price,Sale price paid for the order item.,float,numeric,price,Order Details,none
+product_id,Unique identifier for the ordered product.,str,text,product_id,Product Information,none

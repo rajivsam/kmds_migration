@@ -1,167 +1,49 @@
-# Olist Migration with KMDS - A Step-by-Step Guide
+## Creating the Workspace
 
-This guide shows the main KMDS workflow for Olist data migration, from repository setup through the featurization and modeling decisions that establish a production-ready solution.
+- The raw datafile is created with [this notebook](../notebooks/raw_datafile_creation.ipynb)
+- Workspace is initialized with `uv run init-workspace .`
 
-**1. Repository Setup:**
+![Workspace initialization](../images/workspace_init.png)
 
-Work from the repository root: `/home/rajiv/programming/kmds_migration/olist_migration`.
+- Find out where to place the files with `uv run location-helper`
 
-The workspace contains:
+![Location helper](../images/location-helper.png)
 
-- `config.yaml` and `customer_config.yaml` for KMDS parser/cleaner configuration.
-- `featurizer_config.yaml` for the SP 2017 feature pipeline.
-- `modeling_config.yaml` for the clustering runtime settings.
-- `data/` for raw CSVs and prepared artifacts.
-- `documents/` for project documentation.
-- `agent_documents/` for KMDS-guided modeling and clustering instructions.
-- `models/` for spectral clustering implementation, outputs, and summaries.
+- Answer questions about the dataset
 
-**2. KMDS Project Initialization:**
+![Customer preferences and temporal view](../images/cust_pref_temporal.png)
 
-Initialize the project environment before running KMDS tools.
+- Run classify entities: `classify-entities`
 
-```bash
-source .venv/bin/activate
+![Classify entities](../images/classify_entities.png)
+
+- Run the clean dataset: `clean-dataset --action full`
+
+## Data preparation and Featurization
+
+A review of the cleaning suggestions indicates that there are a few dangling items in the order-items dataset file, these get dropped anyway. The cleaning suggestion asks us to derive an attribute for the week of the year from the timestamp, we do that. With these actions, the dataset is ready for featurization. You can view the notebook  [here](../notebooks/clean_olist_dataset.ipynb)
+
+The user can ask the agent to discover the interface to the featurizer package with the following code block
+
+```
+from featurization import get_package_info
+
+info = get_package_info()
+print(info)
 ```
 
-Use `copilot_init.md` as the session initialization reference.
+A featurization advisor that provides the recommend
 
-Confirm the `.venv` environment contains the required KMDS and parsing tools.
+You can use the following documents in the [agent folder](../agent_documents) to prime the copilot agent to develop the featurization pipeline. The featurization pipeline is listed [here](../notebooks/featurization_workflow.ipynb)
 
-**3. Install KMDS & Dependencies:**
 
-Install the KMDS toolchain and supporting packages in `.venv`.
+## Modeling
 
-Required packages include:
+```
+from kmds_modeling import get_package_info
 
-- `kmds-ui`
-- `kmds-modeling`
-- `kmds-data-helper`
-- `dd-parser-cleaner`
-- `clean-dataset`
-- `kmds-kb`
-- `kmds-workbench`
-- `pyarrow` and standard data processing dependencies
-
-If dependencies are missing:
-
-```bash
-pip install -r requirements.txt
-pip install pyarrow
-pip install kmds-modeling
+info = get_package_info()
+print(info)
 ```
 
-**4. Workspace Initialization:**
-
-Validate that `config.yaml` exists in the root and is the active KMDS workspace config.
-
-Use `customer_config.yaml` for the customer metadata cleaner workflow, and `config.yaml` for the main orders + modeling workflow.
-
-Confirm the repository has the expected source artifacts in `data/`, including Olist raw tables and the São Paulo 2017 weekly sales datasets.
-
-**5. File Location Helper:**
-
-Place artifacts according to the repository layout rather than a dedicated helper utility.
-
-Key artifact locations:
-
-- `data/olist_daily_orders_prepared.csv`
-- `data/SP_2017_freq_prod_weekly_sales_prepared.csv`
-- `data/SP_2017_weekly_revenue_prepared.csv`
-- `data/dd_cleaner/olist_customers_dataset_clean.csv`
-- `models/week_clusters.csv`
-- `models/product_clusters.csv`
-- `models/spectral_gap.csv`
-- `models/cluster_counts.csv`
-- `models/week_embeddings.csv`
-- `models/product_embeddings.csv`
-- `data/kmds/project_knowledge_graph.xml`
-- `output/full_service_report.json`
-
-Review this file map before running cleaning and modeling so the output targets are clear.
-
-**6. Provisional Configuration Bootstrap:**
-
-Use the repository YAML files to define the data cleaning, featurization, and modeling pipelines.
-
-- `config.yaml` sets the main workflow entities and cleaning rules.
-- `customer_config.yaml` isolates the customer metadata cleaning flow.
-- `featurizer_config.yaml` defines the SP 2017 feature pipeline stages.
-- `modeling_config.yaml` defines clustering inputs, normalization transforms, and output targets.
-
-If you generate a provisional configuration file first, rename it to `config.yaml` before running the main workflow.
-
-**7. Parser Handshake Filters:**
-
-Run `classify-entities` to generate parser handshake metadata.
-
-Customer workflow:
-
-```bash
-.venv/bin/classify-entities --config customer_config.yaml
-```
-
-Orders workflow:
-
-```bash
-.venv/bin/classify-entities --config config.yaml
-```
-
-The handshake phase produces entity assignments and field metadata needed to drive cleaner decisions.
-
-**8. Clean Dataset:**
-
-Run the cleaner to generate validated, prepared datasets.
-
-Customer cleaner command:
-
-```bash
-.venv/bin/clean-dataset --config customer_config.yaml --action full
-```
-
-Orders cleaner command:
-
-```bash
-.venv/bin/clean-dataset --config config.yaml --action full
-```
-
-Verify the results and artifacts in `data/dd_cleaner/` and `documents/dd_cleaner/`.
-
-**9. Notebook Analysis:**
-
-Use notebooks to inspect pipeline outputs and modeling decisions.
-
-Relevant notebooks:
-
-- `notebooks/modeling_spectral_clustering.ipynb`
-- `notebooks/modeling_clustering_advisor.ipynb`
-
-These notebooks expose the modeling workflow, data preparation, spectral embedding, cluster validation, and advisor recommendations.
-
-**10. Metadata Review:**
-
-Inspect the metadata generated by the parser and cleaner.
-
-Confirm that entity types, category levels, and feature candidates align with the modeling plan.
-
-The featurization process should match the modeling approach described in the repository documents and agent guidance.
-
-**11. Modeling Guidance:**
-
-Modeling and featurization decisions are described in markdown and guided by domain expertise.
-
-Review:
-
-- `documents/olist_featurization_pipeline.md`
-- `documents/olist_temporal_affinity_analytics_for_SP.md`
-- `documents/rationale_for_spectral_clustering.md`
-- `documents/modeling_results_observations.md`
-
-Olist modeling design:
-
-- Build a week-product affinity matrix for São Paulo, 2017.
-- Normalize the raw frequency matrix with TF-IDF-style scaling to reduce dominance from evergreen products.
-
-Use advisor outputs as design guardrails rather than rigid rules.
-
-Domain judgment is required to tune feature selection and model selection
+Like with featurization, you can ask the agent to discover the modeling interface with the above block. The documents under the [agent folder](../agent_documents) cover modeling as well. The modeling notebook is available [here](../notebooks/modeling_spectral_clustering.ipynb)

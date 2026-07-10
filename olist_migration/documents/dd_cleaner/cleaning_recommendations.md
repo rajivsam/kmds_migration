@@ -3,18 +3,14 @@
 This report provides automated recommendations based on data profile physics and semantic metadata.
 
 ## 🛡️ User Responsibilities
-- **Domain Logic**: User must capture domain-specific row filters in `config.yaml` or `domain_logic.py`.
+- **Domain Logic**: User should capture domain-specific row filters in `config.yaml` or via an optional external custom logic module referenced explicitly in configuration.
 - **Domain Deletions**: User must identify columns requiring deletion based on business rules.
 - **Strategy Validation**: While we suggest mean/MISSING defaults, the user determines the final strategy.
 
 ## 📊 Summary of Actions
-- **custom:datetime_to_numeric**: 1 columns
+- No automated cleaning recommendations were generated for this dataset.
 
-## Derived attribute definition or deletion is recommended
-
-| Attribute                | Type     | Entity   | What Needs Fixing                                                                                                                                    | Recommended Fix            |
-|:-------------------------|:---------|:---------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------|
-| order_purchase_timestamp | datetime | Orders   | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
+This dataset appears to have no structural or imputation issues detected by the assistant. Review the profiling report for more details and decide whether domain-specific actions are needed.
 
 
 ---

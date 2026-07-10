@@ -1,0 +1,96 @@
+[
+  {
+    "attribute_name": "customer_city",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "text",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "customer_id",
+    "role": "subject_key",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "text",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "customer_state",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "customer_zip_code_prefix",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "order_id",
+    "role": "subject_key",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "text",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "order_item_id",
+    "role": "subject_key",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "order_purchase_timestamp",
+    "role": "time_key",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "price",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "currency",
+    "suggested_checks": [
+      "range_consistency"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "product_id",
+    "role": "subject_key",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "text",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  }
+]

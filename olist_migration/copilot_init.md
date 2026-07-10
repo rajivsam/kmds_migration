@@ -20,6 +20,12 @@ This file captures the current workspace setup and the commands needed to reinit
 - `kmds-ui` can be launched via `.venv/bin/kmds-workbench` and viewed at `http://127.0.0.1:8050`.
 - The parent repository `.gitignore` was updated to ignore large Olist migration files from `olist_migration/data/`.
 
+## Current stop point
+
+- `notebooks/raw_datafile_creation.ipynb` has been updated and now produces the week × product_id revenue matrix for SP 2017.
+- The latest generated file is `data/SP_2017_weekly_product_revenue_by_product_id.csv`.
+- Next pickup: validate this dataset, confirm the schema, and wire it into the downstream featurization/modeling workflow.
+
 ## Important files
 
 - `config.yaml` — main KMDS workspace configuration
@@ -27,6 +33,7 @@ This file captures the current workspace setup and the commands needed to reinit
 - `featurizer_config.yaml` — featurization pipeline configuration
 - `modeling_config.yaml` — local clustering model configuration
 - `data/SP_2017_freq_prod_weekly_sales_prepared.csv` — SP 2017 product-week affinity matrix
+- `data/SP_2017_weekly_product_revenue_by_product_id.csv` — current week × product_id revenue matrix output from `notebooks/raw_datafile_creation.ipynb`
 - `documents/olist_featurization_pipeline.md` — featurization pipeline documentation
 - `agent_documents/olist_temporal_affinity_analytics_for_SP.md` — use case summary
 - `agent_documents/clustering_task_initialization.md` — clustering task template
@@ -54,6 +61,81 @@ cd /home/rajiv/programming/kmds_migration/olist_migration
 source .venv/bin/activate
 ```
 
+## Featurization and modeling interface discovery
+
+### Featurization (`kmds-featurization`)
+- Package name: `kmds-featurization`
+- Import path: `import featurization`
+- Top-level exports: `FeatureAdvisorPromptConfig`, `FeatureAdvisorUtil`
+- Subpackages available: `featurization.cli`, `featurization.core`, `featurization.feature_advisor_util`, `featurization.notebook_utils`, `featurization.utils`
+- `get_package_info()` is not available in this package; use `dir()`/`pkgutil.iter_modules()` instead.
+- Example runtime inspection:
+  ```bash
+  python - <<'PY'
+  import featurization, pkgutil
+  print('featurization path:', featurization.__file__)
+  print('exports:', [n for n in dir(featurization) if not n.startswith('_')])
+  print('submodules:', [m.name for m in pkgutil.iter_modules(featurization.__path__)])
+  PY
+  ```
+- Key interfaces to inspect:
+  - `featurization.FeatureAdvisorPromptConfig`
+  - `featurization.FeatureAdvisorUtil`
+  - `featurization.core` subpackage for additional runtime helpers
+
+### Modeling (`kmds_modeling`)
+- Import path: `import kmds_modeling`
+- Main exports: `BaseFeatureTransformer`, `BaseModelCandidate`, `ExperimentRunner`, `core`
+- `ExperimentRunner` behavior:
+  - Initialized with a config path like `modeling_config.yaml`
+  - Loads YAML config and resolves paths with `PathCoordinator`
+  - Reads the model-ready dataset CSV from `path_coordinator.model_ready_dataset_path`
+  - Sets `self.X` and `self.y` from the configured `target_variable`
+  - Supports additional feature transformers with `register_transformer()`
+  - Runs evaluation via `run_evaluation()` and exports champion models via `export_champion()`
+  - Supports task types: `TABULAR_CLASSIFICATION`, `TABULAR_REGRESSION`, `GRAPH_NODE_CLASSIFICATION`, `GRAPH_NODE_REGRESSION`, `GRAPH_DISCOVERY`, `CLUSTERING`
+- Abstract interfaces:
+  - `BaseFeatureTransformer`: implement `fit(X, y=None)`, `transform(X)`, optional `fit_transform(X, y=None)`
+  - `BaseModelCandidate`: accepts `hyperparameters`, implement `fit(X_train, y_train)`, `predict_proba(X)`
+- Useful core helpers:
+  - `kmds_modeling.core.PathCoordinator`
+  - `kmds_modeling.core.ModelAdvisor`
+  - `kmds_modeling.core.build_notebook_resolver`
+  - `kmds_modeling.core.get_modeling_artifact_paths`
+  - `kmds_modeling.core.load_model_ready_dataset`
+  - `kmds_modeling.core.load_workspace_config`
+  - `kmds_modeling.core.resolve_notebook_workspace_root`
+- Example runtime inspection:
+  ```bash
+  python - <<'PY'
+  import inspect
+  import kmds_modeling
+  from kmds_modeling import core
+  print('kmds_modeling path:', kmds_modeling.__file__)
+  print('exports:', [n for n in dir(kmds_modeling) if not n.startswith('_')])
+  print('core exports:', [n for n in dir(core) if not n.startswith('_')])
+  print(inspect.getsource(kmds_modeling.ExperimentRunner))
+  PY
+  ```
+
+### Exact config keys used by `kmds_modeling`
+- `data.working_dir`
+- `data.index_column`
+- `data.model_ready_data_file`
+- `data.featurization_output_dir`
+- `data.modeling_output_dir`
+- `project.name`
+- `project.experiment_version`
+- `project.task_type`
+- `project.description`
+- `algorithm.model_family`
+- `algorithm.n_clusters`
+- `algorithm.embedding_dim`
+- `algorithm.random_state`
+- `algorithm.use_spectral_gap_analysis`
+
+> Note: `kmds_modeling.ExperimentRunner._load_data()` expects `project.target_variable` to exist, since it uses that key to split `X` and `y`. The current `modeling_config.yaml` in this repo does not define `project.target_variable`, so direct use of `ExperimentRunner` may require either adding this key or using a clustering-specific wrapper that bypasses the target split.
+
 ## Recommended workflow
 
 1. Run parser + cleaner for customer or orders data as needed:
@@ -69,9 +151,10 @@ source .venv/bin/activate
    ```bash
    python featurization_scripts/featurization.py
    ```
-3. Validate the SP 2017 prepared artifact:
+3. Validate the SP 2017 prepared artifact and the week × product_id matrix:
    ```bash
    ls data/SP_2017_freq_prod_weekly_sales_prepared.csv
+   ls data/SP_2017_weekly_product_revenue_by_product_id.csv
    ```
 4. Run the clustering model:
    ```bash

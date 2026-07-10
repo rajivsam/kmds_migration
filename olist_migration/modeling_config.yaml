@@ -15,6 +15,8 @@ project:
   name: "olist_sp2017_clustering"
   experiment_version: "0.1.0"
   task_type: "CLUSTERING"
+  target_variable: "none"
+  user_intent: "we want to understand the temporal affinity of products over the year in the SP region for planning and acquisition"
   description: "Spectral co-clustering for Olist SP 2017 weekly product activity"
 
 algorithm:
@@ -23,3 +25,16 @@ algorithm:
   embedding_dim: 4
   random_state: 42
   use_spectral_gap_analysis: true
+
+candidates:
+  - name: spectral_clustering
+    class_path: models.spectral_clustering.run_spectral_clustering
+    hyperparameters:
+      n_clusters: 16
+      embedding_dim: 4
+      random_state: 42
+      use_tfidf: true
+
+production_target:
+  champion_candidate_name: spectral_clustering
+  export_directory: models

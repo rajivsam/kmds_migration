@@ -1,15 +1,2 @@
 attribute,recommended_method,rationale
-order_id,low_count_cat_var_encoding + target_encoding,Use low-count categorical grouping on train data followed by target encoding to produce numeric model-ready features while avoiding unseen categories during validation/active scoring.
-customer_id,low_count_cat_var_encoding + target_encoding,Use low-count categorical grouping on train data followed by target encoding to produce numeric model-ready features while avoiding unseen categories during validation/active scoring.
-order_purchase_timestamp,low_count_cat_var_encoding + target_encoding,Use low-count categorical grouping on train data followed by target encoding to produce numeric model-ready features while avoiding unseen categories during validation/active scoring.
-order_item_id,No encoding required,"Numeric feature should be passed through the numeric pipeline without additional categorical encoding, preserving train/validation artifact separation."
-product_id,low_count_cat_var_encoding + target_encoding,Use low-count categorical grouping on train data followed by target encoding to produce numeric model-ready features while avoiding unseen categories during validation/active scoring.
-price,No encoding required,"Numeric feature should be passed through the numeric pipeline without additional categorical encoding, preserving train/validation artifact separation."
-customer_zip_code_prefix,No encoding required,"Numeric feature should be passed through the numeric pipeline without additional categorical encoding, preserving train/validation artifact separation."
-customer_city,low_count_cat_var_encoding + target_encoding,Use low-count categorical grouping on train data followed by target encoding to produce numeric model-ready features while avoiding unseen categories during validation/active scoring.
-customer_state,low_count_cat_var_encoding + target_encoding,Use low-count categorical grouping on train data followed by target encoding to produce numeric model-ready features while avoiding unseen categories during validation/active scoring.
-freq_cust,No encoding required,"Numeric feature should be passed through the numeric pipeline without additional categorical encoding, preserving train/validation artifact separation."
-freq_purch_prod,No encoding required,"Numeric feature should be passed through the numeric pipeline without additional categorical encoding, preserving train/validation artifact separation."
-year,Review metadata,"The field does not match a recognized categorical, numeric, or text featurization pattern. Validate whether it should be treated as a specialized text or hierarchical categorical field."
-month,Review metadata,"The field does not match a recognized categorical, numeric, or text featurization pattern. Validate whether it should be treated as a specialized text or hierarchical categorical field."
-woy,Review metadata,"The field does not match a recognized categorical, numeric, or text featurization pattern. Validate whether it should be treated as a specialized text or hierarchical categorical field."
+dataset,Feature selection recommended,This dataset is wide and short. Prioritize feature selection over per-attribute featurization and do not generate attribute-level encoding recommendations.

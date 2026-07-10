@@ -2,6 +2,8 @@
 
 This repository demonstrates how the KMDS toolkit applies a consistent solution methodology across multiple real-world projects.
 
+The models in this repository are created by assistants based on modeling prompts. There are modeling assistants for each phase of the project, and they guide the workflow from data understanding through featurization and clustering. Data cleaning and featurization are also performed by assistants, with a human expert in the loop to validate and steer the work.
+
 KMDS does not simply build one-off models. It captures dataset semantics, creates a knowledge-backed cleaning and feature-engineering workflow, and then applies the same structured process to each new dataset. That makes it possible to reuse the same methodology across domains such as finance, retail, and IT service management while still solving the unique business problem for each project.
 
 ![KMDS component view](images/kmds_component_view.png)

@@ -2,44 +2,29 @@ from pathlib import Path
 import pandas as pd
 import yaml
 
-from dd_cleaner.notebook_utils import (
-    PathCoordinator as CleanerPathCoordinator,
-    get_cleaned_data,
-    get_raw_data,
-)
-
 
 class FeaturizationPathCoordinator:
     def __init__(self, config):
         self.config = config
         self.working_dir = Path(config["working_dir"])
-        self.cleaner_coord = CleanerPathCoordinator(working_dir=self.working_dir)
         self.output_dir = self.working_dir / config.get("featurization_output_dir", "data")
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     @property
-    def raw_dataset_path(self):
-        return self.cleaner_coord.raw_dataset_path
+    def merged_raw_path(self):
+        return self.working_dir / self.config["merged_raw_file"]
 
     @property
     def clean_dataset_output_path(self):
-        return self.cleaner_coord.clean_dataset_output_path
+        return self.working_dir / self.config.get("dd_cleaner_output_dir", "data/dd_cleaner") / self.config.get("clean_output_filename", "olist_daily_orders_prepared_clean.csv")
+
+    @property
+    def featurization_input_path(self):
+        return self.working_dir / self.config.get("featurization_input_data", self.config.get("merged_raw_file", ""))
 
     @property
     def metadata_table_path(self):
-        return self.cleaner_coord.metadata_table_path
-
-    @property
-    def featurized_path(self):
-        return self.output_dir / self.config["featurized_data_file"]
-
-    @property
-    def sp_subset_path(self):
-        return self.output_dir / self.config["sp_subset_file"]
-
-    @property
-    def sp_weekly_revenue_path(self):
-        return self.output_dir / self.config["sp_weekly_revenue_file"]
+        return self.working_dir / self.config["metadata_file"]
 
     @property
     def sp_freq_prod_path(self):
@@ -64,49 +49,56 @@ def load_config(config_path: Path):
 
 def load_raw_data(context, stage_cfg=None):
     coord = context.coord
-    if coord.clean_dataset_output_path.exists():
-        print(f"Loading cleaned dataset via notebook utils from {coord.clean_dataset_output_path}")
-        context.df = get_cleaned_data(coord.cleaner_coord)
-        context.df["order_purchase_timestamp"] = pd.to_datetime(context.df["order_purchase_timestamp"])
-        return context.df
+    if coord.featurization_input_path.exists():
+        print(f"Loading featurization input dataset from {coord.featurization_input_path}")
+        df = pd.read_csv(coord.featurization_input_path, parse_dates=["order_purchase_timestamp"], low_memory=False)
+        df["order_purchase_timestamp"] = pd.to_datetime(df["order_purchase_timestamp"])
+        context.df = df
+        return df
 
-    if coord.raw_dataset_path.exists():
-        print(f"Loading raw dataset via notebook utils from {coord.raw_dataset_path}")
-        context.df = get_raw_data(coord.cleaner_coord)
-        context.df["order_purchase_timestamp"] = pd.to_datetime(context.df["order_purchase_timestamp"])
-        return context.df
+    if coord.merged_raw_path.exists():
+        print(f"Loading merged raw dataset from {coord.merged_raw_path}")
+        df = pd.read_csv(coord.merged_raw_path, parse_dates=["order_purchase_timestamp"], low_memory=False)
+        df["order_purchase_timestamp"] = pd.to_datetime(df["order_purchase_timestamp"])
+        context.df = df
+        return df
+
+    if coord.clean_dataset_output_path.exists():
+        print(f"Loading cleaned dataset from {coord.clean_dataset_output_path}")
+        df = pd.read_csv(coord.clean_dataset_output_path, parse_dates=["order_purchase_timestamp"], low_memory=False)
+        df["order_purchase_timestamp"] = pd.to_datetime(df["order_purchase_timestamp"])
+        context.df = df
+        return df
 
     raise FileNotFoundError(
-        f"Neither cleaned nor raw input dataset could be found."
-        f" Expected cleaned file at {coord.clean_dataset_output_path} or raw file at {coord.raw_dataset_path}."
+        f"Neither featurization input dataset, merged raw dataset, nor cleaned dataset could be found."
+        f" Expected input file at {coord.featurization_input_path}, merged raw file at {coord.merged_raw_path}, or cleaned file at {coord.clean_dataset_output_path}."
     )
 
 
-def build_order_level_dataset(context, stage_cfg=None):
+def validate_required_columns(context, stage_cfg=None):
     df = context.df.copy() if context.df is not None else load_raw_data(context)
-    df["order_purchase_timestamp"] = pd.to_datetime(df["order_purchase_timestamp"])
+    required_columns = ["order_item_id", "price", "product_id", "order_purchase_timestamp", "customer_state"]
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    if missing_columns:
+        raise ValueError(f"Missing required columns for featurization: {missing_columns}")
+
+    mask = df["order_item_id"].notna() & df["price"].notna()
+    dropped = len(df) - int(mask.sum())
+    if dropped > 0:
+        print(f"Dropped {dropped} rows missing order_item_id or price")
+    df = df[mask].copy()
     context.df = df
-    context.df.to_csv(context.coord.featurized_path, index=False)
-    return context.df
-
-
-def derive_sp_2017_subset(context, stage_cfg=None):
-    df = context.df.copy()
-    df["year"] = df["order_purchase_timestamp"].dt.year
-    df["month"] = df["order_purchase_timestamp"].dt.month
-    df["woy"] = df["order_purchase_timestamp"].dt.isocalendar().week
-    df_sp = df[(df["customer_state"] == "SP") & (df["year"] == 2017)].reset_index(drop=True)
-    df_sp.to_csv(context.coord.sp_subset_path, index=False)
-    context.df = df_sp
-    return df_sp
+    return df
 
 
 def build_sp_weekly_product_matrix(context, stage_cfg=None):
-    df = context.df.copy()
-    df_weekly_revenue = df.groupby(["year", "woy"], observed=True)["price"].sum().reset_index()
-    df_weekly_revenue.columns = ["year", "woy", "weekly_revenue"]
-    df_weekly_revenue.to_csv(context.coord.sp_weekly_revenue_path, index=False)
-    df_freq_prod = df.pivot_table(
+    df = context.df.copy() if context.df is not None else load_raw_data(context)
+    df["order_purchase_timestamp"] = df["order_purchase_timestamp"].dt.to_period("D").dt.to_timestamp()
+    df["year"] = df["order_purchase_timestamp"].dt.year
+    df["woy"] = df["order_purchase_timestamp"].dt.isocalendar().week
+    df_sp = df[(df["customer_state"] == "SP") & (df["year"] == 2017)].reset_index(drop=True)
+    df_freq_prod = df_sp.pivot_table(
         index="woy",
         columns="product_id",
         values="price",
