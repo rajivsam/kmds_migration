@@ -1,9 +1,9 @@
 # 📑 Data Dictionary: Provisional Entity Assignment Report
-**Generation Timestamp:** `2026-07-04 10:53:00`
+**Generation Timestamp:** `2026-07-11 10:08:18`
 **Source Blueprint:** `itsm_dd.csv`
 
 ### 🏗️ Structural Assessment
-- **Dataset Type:** `panel`
+- **Dataset Type:** `event_log`
 > ⚠️ **Note:** This dataset type is provided by configuration and should match your workspace settings. Update `dataset_type` in `config.yaml` if the dataset is actually a panel or longitudinal dataset.
 
 ### 📊 Classification Summary

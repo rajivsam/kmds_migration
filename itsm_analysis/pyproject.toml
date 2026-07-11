@@ -5,9 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "dd-parser-cleaner==1.0.1",
+    "dd-parser-cleaner>=1.5.0",
     "kmds>=0.4.2",
-    "kmds-featurization==0.4.0",
+    "kmds-featurization>=0.8.2",
+    "kmds-modeling>=0.6.1",
     "kmds-ui>=0.1.0",
     "pandas>=3.0.3",
 ]

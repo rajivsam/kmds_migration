@@ -762,7 +762,7 @@ wheels = [
 
 [[package]]
 name = "dd-parser-cleaner"
-version = "1.0.1"
+version = "1.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
@@ -775,9 +775,9 @@ dependencies = [
     { name = "rich" },
     { name = "tabulate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/80/eb/a08b103db77a4f76780e910adb71ab5d334e98d2ef68ebf5f11ebb18adac/dd_parser_cleaner-1.0.1.tar.gz", hash = "sha256:9161c29d13f1e31784a335070dda581023d74f4d33e1082aab47d714866f282b", size = 1606412, upload-time = "2026-07-04T05:17:01.91Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/90/bd/3b2d38ddff65be928a009028e7d2034ce10320c47e7814047cfb8408dcd0/dd_parser_cleaner-1.5.0.tar.gz", hash = "sha256:5ed743338734c7a926e16db48b4a465134c2d6cf18fe7999530c1a9d74158d4d", size = 2172496, upload-time = "2026-07-09T08:11:21.381Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c2/14/94f14e3c539d3235a93d11069a696706a9e1a53d836b0d5ed434150cbee2/dd_parser_cleaner-1.0.1-py3-none-any.whl", hash = "sha256:7a99c23f27c90f4992c830687c1f67215ad0954bbec43a6d9bacf71c07769dde", size = 68319, upload-time = "2026-07-04T05:16:59.018Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/68/7b58724b01b132491c452ebcd985a404c5844d57ecc8a23967bfa6a9ffcf/dd_parser_cleaner-1.5.0-py3-none-any.whl", hash = "sha256:bcb3fa9d07910a6869d77c3cfefa1d9b1c40e7e789651dddc3b47872bae0ff2c", size = 76221, upload-time = "2026-07-09T08:11:15.328Z" },
 ]
 
 [[package]]
@@ -1179,15 +1179,17 @@ dependencies = [
     { name = "dd-parser-cleaner" },
     { name = "kmds" },
     { name = "kmds-featurization" },
+    { name = "kmds-modeling" },
     { name = "kmds-ui" },
     { name = "pandas" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "dd-parser-cleaner", specifier = "==1.0.1" },
+    { name = "dd-parser-cleaner", specifier = ">=1.5.0" },
     { name = "kmds", specifier = ">=0.4.2" },
-    { name = "kmds-featurization", specifier = "==0.4.0" },
+    { name = "kmds-featurization", specifier = ">=0.8.2" },
+    { name = "kmds-modeling", specifier = ">=0.6.1" },
     { name = "kmds-ui", specifier = ">=0.1.0" },
     { name = "pandas", specifier = ">=3.0.3" },
 ]
@@ -1336,7 +1338,7 @@ wheels = [
 
 [[package]]
 name = "kmds-featurization"
-version = "0.4"
+version = "0.8.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "category-encoders" },
@@ -1349,9 +1351,27 @@ dependencies = [
     { name = "scikit-learn" },
     { name = "tabulate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4b/c8/9967fde18b7d974d24049bbd53664b2cd8fac848b570df060fcb0d839d18/kmds_featurization-0.4.tar.gz", hash = "sha256:e475680c37125c7ed4ff03b12a9357eb03f0180ae3be651e87f2aab91c368b17", size = 42541, upload-time = "2026-07-01T02:31:45.592Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c3/8d/caf4cda582df840e25cb0d3aea100eb12eefb72a77f38ec6aa3b3264f44e/kmds_featurization-0.8.2.tar.gz", hash = "sha256:0639a27910598c19b49d8c3c4cc6633fa4a0c7a505400250c82659682e49b9f0", size = 45484, upload-time = "2026-07-10T00:38:09.995Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b6/04/f72e6d461b646ad104f60853bec1b94134855be5d4ae79b2bbb96b43a900/kmds_featurization-0.4-py3-none-any.whl", hash = "sha256:eab289f76915d873581e057c2f11bd519018790cde488384fde6627d72a4aa29", size = 38874, upload-time = "2026-07-01T02:31:44.238Z" },
+    { url = "https://files.pythonhosted.org/packages/f0/54/59c6ad86b9ff98eb9f59e287cc35c39fd96b11468694d76211fc64bf2f51/kmds_featurization-0.8.2-py3-none-any.whl", hash = "sha256:ae23b1e3c91f44c5ca99883250758d8eb14629d9561e9b2b725c966c421dc2dd", size = 40603, upload-time = "2026-07-10T00:38:08.5Z" },
+]
+
+[[package]]
+name = "kmds-modeling"
+version = "0.6.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "joblib" },
+    { name = "kmds-featurization" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "pyyaml" },
+    { name = "scikit-learn" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/17/ce/a78a1900a7eab9c50e3aa2805cf4913b5a4abf795a984afa82749091b7d3/kmds_modeling-0.6.1.tar.gz", hash = "sha256:8a905767355901024caaf1fcc7d6c06442611518547d45fd47fd7f99601278c4", size = 21808, upload-time = "2026-07-11T05:57:49.798Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ab/a1/a9237a979f862d7f6a43c129f4cda2fd44dad9c058265f9c95c7f63cb916/kmds_modeling-0.6.1-py3-none-any.whl", hash = "sha256:7bfbc682773312414766d1776e3af5b9f04ef0d9ae7afe9ee6454f187e00dbfd", size = 24102, upload-time = "2026-07-11T05:57:48.342Z" },
 ]
 
 [[package]]

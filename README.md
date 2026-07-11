@@ -21,7 +21,11 @@ KMDS does not simply build one-off models. It captures dataset semantics, create
    2. Fraud detection
    3. Adverse reaction to a drug
 2. The Olist dataset: This dataset is from Olist (sourced from Kaggle). In the supply chain world, segmentation of sales is an important use case; please see [this document](olist_migration/documents/segmentation_as_usecase.md) for the reason machine learning is applied to develop a solution for this model. Please see [this document](https://github.com/rajivsam/kmds_migration/blob/main/olist_migration/documents/olist_development_example_full_doc.md) for the details of developing the Olist model, the process is pretty much the same, the modeling instructions are different.
-3. The ITSM dataset: This dataset is used to develop a survival analysis solution to capture the performance characteristics of various support groups. Details coming soon.
+3. The ITSM dataset: This dataset is used to develop a survival analysis solution to capture the performance characteristics of various support groups.
+
+   - An example of survival modeling with KMDS on the ITSM ticket dataset is available in the ITSM survival pipeline and Kaplan-Meier model notebooks:
+     - [Create ITSM Survival Pipeline](itsm_analysis/notebooks/create_itsm_survival_pipeline.ipynb)
+     - [Create ITSM Survival Kaplan-Meier Model](itsm_analysis/notebooks/create_itsm_survival_kaplan_meier_model.ipynb)
 
 ## Why this repository exists
 

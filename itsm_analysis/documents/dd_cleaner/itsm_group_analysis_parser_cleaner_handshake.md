@@ -5,6 +5,16 @@ This file indicates parser readiness and connects downstream cleaner/featurizer 
 {
   "status": "warnings",
   "dataset_id": "itsm_group_analysis",
+  "dataset_type": "event_log",
+  "graph_type": "Not applicable",
+  "subject": "incident",
+  "subject_id_attribute": "number",
+  "wide_short_homogeneous": false,
+  "wide_short_representative_column": "Not applicable",
+  "use_case_answers": {
+    "use_case": "Capture time to resolution by different groups",
+    "analysis_objective": "Capture median time to resolution by different support groups"
+  },
   "dataset_manifest_path": "/home/rajiv/programming/kmds_migration/itsm_analysis/documents/dd_analysis_results/itsm_group_analysis_dataset_manifest.json",
   "attribute_manifest_path": "/home/rajiv/programming/kmds_migration/itsm_analysis/documents/dd_analysis_results/itsm_group_analysis_attribute_manifest.json",
   "blocking_reasons": [
