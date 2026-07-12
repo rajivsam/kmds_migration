@@ -10,5 +10,6 @@ dependencies = [
     "kmds-featurization>=0.8.2",
     "kmds-modeling>=0.6.1",
     "kmds-ui>=0.1.0",
+    "lifelines>=0.30.0",
     "pandas>=3.0.3",
 ]
