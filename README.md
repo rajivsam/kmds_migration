@@ -13,10 +13,12 @@ KMDS does not simply build one-off models. It captures dataset semantics, create
 - Show how KMDS tools support real-world data ingestion, cleaning, and structuring
 - Demonstrate end-to-end handling of dataset issues such as missing values, quarantine output, and evolving schema semantics
 - Provide a second instantiation of a real dataset workflow using the Olist retail dataset and KMDS modeling artifacts
+- Provide a third instantiation of a workflow showing suvrvival analysis.
 
 ## Contents
 
 1. The SBA dataset: This dataset is from the SBA. It provides the financial standing of 7a loans guaranteed by the SBA, nationwide. It is published on a monthly schedule and represents an imbalanced classification problem. Please see [this document](https://github.com/rajivsam/kmds_migration/blob/main/sba_migration/documents/sba_development_example_full_doc.md) for a complete description of how a solution is developed for this example. This example is in the financial domain; the same methodology can also be applied to other batch classifiers with similar imbalance characteristics. Examples include:
+
    1. Churn prediction
    2. Fraud detection
    3. Adverse reaction to a drug
@@ -25,7 +27,7 @@ KMDS does not simply build one-off models. It captures dataset semantics, create
 
    - An example of survival modeling with KMDS on the ITSM ticket dataset is available in the ITSM survival pipeline and Kaplan-Meier model notebooks:
      - [Create ITSM Survival Pipeline](itsm_analysis/notebooks/create_itsm_survival_pipeline.ipynb)
-     - [Create ITSM Survival Kaplan-Meier Model](itsm_analysis/notebooks/create_itsm_survival_kaplan_meier_model.ipynb)
+     - [Create ITSM Survival Kaplan-Meier Model](itsm_analysis/notebooks/create_KM_models.ipynb)
 
 ## Why this repository exists
 
