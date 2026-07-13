@@ -8,7 +8,7 @@ KMDS is designed to make machine learning projects reproducible in batch/offline
 
 For many companies, machine learning problems are solved on a cadence tied to business planning cycles. In these cases, models are stable enough to remain effective for months, which defines the **batch/offline ML setting**—the subset of problems KMDS is designed to address. Unlike online or continuous models, this cadence reflects the most common business reality.
 
-It’s important to distinguish **model development** from **model retraining**. A demand forecasting model may retain its structure but require retraining on new operational data. KMDS focuses on development, ensuring that design choices—data cleaning, feature engineering, modeling, and deployment—are captured and reproducible across cycles.
+It's important to distinguish **model development** from **model retraining**. A demand forecasting model may retain its structure but require retraining on new operational data. KMDS focuses on development, ensuring that design choices—data cleaning, feature engineering, modeling, and deployment—are captured and reproducible across cycles.
 
 Without this reproducibility, critical context behind modeling decisions is lost, leading to inconsistent outcomes and reduced confidence in ML outputs. KMDS fixes this gap, enabling firms to trust that each cycle builds on a reliable foundation rather than reinventing the process.
 
@@ -46,4 +46,6 @@ KMDS assumes mid-level or higher data science skills. Human experts provide the 
 
 ## Business Impact
 
-By embedding reproducibility into every stage of machine learning projects, KMDS delivers
+By embedding reproducibility into every stage of machine learning projects, KMDS delivers a durable capability rather than a series of disconnected experiments. Each quarterly cycle inherits the structure, decisions, and context of the one before it, so teams spend less time reconstructing "how we did this last time" and more time improving the model itself. For mid-market enterprises without large, specialized ML organizations, this matters especially: reproducibility substitutes for institutional memory that might otherwise live only in one data scientist's head.
+
+The result is a shift in how ML is perceived internally — from a one-off technical project to a dependable, auditable business process. Stakeholders can trust that outputs reflect consistent methodology, not accumulated shortcuts. And because the same solution template extends across classification, clustering, and survival analysis alike, organizations can scale ML into new use cases without re-deriving the underlying workflow each time. In effect, KMDS turns reproducibility from a best practice into infrastructure — something teams no longer have to think about because the system already assumes it.
