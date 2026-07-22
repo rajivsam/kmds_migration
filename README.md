@@ -1,3 +1,43 @@
+# Case Studies Overview
+
+KMDS is not just a technical framework — it is a repeatable consulting methodology.  
+To illustrate its application, we highlight three case studies based on public datasets.  
+Each one demonstrates how KMDS structures data, preserves domain knowledge, and enables workflows that transfer directly to real business problems.
+
+---
+
+## SBA Loan Dataset
+- **Context**: Imbalanced classification problem with far fewer defaults than successful loans.  
+- **KMDS Solution**: Defined loan records as the unit of analysis, captured monthly updates, engineered features to handle imbalance.  
+- **Outcome**: Repeatable workflow for imbalanced classification.  
+- **Transferability**: Applicable to churn prediction, fraud detection, and adverse drug reactions.  
+- **Deep Dive**: [SBA workflow](sba_migration/documents/sba_development_example_full_doc.md)
+
+---
+
+## Olist Retail Dataset
+- **Context**: E‑commerce transactions with heterogeneous data (orders, reviews, product categories).  
+- **KMDS Solution**: Structured customer orders as the unit of analysis, captured order timelines, integrated product and review features.  
+- **Outcome**: Segmented retail sales into actionable clusters, built forecasting workflows.  
+- **Transferability**: Inventory forecasting, customer segmentation, demand planning.  
+- **Deep Dive**: [Olist workflow](olist_migration/documents/olist_development_example_full_doc.md)
+
+---
+
+## ITSM Downtime Dataset
+- **Context**: Service management logs with downtime events and resolution times.  
+- **KMDS Solution**: Defined downtime events as the unit of analysis, captured resolution timelines, engineered escalation features.  
+- **Outcome**: Survival analysis for downtime prediction, workflows for resolution time forecasting.  
+- **Transferability**: IT operations, reliability engineering, risk management.  
+- **Deep Dive**: [ITSM Survival Pipeline](itsm_analysis/notebooks/create_itsm_survival_pipeline.ipynb) and [ITSM Kaplan-Meier Model](itsm_analysis/notebooks/create_KM_models.ipynb)
+
+---
+
+## Why This Matters
+These case studies show KMDS as both a **technical framework** and a **consulting methodology**.  
+Executives can see the business relevance, while engineers can explore the detailed migration steps in the sections below.
+
+
 # KMDS Real Dataset Illustrations
 
 This repository demonstrates how the KMDS toolkit applies a consistent solution methodology across multiple real-world projects.
@@ -17,17 +57,13 @@ KMDS does not simply build one-off models. It captures dataset semantics, create
 
 ## Contents
 
-1. The SBA dataset: This dataset is from the SBA. It provides the financial standing of 7a loans guaranteed by the SBA, nationwide. It is published on a monthly schedule and represents an imbalanced classification problem. Please see [this document](https://github.com/rajivsam/kmds_migration/blob/main/sba_migration/documents/sba_development_example_full_doc.md) for a complete description of how a solution is developed for this example. This example is in the financial domain; the same methodology can also be applied to other batch classifiers with similar imbalance characteristics. Examples include:
+1. The SBA dataset: Monthly nationwide 7a loan data used for an imbalanced classification problem. See the [SBA workflow document](sba_migration/documents/sba_development_example_full_doc.md). This same methodology can also be applied to similar batch classifiers, including:
 
    1. Churn prediction
    2. Fraud detection
    3. Adverse reaction to a drug
-2. The Olist dataset: This dataset is from Olist (sourced from Kaggle). In the supply chain world, segmentation of sales is an important use case; please see [this document](olist_migration/documents/segmentation_as_usecase.md) for the reason machine learning is applied to develop a solution for this model. Please see [this document](https://github.com/rajivsam/kmds_migration/blob/main/olist_migration/documents/olist_development_example_full_doc.md) for the details of developing the Olist model, the process is pretty much the same, the modeling instructions are different.
-3. The ITSM dataset: This dataset is used to develop a survival analysis solution to capture the performance characteristics of various support groups.
-
-   - An example of survival modeling with KMDS on the ITSM ticket dataset is available in the ITSM survival pipeline and Kaplan-Meier model notebooks:
-     - [Create ITSM Survival Pipeline](itsm_analysis/notebooks/create_itsm_survival_pipeline.ipynb)
-     - [Create ITSM Survival Kaplan-Meier Model](itsm_analysis/notebooks/create_KM_models.ipynb)
+2. The Olist dataset: Olist data (from Kaggle) for retail sales segmentation. See [Segmentation as a Use Case](olist_migration/documents/segmentation_as_usecase.md) for business context and the [Olist workflow document](olist_migration/documents/olist_development_example_full_doc.md) for implementation details.
+3. The ITSM dataset: IT service ticket data for survival analysis of resolution performance. See [Create ITSM Survival Pipeline](itsm_analysis/notebooks/create_itsm_survival_pipeline.ipynb) and [Create ITSM Survival Kaplan-Meier Model](itsm_analysis/notebooks/create_KM_models.ipynb).
 
 ## Why this repository exists
 
