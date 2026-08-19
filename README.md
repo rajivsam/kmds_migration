@@ -1,8 +1,6 @@
 # Case Studies Overview
 
-KMDS is not just a technical framework — it is a repeatable consulting methodology.  
-To illustrate its application, we highlight three case studies based on public datasets.  
-Each one demonstrates how KMDS structures data, preserves domain knowledge, and enables workflows that transfer directly to real business problems.
+KMDS is not just a technical framework — it is a repeatable consulting methodology. Please see this [post](https://rajivsam.github.io/r2ds-blog/posts/kmds_update_1/) to understand how KMDS is used to develop a machine learning use case implementation. We have three examples of this in this repository. Detailed descriptions should be available as blog posts shortly.
 
 ---
 

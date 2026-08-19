@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import pgeocode
 import os
+import re
 from typing import Dict, Optional, Tuple
 
 from tabular.entity_tagging import get_stage_subset
@@ -172,16 +173,22 @@ def borrower_geo_coding(context: dict, stage_cfg: dict) -> pd.DataFrame:
         if city_value:
             cache_key = (city_value.lower(), state_code)
             if cache_key not in city_cache:
+                safe_city_value = re.escape(city_value)
                 try:
-                    city_match = geocoder.query_location(city_value, state_code=state_code)
-                except TypeError:
-                    city_match = geocoder.query_location(city_value)
+                    city_match = geocoder.query_location(safe_city_value)
+                except Exception:
+                    city_match = pd.DataFrame()
 
                 if city_match is not None and not city_match.empty:
-                    lat = city_match.iloc[0].get("latitude")
-                    lon = city_match.iloc[0].get("longitude")
-                    if pd.notna(lat) and pd.notna(lon):
-                        city_cache[cache_key] = (float(lat), float(lon))
+                    if state_code:
+                        matching = city_match[city_match["state_code"].astype(str).str.upper() == state_code]
+                        if not matching.empty:
+                            city_match = matching
+                    if not city_match.empty:
+                        lat = city_match.iloc[0].get("latitude")
+                        lon = city_match.iloc[0].get("longitude")
+                        if pd.notna(lat) and pd.notna(lon):
+                            city_cache[cache_key] = (float(lat), float(lon))
 
             if cache_key in city_cache:
                 res.at[idx, "borrower_latitude"], res.at[idx, "borrower_longitude"] = city_cache[cache_key]
@@ -296,6 +303,8 @@ def low_count_featurization_of_cat_vars(context: dict, stage_cfg: dict) -> pd.Da
 
     rolled = cat_subset.copy()
     for col in rolled.columns:
+        if rolled[col].dtype != object:
+            rolled[col] = rolled[col].astype(object)
         counts = rolled[col].value_counts(dropna=False)
         rare_levels = counts[counts < threshold].index
         rare_mask = rolled[col].isin(rare_levels)
@@ -354,8 +363,11 @@ def loan_status_recoding(context: dict, stage_cfg: dict) -> pd.DataFrame:
     recoded_status = pd.Series(index=data.index, dtype=float)
     status_text = data['loanstatus'].astype(str).str.upper().str.strip()
 
-    active_pattern = r'ACTIVE|CURRENT|DEFERMENT|CATCH[-\s]*UP'
-    closed_pattern = r'CLOSED|PAID\s+IN\s+FULL|PREPAID\s+IN\s+FULL|ASSET\s+SALE|PURCH\(NOT\s*C/O\)'
+    active_pattern = r'ACTIVE|CURRENT|IN\s+DEFERMENT|DEFERMENT|CATCH[-\s]*UP'
+    closed_pattern = (
+        r'CLOSED|CANCELED|NOT\s+FUNDED|PAID\s+IN\s+FULL|PAID\s+IN\s+FULL\s*\(LIQ\)|'
+        r'PREPAID\s+IN\s+FULL|ASSET\s+SALE|PURCH\(NOT\s*C/O\)'
+    )
     distressed_pattern = (
         r'DISTRESSED|PAST\s*DUE|DELINQUENT|DEFAULT|CHARGED?[-\s]*OFF|'
         r'WRITEOFF|WRITE\s*OFF|NON[-\s]*PERFORMING'

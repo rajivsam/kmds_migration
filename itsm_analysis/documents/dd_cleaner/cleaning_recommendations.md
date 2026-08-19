@@ -8,15 +8,18 @@ This report provides automated recommendations based on data profile physics and
 - **Strategy Validation**: While we suggest mean/MISSING defaults, the user determines the final strategy.
 
 ## 📊 Summary of Actions
-- **custom:datetime_to_numeric**: 3 columns
+- **custom:datetime_to_numeric**: 6 columns
 
 ## Derived attribute definition or deletion is recommended
 
-| Attribute   | Type     | Entity              | What Needs Fixing                                                                                                                                    | Recommended Fix            |
-|:------------|:---------|:--------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------|
-| opened_at   | datetime | Incident Timeline   | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
-| resolved_at | datetime | Incident Management | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
-| closed_at   | datetime | Incident Management | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
+| Attribute      | Type     | Entity              | What Needs Fixing                                                                                                                                    | Recommended Fix            |
+|:---------------|:---------|:--------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------|
+| opened_at      | datetime | User Interaction    | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
+| sys_created_at | datetime | Incident Management | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
+| sys_updated_by | datetime | User Interaction    | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
+| sys_updated_at | datetime | System Update       | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
+| resolved_at    | datetime | Incident Management | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
+| closed_at      | datetime | Incident Management | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
 
 
 ---

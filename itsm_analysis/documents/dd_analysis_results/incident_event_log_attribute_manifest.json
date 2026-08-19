@@ -1,0 +1,364 @@
+[
+  {
+    "attribute_name": "number",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "incident_state",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "active",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "reassignment_count",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "reopen_count",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "sys_mod_count",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "made_sla",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "caller_id",
+    "role": "subject_key",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "opened_by",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "opened_at",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "sys_created_by",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "sys_created_at",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "sys_updated_by",
+    "role": "time_key",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "sys_updated_at",
+    "role": "time_key",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "contact_type",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "location",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "category",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "subcategory",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "u_symptom",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "cmdb_ci",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "impact",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "urgency",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "priority",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "assignment_group",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "assigned_to",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "knowledge",
+    "role": "feature",
+    "time_dependency": "static",
+    "static_dynamic": "static",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "u_priority_confirmation",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "notify",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "problem_id",
+    "role": "subject_key",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "rfc",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "vendor",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "caused_by",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "resolved_by",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "categorical",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "resolved_at",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "closed_at",
+    "role": "feature",
+    "time_dependency": "dynamic",
+    "static_dynamic": "dynamic",
+    "granularity": null,
+    "modality": "date",
+    "suggested_checks": [
+      "monotonicity"
+    ],
+    "generated_key_flag": false
+  }
+]

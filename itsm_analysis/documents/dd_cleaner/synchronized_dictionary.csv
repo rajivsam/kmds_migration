@@ -1,7 +1,36 @@
 Field Name,Data Type,Description,physical_type,logical_type,attribute_name,provisional_entity_assignment,static_dynamic
 number,Numeric/String,Incident identifier (24918 different values),str,categorical,number,Incident Management,dynamic
 incident_state,Categorical,Eight levels controlling the incident management process transitions from opening until closing the case,str,categorical,incident_state,Incident Management,dynamic
-opened_at,Datetime,Incident user opening date and time,datetime,datetime,opened_at,Incident Timeline,dynamic
-assignment_group,String/Identifier,Identifier of the support group in charge of the incident,str,categorical,assignment_group,Support Group,dynamic
+active,Boolean,Attribute that shows whether the record is active or closed/canceled,float,numeric,active,unassigned,dynamic
+reassignment_count,Numeric,Number of times the incident has the group or the support analysts changed,int,numeric,reassignment_count,Incident Management,dynamic
+reopen_count,Numeric,Number of times the incident resolution was rejected by the caller,int,numeric,reopen_count,Incident Management,dynamic
+sys_mod_count,Numeric,Number of incident updates until that moment,int,numeric,sys_mod_count,Incident Management,dynamic
+made_sla,Boolean,Attribute that shows whether the incident exceeded the target SLA,float,numeric,made_sla,Incident Management,dynamic
+caller_id,String/Identifier,Identifier of the user affected,str,categorical,caller_id,User Interaction,dynamic
+opened_by,String/Identifier,Identifier of the user who reported the incident,str,categorical,opened_by,User Interaction,dynamic
+opened_at,Datetime,Incident user opening date and time,datetime,datetime,opened_at,User Interaction,dynamic
+sys_created_by,String/Identifier,Identifier of the user who registered the incident,str,categorical,sys_created_by,User Interaction,dynamic
+sys_created_at,Datetime,Incident system creation date and time,datetime,datetime,sys_created_at,Incident Management,dynamic
+sys_updated_by,String/Identifier,Identifier of the user who updated the incident and generated the current log record,datetime,datetime,sys_updated_by,User Interaction,dynamic
+sys_updated_at,Datetime,Incident system update date and time,datetime,datetime,sys_updated_at,System Update,dynamic
+contact_type,Categorical,Attribute that shows by what means the incident was reported,str,categorical,contact_type,User Interaction,dynamic
+location,String/Identifier,Identifier of the location of the place affected,str,categorical,location,Incident Management,dynamic
+category,Categorical,First-level description of the affected service,str,categorical,category,User Interaction,dynamic
+subcategory,Categorical,Second-level description of the affected service (related to the first level description i.e. to category),str,categorical,subcategory,Incident Management,dynamic
+u_symptom,Categorical/Text,Description of the user perception about service availability,str,categorical,u_symptom,User Interaction,dynamic
+cmdb_ci,String/Identifier,(Confirmation item) identifier used to report the affected item (not mandatory),str,categorical,cmdb_ci,Incident Management,dynamic
+impact,Categorical,Description of the impact caused by the incident (values: 1-High; 2-Medium; 3-Low),str,categorical,impact,Incident Management,dynamic
+urgency,Categorical,Description of the urgency informed by the user for the incident resolution (values: 1-High; 2-Medium; 3-Low),str,categorical,urgency,Incident Management,dynamic
+priority,Categorical,Calculated by the system based on 'impact' and 'urgency',str,categorical,priority,Incident Management,dynamic
+assignment_group,String/Identifier,Identifier of the support group in charge of the incident,str,categorical,assignment_group,Incident Management,dynamic
+assigned_to,String/Identifier,Identifier of the user in charge of the incident,str,categorical,assigned_to,User Interaction,dynamic
+knowledge,Boolean,Attribute that shows whether a knowledge base document was used to resolve the incident,float,numeric,knowledge,unassigned,static
+u_priority_confirmation,Boolean,Attribute that shows whether the priority field has been double-checked,float,numeric,u_priority_confirmation,unassigned,dynamic
+notify,Categorical,Attribute that shows whether notifications were generated for the incident,str,categorical,notify,Incident Management,dynamic
+problem_id,String/Identifier,Identifier of the problem associated with the incident,str,categorical,problem_id,Incident Management,dynamic
+rfc,String/Identifier,(Request for change) identifier of the change request associated with the incident,str,categorical,rfc,Incident Management,dynamic
+vendor,String/Identifier,Identifier of the vendor in charge of the incident,str,categorical,vendor,Incident Management,dynamic
+caused_by,String/Identifier,Identifier of the RFC responsible by the incident,str,categorical,caused_by,Incident Management,dynamic
+resolved_by,String/Identifier,Identifier of the user who resolved the incident,str,categorical,resolved_by,User Interaction,dynamic
 resolved_at,Datetime,Incident user resolution date and time (dependent variable),datetime,datetime,resolved_at,Incident Management,dynamic
 closed_at,Datetime,Incident user close date and time (dependent variable),datetime,datetime,closed_at,Incident Management,dynamic

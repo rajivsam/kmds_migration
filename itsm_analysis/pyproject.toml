@@ -13,3 +13,6 @@ dependencies = [
     "lifelines>=0.30.0",
     "pandas>=3.0.3",
 ]
+
+[tool.uv.sources]
+dd-parser-cleaner = { path = "/home/rajiv/programming/dd-parser-cleaner", editable = true }
