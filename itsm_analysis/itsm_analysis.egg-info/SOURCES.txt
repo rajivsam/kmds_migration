@@ -1,0 +1,8 @@
+README.md
+main.py
+pyproject.toml
+itsm_analysis.egg-info/PKG-INFO
+itsm_analysis.egg-info/SOURCES.txt
+itsm_analysis.egg-info/dependency_links.txt
+itsm_analysis.egg-info/requires.txt
+itsm_analysis.egg-info/top_level.txt

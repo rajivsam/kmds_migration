@@ -57,7 +57,9 @@ def ticket_survival_summary(context: dict, stage_cfg: dict) -> pd.DataFrame:
             observation_end - final.loc[censored_mask, "opened_at"]
         ).dt.total_seconds() / 86400.0
 
-    final["duration_days"] = final["survival_duration_days"]
+    # Canonical field for downstream modeling: use the same name in the producer and consumer.
+    final["survival_time_days"] = final["survival_duration_days"]
+    final["duration_days"] = final["survival_time_days"]  # Deprecated compatibility alias.
 
     resolver = context.get("resolver")
     if resolver is None:
@@ -79,6 +81,7 @@ def ticket_survival_summary(context: dict, stage_cfg: dict) -> pd.DataFrame:
         "opened_at",
         "closed_at",
         "survival_event",
+        "survival_time_days",
         "duration_days",
     ]
     if "number" in final.columns:

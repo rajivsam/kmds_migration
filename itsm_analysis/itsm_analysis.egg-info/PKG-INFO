@@ -1,0 +1,20 @@
+Metadata-Version: 2.4
+Name: itsm-analysis
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Requires-Dist: dd-parser-cleaner>=1.5.0
+Requires-Dist: kmds>=0.4.2
+Requires-Dist: kmds-featurization>=0.8.2
+Requires-Dist: kmds-modeling>=0.6.1
+Requires-Dist: kmds-ui>=0.1.0
+Requires-Dist: lifelines>=0.30.0
+Requires-Dist: pandas>=3.0.3
+
+# ITSM Analysis
+
+An example of survival modeling with KMDS using the ITSM ticket dataset is available in this repository. See the survival pipeline creation notebook and the KM model creation notebook for a complete Kaplan-Meier workflow.
+
+- [Create ITSM Survival Pipeline](notebooks/create_itsm_survival_pipeline.ipynb)
+- [Create ITSM Survival Kaplan-Meier Model](notebooks/create_itsm_survival_kaplan_meier_model.ipynb)
