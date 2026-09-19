@@ -65,7 +65,7 @@ KMDS does not simply build one-off models. It captures dataset semantics, create
 
 ## Why this repository exists
 
-This repository provides an illustration of how machine learning solutions can be replicated following a standard methodology for a range of enterprise problems. While the modeling approach can vary by use case, the process from a documentation, knowledge, and workflow perspective remains standardized. This is not to take away focus from the solution techniques for the individual use case. Constructive feedback and comments are welcome.
+This repository provides an illustration of how machine learning solutions can be replicated following a standard methodology for a range of enterprise problems. While the modeling approach can vary by use case, the process from a documentation, knowledge, and workflow perspective remains standardized. This is not to take away focus from the solution techniques for the individual use case. Please look at the modeling_summary.md in the documents directory of each example to get the modeling details and how KMDS fits each example. Constructive feedback and comments are welcome.
 
 ## Further Reading
 
