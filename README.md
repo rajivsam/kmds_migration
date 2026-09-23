@@ -46,6 +46,21 @@ KMDS does not simply build one-off models. It captures dataset semantics, create
 
 ![KMDS component view](images/kmds_component_view.png)
 
+## New dataset utility (work in progress)
+
+A new feature in the KMDS ecosystem is the [kmds-dataset-util](https://github.com/rajivsam/kmds-dataset-util). This utility is a config-driven toolkit for standardizing the work of downloading, inspecting, transforming, and preparing data for supported KMDS tasks.
+
+This is a new feature and is still a work in progress, but it is an important step toward showing that dataset preparation and modeling can be standardized for tabular datasets and for graph models derived from those datasets. In other words, the same repeatable workflow can help move a raw dataset from source acquisition into a consistent, documented preparation stage before modeling begins.
+
+The utility complements the examples in this repository by making the data-prep stage more explicit and reusable. The underlying goal is to provide a common pattern for:
+
+- downloading source data into a staging area
+- validating and inspecting records and schema
+- transforming data into a canonical KMDS-ready form
+- writing prepared datasets for downstream modeling tasks
+
+This is still evolving, but it represents a concrete move toward a more standardized and reusable dataset-preparation workflow for KMDS use cases.
+
 ## Purpose
 
 - Show how KMDS tools support real-world data ingestion, cleaning, and structuring
