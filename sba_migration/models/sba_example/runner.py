@@ -1,5 +1,6 @@
 import json
 import os
+import warnings
 from pathlib import Path
 
 import joblib
@@ -44,8 +45,8 @@ class SBAExperimentRunner:
         df[self.config["project"]["target_variable"]] = self.runner.y
         return df
 
-    def prepare_datasets(self):
-        df = self.load_data()
+    def _legacy_split_fallback(self, df):
+        """Compatibility-only fallback for data files without a canonical partition column."""
         active_mask = df["loan_status_r"] == -1
         active_df = df[active_mask].copy()
         dev_df = df[~active_mask].copy()
@@ -57,22 +58,85 @@ class SBAExperimentRunner:
             stratify=dev_df["loan_status_r"],
             random_state=self.config.get("experiment_settings", {}).get("random_state", 42),
         )
+        return train_df, validation_df, pd.DataFrame(), active_df
 
-        return train_df, validation_df, active_df
+    def prepare_datasets(self):
+        df = self.load_data()
+        target_col = self.config["project"]["target_variable"]
 
-    def transform_datasets(self, train_df, validation_df, active_df):
-        X_train = train_df.drop(columns=[self.config["project"]["target_variable"]])
-        y_train = train_df[self.config["project"]["target_variable"]]
+        if "dataset_partition" in df.columns:
+            allowed_partitions = {"train", "validation", "test", "active"}
+            observed = set(df["dataset_partition"].dropna().astype(str).unique())
+            unexpected = sorted(observed - allowed_partitions)
+            if unexpected:
+                raise ValueError(
+                    "Unexpected dataset_partition values found in model-ready data: "
+                    f"{unexpected}. Allowed values: {sorted(allowed_partitions)}"
+                )
+
+            train_df = df[df["dataset_partition"] == "train"].copy()
+            validation_df = df[df["dataset_partition"] == "validation"].copy()
+            test_df = df[df["dataset_partition"] == "test"].copy()
+            active_df = df[df["dataset_partition"] == "active"].copy()
+
+            train_df = train_df[train_df[target_col].isin([0, 1])].copy()
+            validation_df = validation_df[validation_df[target_col].isin([0, 1])].copy()
+            test_df = test_df[test_df[target_col].isin([0, 1])].copy()
+            active_df = active_df[active_df[target_col] == -1].copy()
+
+            if train_df.empty:
+                raise ValueError("The canonical train partition is empty. Check the featurization output.")
+            if validation_df.empty:
+                warnings.warn(
+                    "No validation rows are present in the canonical dataset_partition; "
+                    "continuing with an empty validation set.",
+                    RuntimeWarning,
+                )
+            if test_df.empty:
+                warnings.warn(
+                    "No test rows are present in the canonical dataset_partition; "
+                    "final test evaluation will be skipped.",
+                    RuntimeWarning,
+                )
+            return train_df, validation_df, test_df, active_df
+
+        warnings.warn(
+            "dataset_partition is missing; using the legacy train/validation split fallback.",
+            RuntimeWarning,
+        )
+        return self._legacy_split_fallback(df)
+
+    def transform_datasets(self, train_df, validation_df, *rest):
+        if len(rest) == 1:
+            test_df = pd.DataFrame()
+            active_df = rest[0]
+        elif len(rest) == 2:
+            test_df, active_df = rest
+        else:
+            raise TypeError("transform_datasets expects train_df, validation_df, [test_df,] active_df")
+
+        target_col = self.config["project"]["target_variable"]
+
+        X_train = train_df.drop(columns=[target_col])
+        y_train = train_df[target_col]
 
         X_train_transformed = self.transformer.fit_transform(X_train, y_train)
-        X_validation_transformed = self.transformer.transform(validation_df.drop(columns=[self.config["project"]["target_variable"]]))
-        X_active_transformed = self.transformer.transform(active_df.drop(columns=[self.config["project"]["target_variable"]]))
+        X_validation_transformed = self.transformer.transform(validation_df.drop(columns=[target_col]))
 
         train_df = pd.concat([X_train_transformed, y_train], axis=1)
-        validation_df = pd.concat([X_validation_transformed, validation_df[self.config["project"]["target_variable"]]], axis=1)
-        active_df = pd.concat([X_active_transformed, active_df[[self.config["project"]["target_variable"]]]], axis=1)
+        validation_df = pd.concat([X_validation_transformed, validation_df[[target_col]]], axis=1)
 
-        return train_df, validation_df, active_df
+        if not test_df.empty:
+            X_test_transformed = self.transformer.transform(test_df.drop(columns=[target_col]))
+            test_df = pd.concat([X_test_transformed, test_df[[target_col]]], axis=1)
+        else:
+            test_df = pd.DataFrame()
+
+        if not active_df.empty:
+            X_active_transformed = self.transformer.transform(active_df.drop(columns=[target_col]))
+            active_df = pd.concat([X_active_transformed, active_df[[target_col]]], axis=1)
+
+        return train_df, validation_df, test_df, active_df
 
     def fit_and_calibrate(self, train_df, validation_df):
         results = []
@@ -101,6 +165,23 @@ class SBAExperimentRunner:
             })
 
         return pd.DataFrame(results)
+
+    def evaluate_test_set(self, test_df, model_name="gradient_boosting"):
+        if test_df.empty:
+            warnings.warn(
+                "No test rows are present in the canonical dataset_partition; skipping final test evaluation.",
+                RuntimeWarning,
+            )
+            return None
+        if model_name not in self.calibrators:
+            raise ValueError(f"Calibrator for {model_name} not found")
+
+        estimator = self.models[model_name]
+        raw_prob = estimator.predict_proba(test_df[["hdgc", "hdbc"]])[:, 1]
+        calibrator = self.calibrators[model_name]
+        y_prob = calibrator.predict(raw_prob)
+        score = roc_auc_score(test_df[self.config["project"]["target_variable"]], y_prob)
+        return {"model_name": model_name, "roc_auc": float(score)}
 
     def score_active_set(self, active_df, model_name="gradient_boosting"):
         if model_name not in self.calibrators:

@@ -3,53 +3,41 @@
 This report provides automated recommendations based on data profile physics and semantic metadata.
 
 ## 🛡️ User Responsibilities
-- **Domain Logic**: User must capture domain-specific row filters in `config.yaml` or `domain_logic.py`.
+- **Domain Logic**: User should capture domain-specific row filters in `config.yaml` or via an optional external custom logic module referenced explicitly in configuration.
 - **Domain Deletions**: User must identify columns requiring deletion based on business rules.
 - **Strategy Validation**: While we suggest mean/MISSING defaults, the user determines the final strategy.
 
 ## 📊 Summary of Actions
-- **constant:MISSING**: 7 columns
-- **drop-attribute**: 3 columns
-- **custom:datetime_to_numeric**: 3 columns
-- **mean-imputation**: 3 columns
+- **user-review**: 11 columns
+- **drop-attribute**: 5 columns
 
 ## Deletion is recommended for the following attributes
 
-| Attribute     | Type     | Entity   | What Needs Fixing                                         | Recommended Fix   |
-|:--------------|:---------|:---------|:----------------------------------------------------------|:------------------|
-| asofdate      | datetime | Borrower | Constant value / Zero variance                            | drop-attribute    |
-| program       | numeric  | Program  | Constant value / Zero variance                            | drop-attribute    |
-| chargeoffdate | datetime | Borrower | Extreme sparsity (99.2%): Exceeds null threshold of 95.0% | drop-attribute    |
-
-## Derived attribute definition or deletion is recommended
-
-| Attribute             | Type     | Entity   | What Needs Fixing                                                                                                                                    | Recommended Fix            |
-|:----------------------|:---------|:---------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------|
-| approvaldate          | datetime | Loan     | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
-| firstdisbursementdate | datetime | Borrower | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
-| paidinfulldate        | datetime | Borrower | This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them. | custom:datetime_to_numeric |
+| Attribute      | Type    | Entity             | What Needs Fixing                                         | Recommended Fix   |
+|:---------------|:--------|:-------------------|:----------------------------------------------------------|:------------------|
+| AsOfDate       | unknown | Logical Category   | Constant value / Zero variance                            | drop-attribute    |
+| Program        | unknown | Logical Categories | Constant value / Zero variance                            | drop-attribute    |
+| BankNCUANumber | unknown | Logical Category   | Extreme sparsity (97.1%): Exceeds null threshold of 95.0% | drop-attribute    |
+| ChargeOffDate  | unknown | Logical Category   | Extreme sparsity (98.2%): Exceeds null threshold of 95.0% | drop-attribute    |
+| SoldSecMrktInd | unknown | Logical Category   | Constant value / Zero variance                            | drop-attribute    |
 
 ## Missing value definition is recommended for the following attributes
 
-### Numeric Attributes (Standard: Mean Imputation)
+### Other Attributes with Missing Values (Strategy Required)
 
-| Attribute             | Type    | Entity   | What Needs Fixing                                            | Recommended Fix   |
-|:----------------------|:--------|:---------|:-------------------------------------------------------------|:------------------|
-| naicscode             | numeric | Location | Numeric with 0.4% nulls: Recommendation is mean imputation.  | mean-imputation   |
-| franchisecode         | numeric | Location | Numeric with 90.2% nulls: Recommendation is mean imputation. | mean-imputation   |
-| congressionaldistrict | numeric | Location | Numeric with 0.0% nulls: Recommendation is mean imputation.  | mean-imputation   |
-
-### Categorical Attributes (Standard: 'MISSING' Category)
-
-| Attribute         | Type        | Entity   | What Needs Fixing                                                                   | Recommended Fix   |
-|:------------------|:------------|:---------|:------------------------------------------------------------------------------------|:------------------|
-| subprogram        | categorical | Program  | Categorical/Text with 6.8% nulls: Recommendation is creating a 'MISSING' category.  | constant:MISSING  |
-| naicsdescription  | text        | Location | Categorical/Text with 0.4% nulls: Recommendation is creating a 'MISSING' category.  | constant:MISSING  |
-| franchisename     | categorical | Location | Categorical/Text with 90.2% nulls: Recommendation is creating a 'MISSING' category. | constant:MISSING  |
-| sbadistrictoffice | categorical | Location | Categorical/Text with 0.0% nulls: Recommendation is creating a 'MISSING' category.  | constant:MISSING  |
-| businesstype      | categorical | Borrower | Categorical/Text with 0.0% nulls: Recommendation is creating a 'MISSING' category.  | constant:MISSING  |
-| businessage       | categorical | Location | Categorical/Text with 0.5% nulls: Recommendation is creating a 'MISSING' category.  | constant:MISSING  |
-| loanstatus        | categorical | Borrower | Categorical/Text with 0.2% nulls: Recommendation is creating a 'MISSING' category.  | constant:MISSING  |
+| Attribute                  | Type    | Entity             | What Needs Fixing                                                   | Recommended Fix   |
+|:---------------------------|:--------|:-------------------|:--------------------------------------------------------------------|:------------------|
+| BorrName                   | unknown | Person             | Column contains 0.0% nulls but type is unknown. Strategy required.  | user-review       |
+| BankFDICNumber             | unknown | Organization       | Column contains 10.6% nulls but type is unknown. Strategy required. | user-review       |
+| FirstDisbursementDate      | unknown | Person             | Column contains 18.3% nulls but type is unknown. Strategy required. | user-review       |
+| InitialInterestRate        | unknown | Logical Category   | Column contains 0.0% nulls but type is unknown. Strategy required.  | user-review       |
+| FixedorVariableInterestInd | unknown | Logical Category   | Column contains 0.0% nulls but type is unknown. Strategy required.  | user-review       |
+| FranchiseCode              | unknown | Logical Category   | Column contains 88.0% nulls but type is unknown. Strategy required. | user-review       |
+| FranchiseName              | unknown | Conceptual Entity  | Column contains 88.0% nulls but type is unknown. Strategy required. | user-review       |
+| CongressionalDistrict      | unknown | Logical Category   | Column contains 0.0% nulls but type is unknown. Strategy required.  | user-review       |
+| BusinessType               | unknown | Logical Category   | Column contains 0.0% nulls but type is unknown. Strategy required.  | user-review       |
+| BusinessAge                | unknown | Logical Categories | Column contains 0.0% nulls but type is unknown. Strategy required.  | user-review       |
+| PaidInFullDate             | unknown | Conceptual Entity  | Column contains 82.4% nulls but type is unknown. Strategy required. | user-review       |
 
 
 ---

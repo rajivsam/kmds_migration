@@ -435,15 +435,17 @@ def filter_modeling_universe(context: dict, stage_cfg: dict) -> pd.DataFrame:
 
 
 def stratified_train_val_split(context: dict, stage_cfg: dict) -> pd.DataFrame:
-    """Adds a train/validation split flag using stratified sampling on target."""
+    """Adds canonical train/validation/test partition labels while keeping legacy dataset_split output."""
     data = context.get("data")
     if data is None or data.empty:
-        return pd.DataFrame(columns=["dataset_split"])
+        return pd.DataFrame(columns=["dataset_partition", "dataset_split"])
 
     target_col = stage_cfg.get("target_col", "loan_status_r")
-    split_col = stage_cfg.get("split_col", "dataset_split")
+    split_col = stage_cfg.get("split_col", "dataset_partition")
+    legacy_split_col = stage_cfg.get("legacy_split_col", "dataset_split")
     random_state = int(stage_cfg.get("random_state", 42))
     val_size = float(context.get("config", {}).get("VALIDATION_SIZE", 0.2))
+    test_size = float(stage_cfg.get("test_size", context.get("config", {}).get("TEST_SIZE", 0.2)))
 
     split_df = assign_train_val_split(
         data=data,
@@ -451,7 +453,13 @@ def stratified_train_val_split(context: dict, stage_cfg: dict) -> pd.DataFrame:
         val_size=val_size,
         random_state=random_state,
         split_col=split_col,
+        legacy_split_col=legacy_split_col,
+        test_size=test_size,
     )
+    if split_col in split_df.columns:
+        split_df[split_col] = split_df[split_col].astype(str).str.replace(r"^val$", "validation", regex=True)
+    if legacy_split_col in split_df.columns:
+        split_df[legacy_split_col] = split_df[split_col].copy()
     return split_df
 
 
@@ -462,7 +470,7 @@ def target_encode_categorical_vars(context: dict, stage_cfg: dict) -> pd.DataFra
         return pd.DataFrame()
 
     target_col = stage_cfg.get("target_col", "loan_status_r")
-    split_col = stage_cfg.get("split_col", "dataset_split")
+    split_col = stage_cfg.get("split_col", "dataset_partition")
     output_suffix = stage_cfg.get("output_suffix", "_te")
 
     if target_col not in data.columns:
@@ -483,7 +491,8 @@ def target_encode_categorical_vars(context: dict, stage_cfg: dict) -> pd.DataFra
             "Target encoding requires an explicit exclusion policy. "
             "Set 'exclude_cols' and/or 'exclude_name_patterns' in stage config."
         )
-    for required_exclude in [target_col, split_col]:
+    legacy_split_col = stage_cfg.get("legacy_split_col", "dataset_split")
+    for required_exclude in [target_col, split_col, legacy_split_col]:
         if required_exclude not in exclude_cols:
             exclude_cols.append(required_exclude)
 
@@ -529,7 +538,7 @@ def harmonize_and_project_feature_space(context: dict, stage_cfg: dict) -> pd.Da
         return pd.DataFrame()
 
     target_col = stage_cfg.get("target_col", "loan_status_r")
-    split_col = stage_cfg.get("split_col", "dataset_split")
+    split_col = stage_cfg.get("split_col", "dataset_partition")
     partition_col = stage_cfg.get("output_partition_col", "dataset_partition")
     min_unique = int(stage_cfg.get("min_unique", 2))
     exclude_candidate_name_patterns = list(stage_cfg.get("exclude_candidate_name_patterns", []))
@@ -610,10 +619,15 @@ def harmonize_and_project_feature_space(context: dict, stage_cfg: dict) -> pd.Da
         context["feature_selection_knee_curve_path"] = knee_curve_path
         print(f"   🖼️ Knee curve saved: {knee_curve_path}")
 
+    legacy_split_col = stage_cfg.get("legacy_split_col", "dataset_split")
+
     modeled_features = project_feature_space(data, selected_features, fill_value=0.0)
     modeled_features[target_col] = data[target_col]
-    modeled_features[split_col] = data[split_col]
-    modeled_features[partition_col] = "modeled"
+    if split_col in data.columns:
+        modeled_features[split_col] = data[split_col]
+    if legacy_split_col in data.columns:
+        modeled_features[legacy_split_col] = data[legacy_split_col]
+    modeled_features[partition_col] = data.get(partition_col, data.get(split_col, "train"))
     context["modeled_projected"] = modeled_features
 
     active_holdout = context.get("active_holdout")
@@ -627,6 +641,7 @@ def harmonize_and_project_feature_space(context: dict, stage_cfg: dict) -> pd.Da
                     active_features[col] = active_encoded[col]
         active_features[target_col] = active_base.get(target_col, pd.Series(index=active_base.index))
         active_features[split_col] = "active"
+        active_features[legacy_split_col] = "active"
         active_features[partition_col] = "active"
         context["active_projected"] = active_features
     else:

@@ -9,7 +9,7 @@
   ],
   "target": "loan_status_r",
   "thresholds": {
-    "gradient_boosting": 0.05150214592274678,
-    "random_forest": 0.047619047619047616
+    "gradient_boosting": 0.028542646071188716,
+    "random_forest": 0.0275049115913556
   }
 }

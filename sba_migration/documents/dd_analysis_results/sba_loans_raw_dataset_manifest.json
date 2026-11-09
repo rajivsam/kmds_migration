@@ -2,7 +2,7 @@
   "dataset_id": "sba_loans_raw",
   "dataset_type": "cross-sectional",
   "primary_key_spec": [
-    "locationid"
+    "LocationID"
   ],
   "time_key_spec": null,
   "entity_files": [],

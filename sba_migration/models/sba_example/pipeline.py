@@ -1,4 +1,5 @@
 import os
+import warnings
 from pathlib import Path
 from typing import Dict
 
@@ -30,8 +31,8 @@ class SBAModelPipeline:
         df[self.config["project"]["target_variable"]] = self.runner.y
         return df
 
-    def prepare_datasets(self):
-        df = self.load_data()
+    def _legacy_split_fallback(self, df):
+        """Compatibility-only fallback used when a canonical dataset_partition column is absent."""
         active_mask = df["loan_status_r"] == -1
         active_df = df[active_mask].copy()
         dev_df = df[~active_mask].copy()
@@ -47,6 +48,52 @@ class SBAModelPipeline:
         validation_df.sort_index(inplace=True)
 
         return train_df, validation_df, active_df
+
+    def prepare_datasets(self):
+        df = self.load_data()
+        target_col = self.config["project"]["target_variable"]
+
+        if "dataset_partition" in df.columns:
+            allowed_partitions = {"train", "validation", "test", "active"}
+            observed = set(df["dataset_partition"].dropna().astype(str).unique())
+            unexpected = sorted(observed - allowed_partitions)
+            if unexpected:
+                raise ValueError(
+                    "Unexpected dataset_partition values found in model-ready data: "
+                    f"{unexpected}. Allowed values: {sorted(allowed_partitions)}"
+                )
+
+            train_df = df[df["dataset_partition"] == "train"].copy()
+            validation_df = df[df["dataset_partition"] == "validation"].copy()
+            test_df = df[df["dataset_partition"] == "test"].copy()
+            active_df = df[df["dataset_partition"] == "active"].copy()
+
+            train_df = train_df[train_df[target_col].isin([0, 1])].copy()
+            validation_df = validation_df[validation_df[target_col].isin([0, 1])].copy()
+            test_df = test_df[test_df[target_col].isin([0, 1])].copy()
+            active_df = active_df[active_df[target_col] == -1].copy()
+
+            if train_df.empty:
+                raise ValueError("The canonical train partition is empty. Check the featurization output.")
+            if validation_df.empty:
+                warnings.warn(
+                    "No validation rows are present in the canonical dataset_partition; "
+                    "continuing with an empty validation set.",
+                    RuntimeWarning,
+                )
+            if test_df.empty:
+                warnings.warn(
+                    "No test rows are present in the canonical dataset_partition; "
+                    "final test evaluation will be skipped.",
+                    RuntimeWarning,
+                )
+            return train_df, validation_df, test_df, active_df
+
+        warnings.warn(
+            "dataset_partition is missing; using the legacy train/validation split fallback.",
+            RuntimeWarning,
+        )
+        return self._legacy_split_fallback(df)
 
     def fit_transformer(self, train_df, validation_df, active_df):
         X_train = train_df.drop(columns=[self.config["project"]["target_variable"]])

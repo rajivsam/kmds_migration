@@ -43,7 +43,6 @@ processingmethod,"Specific processing method loan was approved under.  See SOP 5
 	• Small Asset Base Line of Credit (CAPLine) = SAB
 	• Small Loan Advantage Initiative = LAI
 	• Standard Asset Base Working Capital Line of Credit (CAPLine) = STC",str,categorical,processingmethod,Program,False
-subprogram,Subprogram description - specific subprogram loan was aproved under.  See SOP 50 10 5 for definitions and rules for each subprogram.,str,categorical,subprogram,Program,False
 terminmonths,Length of loan term,int,numeric,terminmonths,Loan,False
 naicscode,North American Industry Classification System (NAICS) code,str,categorical,naicscode,Location,True
 naicsdescription,North American Industry Classification System (NAICS) description,str,text,naicsdescription,Location,True

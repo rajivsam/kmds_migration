@@ -51,8 +51,6 @@ ProcessingMethod,"Specific processing method loan was approved under.  See SOP 5
 	• Small Asset Base Line of Credit (CAPLine) = SAB
 	• Small Loan Advantage Initiative = LAI
 	• Standard Asset Base Working Capital Line of Credit (CAPLine) = STC"
-,
-Subprogram,Subprogram description - specific subprogram loan was aproved under.  See SOP 50 10 5 for definitions and rules for each subprogram.
 InitialInterestRate,Initial interest rate - total interest rate (base rate plus spread) at time loan was approved
 FixedorVariableInterestInd,Fixed/variable interest rate indicator
 TermInMonths,Length of loan term

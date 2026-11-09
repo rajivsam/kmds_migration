@@ -25,12 +25,12 @@
 - Rationale: Short text or keyword-style field. Fit sparse TF-IDF on train only and compress with TruncatedSVD to preserve train/validation safety while limiting sparse dimensionality.
 
 ## borrstate
-- Recommended method: hierarchical_low_count_var_encoding
-- Rationale: Hierarchical or geographic long-tail categorical code. Use right-side masking to preserve parent-level industry/geo structure while meeting minimum support on train data.
+- Recommended method: low_count_cat_var_encoding + target_encoding
+- Rationale: Use low-count categorical grouping on train data followed by target encoding to produce numeric model-ready features while avoiding unseen categories during validation/active scoring.
 
 ## borrzip
-- Recommended method: hierarchical_low_count_var_encoding
-- Rationale: Hierarchical or geographic long-tail categorical code. Use right-side masking to preserve parent-level industry/geo structure while meeting minimum support on train data.
+- Recommended method: low_count_cat_var_encoding + target_encoding
+- Rationale: Use low-count categorical grouping on train data followed by target encoding to produce numeric model-ready features while avoiding unseen categories during validation/active scoring.
 
 ## grossapproval
 - Recommended method: No encoding required
@@ -81,8 +81,8 @@
 - Rationale: Short text or keyword-style field. Fit sparse TF-IDF on train only and compress with TruncatedSVD to preserve train/validation safety while limiting sparse dimensionality.
 
 ## projectstate
-- Recommended method: hierarchical_low_count_var_encoding
-- Rationale: Hierarchical or geographic long-tail categorical code. Use right-side masking to preserve parent-level industry/geo structure while meeting minimum support on train data.
+- Recommended method: low_count_cat_var_encoding + target_encoding
+- Rationale: Use low-count categorical grouping on train data followed by target encoding to produce numeric model-ready features while avoiding unseen categories during validation/active scoring.
 
 ## sbadistrictoffice
 - Recommended method: low_count_cat_var_encoding + target_encoding

@@ -78,6 +78,26 @@ These steps ensure the workspace points at the correct SBA project, bootstraps d
    - `notebooks/feature_advisor_sba_example.ipynb`
 4. Update the featurization pipeline if needed and rerun the feature prep.
 
+## Canonical dataset contract
+
+The featurization output and the modeling input must use the same row-level partition assignment. This is now a required contract for the project.
+
+The canonical split column is:
+- `dataset_partition`
+
+Allowed values:
+- `train`
+- `validation`
+- `test`
+- `active`
+
+Rules:
+- the partition assignment is created during featurization
+- modeling reads that same file without re-splitting the data
+- no hidden random split is allowed inside the modeling package when `dataset_partition` is present
+- `loan_status_r == -1` rows remain in the `active` partition for scoring only
+- labeled rows (`0` and `1`) are used only in `train`, `validation`, or `test`
+
 ## Featurization execution
 
 Run the workspace featurization pipeline and validate output:
@@ -94,13 +114,15 @@ print('exists:', path.exists())
 if path.exists():
     df = pd.read_csv(path)
     print(df.shape)
-    print([c for c in ['loan_status_r', 'borrower_latitude', 'borrower_longitude'] if c in df.columns])
+    print('partitions:', df['dataset_partition'].value_counts().to_dict() if 'dataset_partition' in df.columns else 'missing')
+    print([c for c in ['loan_status_r', 'borrower_latitude', 'borrower_longitude', 'dataset_partition'] if c in df.columns])
 PY
 ```
 
 Expected deliverable:
 - `data/featurization/model_ready_numeric_data.csv`
 - modeling columns ready for training and active-set scoring
+- a canonical `dataset_partition` column that is the single source of truth for the modeling split
 
 ## Modeling workflow
 
@@ -108,14 +130,17 @@ Expected deliverable:
    - `agent_documents/agent_init_modeling.md`
    - `agent_documents/sba_modeling_requirements.md`
    - `agent_documents/sba_problem_framing_collab.md`
+   - `agent_documents/test_train_split_rework.md`
 2. Run the local modeling workflow under `models/sba_example/`.
 3. Use the model-ready dataset and keep these requirements:
-   - filter out active loans (`loan_status_r == -1`)
-   - train/validate only on labeled rows (`0` and `1`)
+   - read `dataset_partition` from the featurized file and do not perform a second random split
+   - filter active loans via `dataset_partition == "active"` (and keep `loan_status_r == -1` only there)
+   - train/validate/test only on labeled rows (`0` and `1`)
    - derive `hdgc` and `hdbc` from geographic cluster distance features
    - train gradient boosting and random forest candidates
    - calibrate probabilities with isotonic regression
-   - choose threshold using ROC
+   - choose threshold using ROC on validation
+   - freeze the final model and evaluate on test
    - score the active set and export artifacts
 4. Export the final handoff bundle to the workspace output or ML-Ops directory as configured by the model config.
 

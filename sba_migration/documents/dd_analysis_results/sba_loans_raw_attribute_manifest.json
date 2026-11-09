@@ -1,6 +1,6 @@
 [
   {
-    "attribute_name": "asofdate",
+    "attribute_name": "AsOfDate",
     "role": "time_key",
     "time_dependency": "none",
     "static_dynamic": "none",
@@ -12,87 +12,167 @@
     "generated_key_flag": false
   },
   {
-    "attribute_name": "program",
+    "attribute_name": "Program",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "locationid",
+    "attribute_name": "LocationID",
     "role": "subject_key",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "borrname",
+    "attribute_name": "BorrName",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "text",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "borrstreet",
+    "attribute_name": "BorrStreet",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "text",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "borrcity",
+    "attribute_name": "BorrCity",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "text",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "borrstate",
+    "attribute_name": "BorrState",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "categorical",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "borrzip",
+    "attribute_name": "BorrZip",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "grossapproval",
+    "attribute_name": "BankName",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "approvaldate",
+    "attribute_name": "BankFDICNumber",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "BankNCUANumber",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "BankStreet",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "BankCity",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "BankState",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "BankZip",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "GrossApproval",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "SBAGuaranteedApproval",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "ApprovalDate",
     "role": "time_key",
     "time_dependency": "none",
     "static_dynamic": "none",
@@ -104,17 +184,17 @@
     "generated_key_flag": false
   },
   {
-    "attribute_name": "approvalfy",
+    "attribute_name": "ApprovalFY",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "firstdisbursementdate",
+    "attribute_name": "FirstDisbursementDate",
     "role": "time_key",
     "time_dependency": "none",
     "static_dynamic": "none",
@@ -126,147 +206,157 @@
     "generated_key_flag": false
   },
   {
-    "attribute_name": "processingmethod",
+    "attribute_name": "ProcessingMethod",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "categorical",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "subprogram",
+    "attribute_name": "InitialInterestRate",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "categorical",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "terminmonths",
+    "attribute_name": "FixedorVariableInterestInd",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "naicscode",
+    "attribute_name": "TermInMonths",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "naicsdescription",
+    "attribute_name": "NaicsCode",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "text",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "franchisecode",
+    "attribute_name": "NaicsDescription",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "franchisename",
+    "attribute_name": "FranchiseCode",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "categorical",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "projectcounty",
+    "attribute_name": "FranchiseName",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "text",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "projectstate",
+    "attribute_name": "ProjectCounty",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "ProjectState",
     "role": "time_key",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "categorical",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "sbadistrictoffice",
+    "attribute_name": "SBADistrictOffice",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "categorical",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "congressionaldistrict",
+    "attribute_name": "CongressionalDistrict",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "businesstype",
+    "attribute_name": "BusinessType",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "categorical",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "businessage",
+    "attribute_name": "BusinessAge",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "categorical",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "loanstatus",
+    "attribute_name": "LoanStatus",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "categorical",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "paidinfulldate",
+    "attribute_name": "PaidInFullDate",
     "role": "time_key",
     "time_dependency": "none",
     "static_dynamic": "none",
@@ -278,7 +368,7 @@
     "generated_key_flag": false
   },
   {
-    "attribute_name": "chargeoffdate",
+    "attribute_name": "ChargeOffDate",
     "role": "time_key",
     "time_dependency": "none",
     "static_dynamic": "none",
@@ -290,7 +380,7 @@
     "generated_key_flag": false
   },
   {
-    "attribute_name": "grosschargeoffamount",
+    "attribute_name": "GrossChargeOffAmount",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
@@ -302,22 +392,42 @@
     "generated_key_flag": false
   },
   {
-    "attribute_name": "jobssupported",
+    "attribute_name": "RevolverStatus",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   },
   {
-    "attribute_name": "collateralind",
+    "attribute_name": "JobsSupported",
     "role": "feature",
     "time_dependency": "none",
     "static_dynamic": "none",
     "granularity": null,
-    "modality": "numeric",
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "CollateralInd",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "SoldSecMrktInd",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "other",
     "suggested_checks": [],
     "generated_key_flag": false
   }

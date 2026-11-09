@@ -1,0 +1,83 @@
+Field Name,Definition,attribute_name,provisional_entity_assignment,static_dynamic,physical_type,logical_type,is_geographical
+AsOfDate,Date when the data was recorded,AsOfDate,Logical Category,none,unknown,unknown,False
+Program,Indicator of whether loan was approved under SBA's 7(a) or 504 loan program,Program,Logical Categories,none,unknown,unknown,False
+LocationID,SBA's unique lender ID code,LocationID,Conceptual Entity,none,unknown,unknown,False
+BorrName,Borrower name,BorrName,Person,none,unknown,unknown,False
+BorrStreet,Borrower street address,BorrStreet,Logical Category,none,unknown,unknown,False
+BorrCity,Borrower city,BorrCity,Logical Category,none,unknown,unknown,False
+BorrState,Borrower state,BorrState,Logical Category,none,unknown,unknown,False
+BorrZip,Borrower zip code,BorrZip,Geographical,none,str,categorical,False
+BankName,Name of the bank that the loan is currently assigned to,BankName,Logical Category,none,unknown,unknown,False
+BankFDICNumber,The Federal Depository Insurance Corporation certificate ID of the lender,BankFDICNumber,Organization,none,unknown,unknown,False
+BankNCUANumber,The National Credit Union Association charter number of the lender,BankNCUANumber,Logical Category,none,unknown,unknown,False
+BankStreet,Bank street address,BankStreet,Location,none,unknown,unknown,False
+BankCity,Bank city,BankCity,Conceptual Entity,none,unknown,unknown,False
+BankState,Bank state,BankState,Conceptual Entity,none,unknown,unknown,False
+BankZip,Bank zip code,BankZip,Geographical,none,unknown,unknown,False
+GrossApproval,Total loan amount,GrossApproval,Logical Category,none,unknown,unknown,False
+SBAGuaranteedApproval,Amount of SBA's loan guaranty,SBAGuaranteedApproval,Logical Category,none,unknown,unknown,False
+ApprovalDate,Date the loan was approved,ApprovalDate,Logical Category,none,unknown,unknown,False
+ApprovalFY,Fiscal year the loan was approved,ApprovalFY,Logical Category,none,unknown,unknown,False
+FirstDisbursementDate,Date of first loan disbursement (if available),FirstDisbursementDate,Person,none,unknown,unknown,False
+ProcessingMethod,"Specific processing method loan was approved under.  See SOP 50 10 5 for definitions and rules for each processing method.  
+7(a) Processing Methods:
+	• 7a General = 7AG
+	• 7a with EWCP = 7EW
+	• 7a with WCP = WCP
+	• Builders Line of Credit (CAPLine) = SGC
+	• Certified Lenders Program = CLP
+	• Certified Lenders Program with EWCP = CLW
+	• Community Advantage Initiative = CAI
+	• Community Advantage International Trade = CAT
+	• Community Advantage RLOC = CAR
+	• Community Advantage Recovery Loan = CRL
+	• Community Express = CMX
+	• Contract Loan Line of Credit (CAPLine) = CTR
+	• Dealer Floor Plan Loans = FPL
+	• Domestic Revolving Line of Credit = DLC
+	• Export Express = EXP
+	• Export Import Harmonization  (EXIM) = EIH
+	• Gulf Opportunity Pilot Loan Program = GOL
+	• International Trade Loans = ITR
+	• Low Documentation Program = LDP
+	• Patriot Express Loans = PTX
+	• Preferred Lenders Program = PLP
+	• Preferred Lenders with EWCP = PLW
+	• Preferred Lenders with WCP = PWC
+	• Rural Loan Initiative = RLI
+	• SBA Express Bridge Loan = SBL
+	• SBA Express Program = SBX
+	• Seasonal Line of Credit (CAPLine) = SLC
+	• Small Asset Base Line of Credit (CAPLine) = SAB
+	• Small Loan Advantage Initiative = LAI
+	• Standard Asset Base Working Capital Line of Credit (CAPLine) = STC",ProcessingMethod,Logical Categories,none,unknown,unknown,False
+InitialInterestRate,Initial interest rate - total interest rate (base rate plus spread) at time loan was approved,InitialInterestRate,Logical Category,none,unknown,unknown,False
+FixedorVariableInterestInd,Fixed/variable interest rate indicator,FixedorVariableInterestInd,Logical Category,none,unknown,unknown,False
+TermInMonths,Length of loan term,TermInMonths,Conceptual Entity,none,unknown,unknown,False
+NaicsCode,North American Industry Classification System (NAICS) code,NaicsCode,Logical Categories,none,str,categorical,False
+NaicsDescription,North American Industry Classification System (NAICS) description,NaicsDescription,Logical Categories,none,unknown,unknown,False
+FranchiseCode,Franchise Code,FranchiseCode,Logical Category,none,str,categorical,False
+FranchiseName,Franchise Name (if applicable),FranchiseName,Conceptual Entity,none,unknown,unknown,False
+ProjectCounty,County where project occurs,ProjectCounty,Logical Category,none,unknown,unknown,False
+ProjectState,State where project occurs,ProjectState,Logical Category,none,unknown,unknown,False
+SBADistrictOffice,SBA district office,SBADistrictOffice,Logical Category,none,unknown,unknown,False
+CongressionalDistrict,Congressional district where project occurs,CongressionalDistrict,Logical Category,none,str,categorical,False
+BusinessType,"Borrower Business Type - Individual, Partnership, or Corporation",BusinessType,Logical Category,none,unknown,unknown,False
+BusinessAge,"SBA began collecting the following business age information in fiscal year 2018:  
+• Change of Ownership
+• Existing or more than 2 years old
+• New Business or 2 years or less
+• Startup, Loan Funds will Open Business",BusinessAge,Logical Categories,none,unknown,unknown,False
+LoanStatus,"Current status of loan:  
+• COMMIT = Undisbursed
+• PIF = Paid In Full
+• CHGOFF = Charged Off
+• CANCLD = Cancelled
+• EXEMPT = The status of loans that have been disbursed but have not been cancelled, paid in full, or charged off are exempt from disclosure under FOIA Exemption 4",LoanStatus,Logical Categories,none,unknown,unknown,False
+PaidInFullDate,Date loan was paid in full (if applicable),PaidInFullDate,Conceptual Entity,none,unknown,unknown,False
+ChargeOffDate,Date SBA charged off loan (if applicable),ChargeOffDate,Logical Category,none,unknown,unknown,False
+GrossChargeOffAmount,Total loan balance charged off (includes guaranteed and non-guaranteed portion of loan),GrossChargeOffAmount,Logical Category,none,unknown,unknown,False
+RevolverStatus,"Indicator of whether a loan is a term loan or revolving line of credit (0=Term, 1=Revolver)",RevolverStatus,Logical Categories,none,unknown,unknown,False
+JobsSupported,"Total Jobs Created + Jobs Retained as reported by lender on SBA Loan Application.  SBA does not review, audit, or validate these numbers - they are simply self-reported, good faith estimates by the lender.",JobsSupported,Conceptual Entity,none,unknown,unknown,False
+CollateralInd,An indicator whether the SBA lender reported that the loan was backed by collateral,CollateralInd,Logical Category,none,unknown,unknown,False
+SoldSecMrktInd,"An indicator if the loan was sold on the secondary market. This is a static field once it is sold on the secondary market.Equals 'Y', if sold on the secondary market. Once it is 'Y' it will stay 'Y' for it's entirety. ",SoldSecMrktInd,Logical Category,none,unknown,unknown,False

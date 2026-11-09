@@ -14,14 +14,17 @@ def cli():
 def run(config, export_dir):
     """Run the SBA modeling pipeline end-to-end."""
     runner = SBAExperimentRunner(config)
-    train_df, validation_df, active_df = runner.prepare_datasets()
-    train_df, validation_df, active_df = runner.transform_datasets(train_df, validation_df, active_df)
+    train_df, validation_df, test_df, active_df = runner.prepare_datasets()
+    train_df, validation_df, test_df, active_df = runner.transform_datasets(train_df, validation_df, test_df, active_df)
     results = runner.fit_and_calibrate(train_df, validation_df)
+    test_results = runner.evaluate_test_set(test_df)
     active_results = runner.score_active_set(active_df)
     runner.export_artifacts(export_dir)
 
     click.echo("SBA modeling pipeline completed.")
     click.echo(results.to_string(index=False))
+    if test_results is not None:
+        click.echo(f"Test set AUC: {test_results['roc_auc']:.4f}")
     click.echo(f"Active set scored: {len(active_results)} rows")
 
 
