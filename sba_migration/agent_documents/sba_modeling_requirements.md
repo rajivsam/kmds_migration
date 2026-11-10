@@ -37,7 +37,8 @@ This document summarizes the SBA modeling pipeline requirements for the KMDS `km
   - Random Forests
 - Use probability output from each candidate model.
 - Calibrate probability estimates using isotonic regression.
-- Use ROC methodology to choose an operating threshold for classifying loans as good/bad.
+- Use PR-AUC (average precision) as the primary model-selection metric because the SBA default/distress class is a minority event and the problem is highly imbalanced.
+- Use ROC methodology to choose an operating threshold for classifying loans as good/bad, but rank candidate models by PR-AUC on the validation set.
 - The validation set is used both for model selection and threshold tuning.
 
 ## Active set scoring
@@ -63,8 +64,9 @@ This document summarizes the SBA modeling pipeline requirements for the KMDS `km
 6. Fall back to HDBSCAN if spectral clustering is not possible.
 7. Train gradient boosting and random forest models.
 8. Calibrate probabilities with isotonic regression.
-9. Tune classification threshold using ROC.
-10. Score the active set and serialize artifacts.
+9. Select the best model using PR-AUC (average precision) on validation data.
+10. Tune the classification threshold using ROC on the selected model.
+11. Score the active set and serialize artifacts.
 
 ## Assumptions and clarifications
 - The model-ready dataset is expected in the featurization workspace resolved by `build_notebook_resolver` from the notebook directory.

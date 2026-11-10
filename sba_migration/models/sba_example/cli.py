@@ -24,7 +24,16 @@ def run(config, export_dir):
     click.echo("SBA modeling pipeline completed.")
     click.echo(results.to_string(index=False))
     if test_results is not None:
-        click.echo(f"Test set AUC: {test_results['roc_auc']:.4f}")
+        click.echo("Test set evaluation (thresholded decision metrics):")
+        click.echo(
+            f"  pr_auc={test_results['pr_auc']:.4f}, "
+            f"threshold={test_results['threshold']:.6f}, "
+            f"balanced_accuracy={test_results['balanced_accuracy']:.4f}, "
+            f"precision={test_results['precision']:.4f}, "
+            f"recall={test_results['recall']:.4f}, "
+            f"f2={test_results['f2']:.4f}, "
+            f"brier_score={test_results['brier_score']:.4f}"
+        )
     click.echo(f"Active set scored: {len(active_results)} rows")
 
 

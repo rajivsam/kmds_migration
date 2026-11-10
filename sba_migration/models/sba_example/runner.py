@@ -6,7 +6,15 @@ from pathlib import Path
 import joblib
 import pandas as pd
 from sklearn.isotonic import IsotonicRegression
-from sklearn.metrics import roc_auc_score, roc_curve
+from sklearn.metrics import (
+    average_precision_score,
+    balanced_accuracy_score,
+    brier_score_loss,
+    fbeta_score,
+    precision_score,
+    recall_score,
+    roc_curve,
+)
 from sklearn.model_selection import train_test_split
 
 from ..core.runner import ExperimentRunner
@@ -160,7 +168,7 @@ class SBAExperimentRunner:
             self.thresholds[model_name] = float(thresholds[best_idx])
             results.append({
                 "model_name": model_name,
-                "roc_auc": float(roc_auc_score(validation_df[self.config["project"]["target_variable"]], y_prob)),
+                "pr_auc": float(average_precision_score(validation_df[self.config["project"]["target_variable"]], y_prob)),
                 "threshold": float(thresholds[best_idx]),
             })
 
@@ -180,8 +188,21 @@ class SBAExperimentRunner:
         raw_prob = estimator.predict_proba(test_df[["hdgc", "hdbc"]])[:, 1]
         calibrator = self.calibrators[model_name]
         y_prob = calibrator.predict(raw_prob)
-        score = roc_auc_score(test_df[self.config["project"]["target_variable"]], y_prob)
-        return {"model_name": model_name, "roc_auc": float(score)}
+        y_true = test_df[self.config["project"]["target_variable"]]
+        threshold = self.thresholds[model_name]
+        y_pred = (y_prob >= threshold).astype(int)
+
+        metrics = {
+            "model_name": model_name,
+            "pr_auc": float(average_precision_score(y_true, y_prob)),
+            "threshold": float(threshold),
+            "balanced_accuracy": float(balanced_accuracy_score(y_true, y_pred)),
+            "precision": float(precision_score(y_true, y_pred, zero_division=0)),
+            "recall": float(recall_score(y_true, y_pred, zero_division=0)),
+            "f2": float(fbeta_score(y_true, y_pred, beta=2, zero_division=0)),
+            "brier_score": float(brier_score_loss(y_true, y_prob)),
+        }
+        return metrics
 
     def score_active_set(self, active_df, model_name="gradient_boosting"):
         if model_name not in self.calibrators:
@@ -214,3 +235,14 @@ class SBAExperimentRunner:
         with open(Path(export_path) / "metadata.json", "w") as f:
             import json
             json.dump(metadata, f, indent=2)
+
+    def evaluate_threshold_metrics(self, y_true, y_prob, threshold):
+        y_pred = (y_prob >= threshold).astype(int)
+        return {
+            "threshold": float(threshold),
+            "balanced_accuracy": float(balanced_accuracy_score(y_true, y_pred)),
+            "precision": float(precision_score(y_true, y_pred, zero_division=0)),
+            "recall": float(recall_score(y_true, y_pred, zero_division=0)),
+            "f2": float(fbeta_score(y_true, y_pred, beta=2, zero_division=0)),
+            "brier_score": float(brier_score_loss(y_true, y_prob)),
+        }

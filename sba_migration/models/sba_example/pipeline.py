@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
-from sklearn.metrics import auc, roc_auc_score, roc_curve
+from sklearn.metrics import auc, average_precision_score, roc_curve
 from sklearn.model_selection import train_test_split
 
 from ..core.runner import ExperimentRunner
@@ -128,11 +128,11 @@ class SBAModelPipeline:
         threshold = thresholds[best_idx]
 
         self.thresholds[model_name] = float(threshold)
-        score = roc_auc_score(y_val, y_prob)
+        score = average_precision_score(y_val, y_prob)
 
         return {
             "model_name": model_name,
-            "roc_auc": score,
+            "pr_auc": score,
             "threshold": float(threshold),
         }
 
