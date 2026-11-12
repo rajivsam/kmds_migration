@@ -1,6 +1,6 @@
 # Case Studies Overview
 
-KMDS is not just a technical framework — it is a repeatable consulting methodology. Please see this [post](https://rajivsam.github.io/r2ds-blog/posts/kmds_update_1/) to understand how KMDS is used to develop a machine learning use case implementation. We have three examples of this in this repository. Detailed descriptions should be available as blog posts shortly.
+KMDS is not just a technical framework — it is a repeatable consulting methodology. Please see this [post](https://rajivsam.github.io/r2ds-blog/posts/kmds_update_1/) to understand how KMDS is used to develop a machine learning use case implementation. This repository includes several examples of this in practice, including classification, retail segmentation, regression, and survival-analysis workflows. Detailed descriptions should be available as blog posts shortly.
 
 ---
 
@@ -19,6 +19,15 @@ KMDS is not just a technical framework — it is a repeatable consulting methodo
 - **Outcome**: Segmented retail sales into actionable clusters, built forecasting workflows.  
 - **Transferability**: Inventory forecasting, customer segmentation, demand planning.  
 - **Deep Dive**: [Olist workflow](olist_migration/documents/olist_development_example_full_doc.md)
+
+---
+
+## California Housing Dataset
+- **Context**: Real-estate valuation task using a tabular housing dataset with multiple numeric predictors and a continuous target.  
+- **KMDS Solution**: Framed the task as a supervised regression workflow, defined the target as median home value, created clean train/validation/test splits, and tuned candidate models based on validation performance.  
+- **Outcome**: Regression benchmark for housing value prediction using a disciplined KMDS workflow with hold-out evaluation.  
+- **Transferability**: Property valuation, demand forecasting, pricing models, and other continuous-target prediction problems.  
+- **Deep Dive**: [California Housing workflow](california_housing/documents/california_housing_development_example_full_doc.md)
 
 ---
 
@@ -66,6 +75,7 @@ This is still evolving, but it represents a concrete move toward a more standard
 - Show how KMDS tools support real-world data ingestion, cleaning, and structuring
 - Demonstrate end-to-end handling of dataset issues such as missing values, quarantine output, and evolving schema semantics
 - Provide a second instantiation of a real dataset workflow using the Olist retail dataset and KMDS modeling artifacts
+- Add a regression benchmark using the California Housing dataset to illustrate continuous-target modeling in the KMDS workflow
 - Provide a third instantiation of a workflow showing survival analysis.
 
 ## Contents
@@ -76,7 +86,8 @@ This is still evolving, but it represents a concrete move toward a more standard
    2. Fraud detection
    3. Adverse reaction to a drug
 2. The Olist dataset: Olist data (from Kaggle) for retail sales segmentation. See [Segmentation as a Use Case](olist_migration/documents/segmentation_as_usecase.md) for business context and the [Olist workflow document](olist_migration/documents/olist_development_example_full_doc.md) for implementation details.
-3. The ITSM dataset: IT service ticket data for survival analysis of resolution performance. See [Create ITSM Survival Pipeline](itsm_analysis/notebooks/create_itsm_survival_pipeline.ipynb) and [Create ITSM Survival Kaplan-Meier Model](itsm_analysis/notebooks/create_KM_models.ipynb).
+3. The California Housing dataset: A tabular regression example in which median house value is predicted from numeric housing attributes. See the [California Housing workflow document](california_housing/documents/california_housing_development_example_full_doc.md) and the project README in [california_housing/README.md](california_housing/README.md).
+4. The ITSM dataset: IT service ticket data for survival analysis of resolution performance. See [Create ITSM Survival Pipeline](itsm_analysis/notebooks/create_itsm_survival_pipeline.ipynb) and [Create ITSM Survival Kaplan-Meier Model](itsm_analysis/notebooks/create_KM_models.ipynb).
 
 ## Why this repository exists
 
