@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "california-housing"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dd-parser-cleaner==1.2.0",
+    "kmds-featurization>=0.4",
+    "kmds-modeling>=0.3",
+]
+
+[dependency-groups]
+dev = ["ipykernel>=6.29.0"]
+
+[tool.uv]
+package = false
+
+[tool.setuptools]
+py-modules = []

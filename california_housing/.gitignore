@@ -1,0 +1,51 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv/
+.kg_env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Ignore compiled Python bytecode
+*.pyc
+
+# Ignore .continue assets
+.continue
+
+# Ignore temporary files
+*~
+
+# Ignore editor backups
+*~*
+
+# Ignore package cache
+.cache/
+
+# Ignore distribution archives
+*.tar.gz
+*.zip
+*.whl
+
+# Generated/output directories
+output/
+path/
+workspaces/
+
+# Experiment-specific knowledge graph data
+data/KMDS/
+
+# Large/generated dataset artifacts (do not commit)
+# Add directory-specific generated files here as needed
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/

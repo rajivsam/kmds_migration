@@ -1,0 +1,92 @@
+[
+  {
+    "attribute_name": "MedInc",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "HouseAge",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "AveRooms",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "AveBedrms",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "Population",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "AveOccup",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "Latitude",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "Longitude",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  },
+  {
+    "attribute_name": "MedHouseVal",
+    "role": "feature",
+    "time_dependency": "none",
+    "static_dynamic": "none",
+    "granularity": null,
+    "modality": "numeric",
+    "suggested_checks": [],
+    "generated_key_flag": false
+  }
+]

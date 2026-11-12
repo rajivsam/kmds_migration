@@ -1,0 +1,4 @@
+project_name: california_housing
+project_type: python-migration
+python_version: '3.13'
+initialization_source: ../sba_migration

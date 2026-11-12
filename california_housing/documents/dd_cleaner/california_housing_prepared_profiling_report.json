@@ -1,0 +1,132 @@
+{
+  "columns": {
+    "MedInc": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 12928,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "8.3252",
+        "8.3014",
+        "7.2574",
+        "5.6431",
+        "3.8462"
+      ]
+    },
+    "HouseAge": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 52,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "41.0",
+        "21.0",
+        "52.0",
+        "42.0",
+        "50.0"
+      ]
+    },
+    "AveRooms": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 19392,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "6.984126984126984",
+        "6.238137082601054",
+        "8.288135593220339",
+        "5.8173515981735155",
+        "6.281853281853282"
+      ]
+    },
+    "AveBedrms": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 14233,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "1.0238095238095237",
+        "0.9718804920913884",
+        "1.073446327683616",
+        "1.0730593607305936",
+        "1.0810810810810811"
+      ]
+    },
+    "Population": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 3888,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "322.0",
+        "2401.0",
+        "496.0",
+        "558.0",
+        "565.0"
+      ]
+    },
+    "AveOccup": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 18841,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "2.5555555555555554",
+        "2.109841827768014",
+        "2.8022598870056497",
+        "2.547945205479452",
+        "2.1814671814671813"
+      ]
+    },
+    "Latitude": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 862,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "37.88",
+        "37.86",
+        "37.85",
+        "37.84",
+        "37.83"
+      ]
+    },
+    "Longitude": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 844,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "-122.23",
+        "-122.22",
+        "-122.24",
+        "-122.25",
+        "-122.26"
+      ]
+    },
+    "MedHouseVal": {
+      "null_count": 0,
+      "null_ratio": 0.0,
+      "cardinality": 3842,
+      "logical_type": "numeric",
+      "is_mixed_type": false,
+      "samples": [
+        "4.526",
+        "3.585",
+        "3.521",
+        "3.413",
+        "3.422"
+      ]
+    }
+  },
+  "row_count": 20640,
+  "timestamp": "2026-11-12 05:20:12"
+}

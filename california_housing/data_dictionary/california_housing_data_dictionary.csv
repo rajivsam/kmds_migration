@@ -1,0 +1,10 @@
+attribute,description,attribute_type
+MedInc,"Median income for households in the block group, measured in tens of thousands of US dollars",numeric
+HouseAge,"Median age of the houses in the block, in years",numeric
+AveRooms,Average number of rooms per household,numeric
+AveBedrms,Average number of bedrooms per household,numeric
+Population,Total population in the block group,numeric
+AveOccup,Average number of household members per household,numeric
+Latitude,Latitude coordinate of the block group centroid,numeric
+Longitude,Longitude coordinate of the block group centroid,numeric
+MedHouseVal,"Median house value for homes in the block group, in hundreds of thousands of US dollars",numeric

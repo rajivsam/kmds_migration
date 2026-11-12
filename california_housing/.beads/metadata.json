@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "sba_migration",
+  "project_id": "abe2dc34-f552-4cb6-837d-e9bfd2828e25"
+}

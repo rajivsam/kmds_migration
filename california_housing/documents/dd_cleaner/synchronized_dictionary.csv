@@ -1,0 +1,10 @@
+attribute,description,attribute_type,physical_type,logical_type,attribute_name,provisional_entity_assignment,static_dynamic
+MedInc,"Median income for households in the block group, measured in tens of thousands of US dollars",numeric,float,numeric,MedInc,Household Characteristics,none
+HouseAge,"Median age of the houses in the block, in years",numeric,float,numeric,HouseAge,Household Characteristics,none
+AveRooms,Average number of rooms per household,numeric,float,numeric,AveRooms,Household Characteristics,none
+AveBedrms,Average number of bedrooms per household,numeric,float,numeric,AveBedrms,Household Characteristics,none
+Population,Total population in the block group,numeric,float,numeric,Population,Population Metrics,none
+AveOccup,Average number of household members per household,numeric,float,numeric,AveOccup,Household Characteristics,none
+Latitude,Latitude coordinate of the block group centroid,numeric,float,numeric,Latitude,Geographic Information,none
+Longitude,Longitude coordinate of the block group centroid,numeric,float,numeric,Longitude,Geographic Information,none
+MedHouseVal,"Median house value for homes in the block group, in hundreds of thousands of US dollars",numeric,float,numeric,MedHouseVal,Property Values,none
