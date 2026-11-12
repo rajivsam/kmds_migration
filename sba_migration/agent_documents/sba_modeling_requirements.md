@@ -39,6 +39,8 @@ This document summarizes the SBA modeling pipeline requirements for the KMDS `km
 - Calibrate probability estimates using isotonic regression.
 - Use PR-AUC (average precision) as the primary model-selection metric because the SBA default/distress class is a minority event and the problem is highly imbalanced.
 - Use ROC methodology to choose an operating threshold for classifying loans as good/bad, but rank candidate models by PR-AUC on the validation set.
+- For the screening objective, prefer the threshold that maximizes F2 on the validation set while preserving a minimum recall requirement (for example, recall >= 0.75). This keeps the operating point aligned with the rare-event use case without silently drifting to a low-recall, high-precision edge case.
+- In recall-first mode, the selected threshold prioritizes maximizing recall subject to a minimum precision floor; other operating modes such as F2-first or precision-first are also supported by switching the threshold policy objective.
 - The validation set is used both for model selection and threshold tuning.
 
 ## Active set scoring

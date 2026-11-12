@@ -8,7 +8,14 @@ import numpy as np
 import pandas as pd
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
-from sklearn.metrics import auc, average_precision_score, roc_curve
+from sklearn.metrics import (
+    auc,
+    average_precision_score,
+    fbeta_score,
+    precision_score,
+    recall_score,
+    roc_curve,
+)
 from sklearn.model_selection import train_test_split
 
 from ..core.runner import ExperimentRunner
@@ -109,6 +116,57 @@ class SBAModelPipeline:
 
         return train_df_transformed, validation_df_transformed, active_df_transformed
 
+    def _select_threshold(self, y_true, y_prob):
+        threshold_policy = self.config.get("experiment_settings", {}).get("threshold_policy", {})
+        objective = threshold_policy.get("objective", "f2")
+        min_recall = float(threshold_policy.get("min_recall", 0.0))
+        min_precision = float(threshold_policy.get("min_precision", 0.0))
+
+        _, _, thresholds = roc_curve(y_true, y_prob)
+        candidates = []
+
+        for threshold in thresholds:
+            y_pred = (y_prob >= threshold).astype(int)
+            precision = precision_score(y_true, y_pred, zero_division=0)
+            recall = recall_score(y_true, y_pred, zero_division=0)
+            if recall < min_recall or precision < min_precision:
+                continue
+            f2 = fbeta_score(y_true, y_pred, beta=2, zero_division=0)
+            candidates.append({
+                "threshold": float(threshold),
+                "precision": float(precision),
+                "recall": float(recall),
+                "f2": float(f2),
+                "objective_score": float(
+                    recall if objective == "recall"
+                    else f2 if objective == "f2"
+                    else precision if objective == "precision"
+                    else recall
+                ),
+            })
+
+        if not candidates:
+            for threshold in thresholds:
+                y_pred = (y_prob >= threshold).astype(int)
+                precision = precision_score(y_true, y_pred, zero_division=0)
+                recall = recall_score(y_true, y_pred, zero_division=0)
+                f2 = fbeta_score(y_true, y_pred, beta=2, zero_division=0)
+                candidates.append({
+                    "threshold": float(threshold),
+                    "precision": float(precision),
+                    "recall": float(recall),
+                    "f2": float(f2),
+                    "objective_score": float(
+                        recall if objective == "recall"
+                        else f2 if objective == "f2"
+                        else precision if objective == "precision"
+                        else recall
+                    ),
+                })
+
+        best = max(candidates, key=lambda item: (item["objective_score"], item["precision"], item["f2"], item["recall"]))
+        return best["threshold"], best
+
     def _fit_model(self, estimator, model_name, train_df, validation_df):
         X_train = train_df[["hdgc", "hdbc"]].copy()
         y_train = train_df[self.config["project"]["target_variable"]]
@@ -123,9 +181,7 @@ class SBAModelPipeline:
         self.calibrators[model_name] = calibrator
 
         y_prob = calibrator.predict_proba(X_val)[:, 1]
-        fpr, tpr, thresholds = roc_curve(y_val, y_prob)
-        best_idx = np.argmax(tpr - fpr)
-        threshold = thresholds[best_idx]
+        threshold, _ = self._select_threshold(y_val, y_prob)
 
         self.thresholds[model_name] = float(threshold)
         score = average_precision_score(y_val, y_prob)

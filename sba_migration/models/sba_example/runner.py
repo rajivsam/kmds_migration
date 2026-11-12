@@ -146,6 +146,57 @@ class SBAExperimentRunner:
 
         return train_df, validation_df, test_df, active_df
 
+    def _select_threshold(self, y_true, y_prob):
+        threshold_policy = self.config.get("experiment_settings", {}).get("threshold_policy", {})
+        objective = threshold_policy.get("objective", "f2")
+        min_recall = float(threshold_policy.get("min_recall", 0.0))
+        min_precision = float(threshold_policy.get("min_precision", 0.0))
+
+        fpr, tpr, thresholds = roc_curve(y_true, y_prob)
+        candidates = []
+
+        for threshold, recall, fpr_value in zip(thresholds, tpr, fpr):
+            y_pred = (y_prob >= threshold).astype(int)
+            precision = precision_score(y_true, y_pred, zero_division=0)
+            recall_score_value = recall_score(y_true, y_pred, zero_division=0)
+            if recall_score_value < min_recall or precision < min_precision:
+                continue
+            f2 = fbeta_score(y_true, y_pred, beta=2, zero_division=0)
+            candidates.append({
+                "threshold": float(threshold),
+                "precision": float(precision),
+                "recall": float(recall_score_value),
+                "f2": float(f2),
+                "objective_score": float(
+                    recall_score_value if objective == "recall"
+                    else f2 if objective == "f2"
+                    else precision if objective == "precision"
+                    else recall_score_value
+                ),
+            })
+
+        if not candidates:
+            for threshold in thresholds:
+                y_pred = (y_prob >= threshold).astype(int)
+                precision = precision_score(y_true, y_pred, zero_division=0)
+                recall_score_value = recall_score(y_true, y_pred, zero_division=0)
+                f2 = fbeta_score(y_true, y_pred, beta=2, zero_division=0)
+                candidates.append({
+                    "threshold": float(threshold),
+                    "precision": float(precision),
+                    "recall": float(recall_score_value),
+                    "f2": float(f2),
+                    "objective_score": float(
+                        recall_score_value if objective == "recall"
+                        else f2 if objective == "f2"
+                        else precision if objective == "precision"
+                        else recall_score_value
+                    ),
+                })
+
+        best = max(candidates, key=lambda item: (item["objective_score"], item["precision"], item["f2"], item["recall"]))
+        return best["threshold"], best
+
     def fit_and_calibrate(self, train_df, validation_df):
         results = []
 
@@ -163,13 +214,13 @@ class SBAExperimentRunner:
             self.calibrators[model_name] = calibrator
 
             y_prob = calibrator.predict(raw_prob)
-            fpr, tpr, thresholds = roc_curve(validation_df[self.config["project"]["target_variable"]], y_prob)
-            best_idx = (tpr - fpr).argmax()
-            self.thresholds[model_name] = float(thresholds[best_idx])
+            y_true = validation_df[self.config["project"]["target_variable"]]
+            threshold, _ = self._select_threshold(y_true, y_prob)
+            self.thresholds[model_name] = float(threshold)
             results.append({
                 "model_name": model_name,
-                "pr_auc": float(average_precision_score(validation_df[self.config["project"]["target_variable"]], y_prob)),
-                "threshold": float(thresholds[best_idx]),
+                "pr_auc": float(average_precision_score(y_true, y_prob)),
+                "threshold": float(threshold),
             })
 
         return pd.DataFrame(results)

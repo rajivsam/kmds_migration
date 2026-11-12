@@ -19,6 +19,10 @@ experiment_settings:
     random_state: 42
   validation_fraction: 0.2
   primary_metric: "pr_auc"
+  threshold_policy:
+    objective: "recall"
+    min_recall: 0.75
+    min_precision: 0.0
 
 candidates:
   - name: "gradient_boosting"

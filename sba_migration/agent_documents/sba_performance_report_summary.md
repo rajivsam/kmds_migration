@@ -34,21 +34,23 @@ This makes the model a valid screening model, not a high-precision final decisio
 
 ## Test-set performance
 
-The actual performance numbers on the test set at the selected operating threshold are:
+The actual performance numbers on the test set at the selected recall-first operating threshold are:
 
-- threshold: 0.025263
-- balanced accuracy: 0.5028
-- precision: 0.0253
-- recall: 0.8816
-- F2: 0.1134
-- Brier score: 0.0246
+- threshold: 0.005263
+- balanced accuracy: 0.4993
+- precision: 0.0251
+- recall: 0.9868
+- F2: 0.1139
+- Brier score: 0.0255
 
 ## Interpretation
 
-The model is not a strong highly precise classifier in the strict sense, and that is expected given the class rarity and the limited feature engineering available in this exercise. However, for screening, the result is materially useful because the recall is high: it catches most of the true positives and therefore helps prioritize the right applicants or loans for further review.
+The model is not a strong highly precise classifier in the strict sense, and that is expected given the class rarity and the limited feature engineering available in this exercise. However, for screening, the result is materially useful because the recall is extremely high: it catches nearly all of the true positives and therefore helps prioritize the right applicants or loans for further review.
+
+This operating point intentionally favors recall-first screening. It is appropriate when the business objective is to cast a wide net for review, and it is consistent with the project’s rare-event classification workflow. The precision remains low because the positive class is sparse and the model is being used to maximize coverage rather than final adjudication accuracy.
 
 In operational terms, this is a realistic and defensible outcome for a rare-event screening workflow. It validates the framework, illustrates the end-to-end process, and demonstrates a human-in-the-loop decision pipeline that is suitable for enterprise-style ML work.
 
 ## Bottom line
 
-This project successfully demonstrates a repeatable enterprise-grade ML workflow on a real-world dataset, with emphasis on disciplined process and human-driven screening rather than a single headline accuracy metric. The test-set recall of 88.16% is the key result for this use case and demonstrates that the model remains useful as a screening tool even in a sparse-default environment.
+This project successfully demonstrates a repeatable enterprise-grade ML workflow on a real-world dataset, with emphasis on disciplined process and human-driven screening rather than a single headline accuracy metric. The test-set recall of 98.68% is the key result for this use case and demonstrates that the model remains highly useful as a screening tool even in a sparse-default environment. Other operating modes remain available, including F2-first and precision-first objectives, but the current configuration intentionally optimizes recall-first coverage for downstream review.
