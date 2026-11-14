@@ -24,13 +24,13 @@ def run(config, export_dir):
     click.echo("SBA modeling pipeline completed.")
     click.echo(results.to_string(index=False))
     if test_results is not None:
-        click.echo("Test set evaluation (thresholded decision metrics):")
+        click.echo("Final single-stage recall-first test metrics:")
         click.echo(
-            f"  pr_auc={test_results['pr_auc']:.4f}, "
-            f"threshold={test_results['threshold']:.6f}, "
+            f"  predicted_positive={test_results['stage_1_predicted_positive']}, "
+            f"precision={test_results['stage_1_precision']:.4f}, "
+            f"recall={test_results['stage_1_recall']:.4f}, "
+            f"pr_auc={test_results['pr_auc']:.4f}, "
             f"balanced_accuracy={test_results['balanced_accuracy']:.4f}, "
-            f"precision={test_results['precision']:.4f}, "
-            f"recall={test_results['recall']:.4f}, "
             f"f2={test_results['f2']:.4f}, "
             f"brier_score={test_results['brier_score']:.4f}"
         )

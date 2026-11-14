@@ -19,10 +19,14 @@ experiment_settings:
     random_state: 42
   validation_fraction: 0.2
   primary_metric: "pr_auc"
+  default_loan_age_months: 24.0
+  default_loss_rate: 0.35
+  manual_review_cost: 2000.0
   threshold_policy:
-    objective: "recall"
-    min_recall: 0.75
-    min_precision: 0.0
+    stage_1:
+      objective: "recall"
+      min_recall: 0.90
+      min_precision: 0.01
 
 candidates:
   - name: "gradient_boosting"

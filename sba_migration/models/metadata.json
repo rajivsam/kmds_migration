@@ -1,15 +1,13 @@
 {
-  "model_names": [
-    "gradient_boosting",
-    "random_forest"
-  ],
-  "features": [
-    "hdgc",
-    "hdbc"
-  ],
+  "model_names": {
+    "stage_1": "gradient_boosting"
+  },
+  "features": [],
   "target": "loan_status_r",
   "thresholds": {
-    "gradient_boosting": 0.028542646071188716,
-    "random_forest": 0.0275049115913556
-  }
+    "stage_1": 0.010033444816053512
+  },
+  "stages": [
+    "stage_1"
+  ]
 }

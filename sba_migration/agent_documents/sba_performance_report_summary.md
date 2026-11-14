@@ -22,15 +22,17 @@ This is exactly the kind of workflow an enterprise team would expect to see for 
 
 ## Why the results are still useful
 
-The SBA dataset represents a rare-event classification problem. In the 2010–2024 period, default incidence is much lower than older vintages, and in modern out-of-time slices the positive class can be very sparse. In that setting, a screening model is judged less on absolute discrimination and more on whether it captures a large share of true positives while surfacing a manageable candidate pool.
+The SBA dataset represents a rare-event classification problem. In the current out-of-time slices, default incidence is low, so a screening model is judged primarily on whether it captures a large share of true defaults without being so conservative that it becomes operationally unusable.
 
 With that context, the current test-set result is still useful:
 
-- the model recovers 88.16% of the true positives at the selected operating threshold
+- the model recovers nearly all of the true positives at the selected operating threshold
 - the operating point is chosen to favor recall for screening
-- this is appropriate when the business objective is to identify high-risk loans for review rather than to produce a highly precise final adjudication model
+- this is appropriate when the business objective is to identify high-risk loans for review rather than to produce a highly precise final adjudication decision
 
 This makes the model a valid screening model, not a high-precision final decision engine. In a human-in-the-loop workflow, that tradeoff is often exactly what is desired: cast a wide but relevant net, then let review teams investigate the flagged cases.
+
+A utility-based policy remains a possible future improvement if richer loan-level balance, amortization, and cost data become available. For the current dataset, the recall-first policy is the more defensible baseline.
 
 ## Test-set performance
 
@@ -45,12 +47,12 @@ The actual performance numbers on the test set at the selected recall-first oper
 
 ## Interpretation
 
-The model is not a strong highly precise classifier in the strict sense, and that is expected given the class rarity and the limited feature engineering available in this exercise. However, for screening, the result is materially useful because the recall is extremely high: it catches nearly all of the true positives and therefore helps prioritize the right applicants or loans for further review.
+The model is not a strong highly precise classifier in the strict sense, and that is expected given the class rarity and the limited feature engineering available in this exercise. However, for screening, the result is materially useful because the recall is extremely high: it catches nearly all of the true positives and therefore helps prioritize the right loans for further review.
 
-This operating point intentionally favors recall-first screening. It is appropriate when the business objective is to cast a wide net for review, and it is consistent with the project’s rare-event classification workflow. The precision remains low because the positive class is sparse and the model is being used to maximize coverage rather than final adjudication accuracy.
+This operating point intentionally favors recall-first screening. It is appropriate when the business objective is to cast a wide net for review and it is consistent with the project’s rare-event classification workflow. The precision remains low because the positive class is sparse and the model is being used to maximize coverage rather than final adjudication accuracy.
 
-In operational terms, this is a realistic and defensible outcome for a rare-event screening workflow. It validates the framework, illustrates the end-to-end process, and demonstrates a human-in-the-loop decision pipeline that is suitable for enterprise-style ML work.
+If the team later obtains better loan-level balance/cost data, then a utility-driven threshold tuning could be revisited. But with the current data, the recall-first approach is the appropriate baseline and the best transparent choice.
 
 ## Bottom line
 
-This project successfully demonstrates a repeatable enterprise-grade ML workflow on a real-world dataset, with emphasis on disciplined process and human-driven screening rather than a single headline accuracy metric. The test-set recall of 98.68% is the key result for this use case and demonstrates that the model remains highly useful as a screening tool even in a sparse-default environment. Other operating modes remain available, including F2-first and precision-first objectives, but the current configuration intentionally optimizes recall-first coverage for downstream review.
+This project successfully demonstrates a repeatable enterprise-grade ML workflow on a real-world dataset, with emphasis on disciplined process and human-driven screening rather than a single headline accuracy metric. The test-set recall of 98.68% is the key result for this use case and demonstrates that the model remains highly useful as a screening tool even in a sparse-default environment. A future utility-based model may be worthwhile only when the loan-cost and remaining-balance data are available and reliable.
