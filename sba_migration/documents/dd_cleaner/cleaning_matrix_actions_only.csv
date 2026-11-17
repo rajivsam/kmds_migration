@@ -1,0 +1,18 @@
+attribute_name,logical_type,entity_context,null_ratio,cardinality,recommended_action,reason
+AsOfDate,datetime,Logical Category,0.0,1,drop-attribute,Constant value / Zero variance
+Program,datetime,Logical Categories,0.0,1,drop-attribute,Constant value / Zero variance
+BorrName,text,Person,5.150152702027615e-06,323750,constant:MISSING,Categorical/Text with 0.0% nulls: Recommendation is creating a 'MISSING' category.
+BankFDICNumber,numeric,Logical Categories,0.10640730497659255,1873,mean-imputation,Numeric with 10.6% nulls: Recommendation is mean imputation.
+BankNCUANumber,numeric,Logical Categories,0.971295623915249,322,drop-attribute,Extreme sparsity (97.1%): Exceeds null threshold of 95.0%
+ApprovalDate,datetime,Logical Categories,0.0,2285,custom:datetime_to_numeric,"This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them."
+FirstDisbursementDate,datetime,Logical Categories,0.18330938512326891,2345,custom:datetime_to_numeric,"This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them."
+InitialInterestRate,numeric,Logical Categories,2.060061080811046e-05,1681,mean-imputation,Numeric with 0.0% nulls: Recommendation is mean imputation.
+FixedorVariableInterestInd,categorical,Logical Categories,2.060061080811046e-05,2,constant:MISSING,Categorical/Text with 0.0% nulls: Recommendation is creating a 'MISSING' category.
+FranchiseCode,categorical,Logical Category,0.8800477934170748,3690,constant:MISSING,Categorical/Text with 88.0% nulls: Recommendation is creating a 'MISSING' category.
+FranchiseName,categorical,Conceptual Entity,0.8804701059386411,3543,constant:MISSING,Categorical/Text with 88.0% nulls: Recommendation is creating a 'MISSING' category.
+CongressionalDistrict,numeric,Logical Categories,6.180183242433138e-05,54,mean-imputation,Numeric with 0.0% nulls: Recommendation is mean imputation.
+BusinessType,categorical,Logical Categories,8.755259593446946e-05,3,constant:MISSING,Categorical/Text with 0.0% nulls: Recommendation is creating a 'MISSING' category.
+BusinessAge,categorical,Logical Categories,0.0004789642012885682,5,constant:MISSING,Categorical/Text with 0.0% nulls: Recommendation is creating a 'MISSING' category.
+PaidInFullDate,datetime,Logical Category,0.8243746427081563,78,custom:datetime_to_numeric,"This is a cross sectional dataset; if you want to use the datetime attributes, you need to derive numeric attributes from them and then delete them."
+ChargeOffDate,datetime,Logical Categories,0.9822628740942169,1002,drop-attribute,Extreme sparsity (98.2%): Exceeds null threshold of 95.0%
+SoldSecMrktInd,categorical,Logical Categories,0.6993237849502237,1,drop-attribute,Constant value / Zero variance
