@@ -21,12 +21,18 @@ experiment_settings:
   primary_metric: "pr_auc"
   default_loan_age_months: 24.0
   default_loss_rate: 0.35
-  manual_review_cost: 2000.0
+  manual_review_cost: 1500.0
+  default_annuity_rate: 0.06
+  default_term_months: 120.0
+  default_guarantee_share: 0.75
+  default_guarantee_fee_rate: 0.0125
+  utility_safety_factor: 1.0
+  use_action_target: false
   threshold_policy:
     stage_1:
       objective: "recall"
       min_recall: 0.90
-      min_precision: 0.01
+      min_precision: 0.0
 
 candidates:
   - name: "gradient_boosting"

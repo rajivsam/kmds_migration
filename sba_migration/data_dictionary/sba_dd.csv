@@ -1,5 +1,7 @@
 Field Name,Definition
 AsOfDate,Date when the data was recorded
+loan_age_months,"Type: numeric. Number of months between the loan's first disbursement date and the AsOfDate. If FirstDisbursementDate is unavailable, uses ApprovalDate as the fallback start date for the calculation."
+estimated_balance,"Type: numeric. Approximate remaining unpaid balance for decisioning only. Formula: B = P * (((1 + r)^N - (1 + r)^M) / ((1 + r)^N - 1)), where P is GrossApproval, r is the monthly rate (InitialInterestRate / 12 / 100), N is TermInMonths, and M is loan_age_months. If the interest rate is zero, use the linear fallback B = P * (1 - M / N). This is an approximation because the raw dataset does not include amortization schedules, payment history, or actual outstanding principal; it is intended as a rough decisioning proxy until the true unpaid balance is available."
 Program,Indicator of whether loan was approved under SBA's 7(a) or 504 loan program
 LocationID,SBA's unique lender ID code
 BorrName,Borrower name
@@ -19,8 +21,7 @@ SBAGuaranteedApproval,Amount of SBA's loan guaranty
 ApprovalDate,Date the loan was approved
 ApprovalFY,Fiscal year the loan was approved
 FirstDisbursementDate,Date of first loan disbursement (if available)
-ProcessingMethod,"Specific processing method loan was approved under.  See SOP 50 10 5 for definitions and rules for each processing method.  
-7(a) Processing Methods:
+ProcessingMethod,"Type: categorical. Specific processing method loan was approved under. See SOP 50 10 5 for definitions and rules for each processing method. 7(a) Processing Methods:
 	• 7a General = 7AG
 	• 7a with EWCP = 7EW
 	• 7a with WCP = WCP
@@ -63,7 +64,7 @@ ProjectState,State where project occurs
 SBADistrictOffice,SBA district office
 CongressionalDistrict,Congressional district where project occurs
 BusinessType,"Borrower Business Type - Individual, Partnership, or Corporation"
-BusinessAge,"SBA began collecting the following business age information in fiscal year 2018:  
+BusinessAge,"Type: categorical. SBA began collecting the following business age information in fiscal year 2018:
 • Change of Ownership
 • Existing or more than 2 years old
 • New Business or 2 years or less

@@ -388,6 +388,83 @@ def loan_status_recoding(context: dict, stage_cfg: dict) -> pd.DataFrame:
     return result_df
 
 
+def ensure_credit_economic_features(data: pd.DataFrame) -> pd.DataFrame:
+    """Adds required exposure and amortization fields when the source clean dataset is missing them."""
+    if data is None or data.empty:
+        return data.copy() if isinstance(data, pd.DataFrame) else pd.DataFrame()
+
+    work = data.copy()
+    default_loan_age_months = 24.0
+    default_term_months = 120.0
+
+    if 'loan_age_months' not in work.columns:
+        if {'firstdisbursementdate', 'approvaldate', 'asofdate'} & set(work.columns):
+            date_candidates = []
+            for col in ('firstdisbursementdate', 'approvaldate'):
+                if col in work.columns:
+                    date_candidates.append(pd.to_datetime(work[col], errors='coerce'))
+            ref_col = 'asofdate' if 'asofdate' in work.columns else 'AsOfDate'
+            if date_candidates and ref_col in work.columns:
+                ref_dates = pd.to_datetime(work[ref_col], errors='coerce')
+                first_valid = date_candidates[0].copy()
+                for candidate in date_candidates[1:]:
+                    first_valid = first_valid.fillna(candidate)
+                work['loan_age_months'] = ((ref_dates - first_valid).dt.total_seconds() / (30.4375 * 24 * 60 * 60)).clip(lower=0)
+            else:
+                work['loan_age_months'] = default_loan_age_months
+        else:
+            work['loan_age_months'] = default_loan_age_months
+    work['loan_age_months'] = pd.to_numeric(work['loan_age_months'], errors='coerce').fillna(default_loan_age_months).clip(lower=0)
+    work['loan_age'] = work['loan_age_months']
+
+    if 'estimated_balance' not in work.columns and 'residual_amount' not in work.columns:
+        principal = pd.to_numeric(work.get('grossapproval', 0.0), errors='coerce').fillna(0.0)
+        annual_rate = pd.to_numeric(work.get('initialinterestrate', 0.0), errors='coerce').fillna(0.0) / 100.0
+        term_months = pd.to_numeric(work.get('terminmonths', default_term_months), errors='coerce').fillna(default_term_months)
+        age_months = pd.to_numeric(work['loan_age_months'], errors='coerce').fillna(default_loan_age_months).clip(lower=0)
+        term_months = term_months.clip(lower=1)
+
+        balance = pd.Series(0.0, index=work.index, dtype=float)
+        mask = term_months > 0
+        if mask.any():
+            monthly_rate = annual_rate / 12.0
+            rate_pos = mask & (monthly_rate > 0)
+            remaining = principal.copy()
+            if rate_pos.any():
+                n = term_months[rate_pos].to_numpy(dtype=float)
+                m = age_months[rate_pos].to_numpy(dtype=float)
+                r = monthly_rate[rate_pos].to_numpy(dtype=float)
+                numerator = np.power(1.0 + r, n) - np.power(1.0 + r, m)
+                denominator = np.power(1.0 + r, n) - 1.0
+                remaining[rate_pos] = principal[rate_pos] * np.divide(numerator, denominator, out=np.zeros_like(numerator, dtype=float), where=np.abs(denominator) > 1e-12)
+            zero_rate = mask & (monthly_rate <= 0)
+            if zero_rate.any():
+                remaining[zero_rate] = principal[zero_rate] * np.maximum(0.0, 1.0 - (age_months[zero_rate].to_numpy(dtype=float) / term_months[zero_rate].to_numpy(dtype=float)))
+            balance = remaining.clip(lower=0.0)
+        work['estimated_balance'] = balance.fillna(0.0)
+        work['residual_amount'] = work['estimated_balance']
+
+    if 'estimated_balance' in work.columns:
+        work['estimated_balance'] = pd.to_numeric(work['estimated_balance'], errors='coerce').fillna(0.0)
+    if 'residual_amount' in work.columns:
+        work['residual_amount'] = pd.to_numeric(work['residual_amount'], errors='coerce').fillna(0.0)
+
+    if 'sbaguaranteedapproval' in work.columns:
+        work['sbaguaranteedapproval'] = pd.to_numeric(work['sbaguaranteedapproval'], errors='coerce').fillna(0.0)
+    if 'grossapproval' in work.columns:
+        work['grossapproval'] = pd.to_numeric(work['grossapproval'], errors='coerce').fillna(0.0)
+    if 'terminmonths' in work.columns:
+        work['terminmonths'] = pd.to_numeric(work['terminmonths'], errors='coerce').fillna(120.0)
+    if 'initialinterestrate' in work.columns:
+        work['initialinterestrate'] = pd.to_numeric(work['initialinterestrate'], errors='coerce').fillna(0.0)
+
+    if 'guarantee_fee_proxy' not in work.columns:
+        guaranteed_amount = pd.to_numeric(work.get('sbaguaranteedapproval', 0.0), errors='coerce').fillna(0.0)
+        work['guarantee_fee_proxy'] = guaranteed_amount * 0.035
+
+    return work
+
+
 def hierarchical_low_count_var_encoding(context: dict, stage_cfg: dict) -> pd.DataFrame:
     """
     Hierarchical low-support recoding for NAICS-like codes.
@@ -636,6 +713,26 @@ def harmonize_and_project_feature_space(context: dict, stage_cfg: dict) -> pd.Da
         )
         context["feature_selection_knee_curve_path"] = knee_curve_path
         print(f"   🖼️ Knee curve saved: {knee_curve_path}")
+
+    required_economic_cols = [
+        "grossapproval",
+        "initialinterestrate",
+        "terminmonths",
+        "sbaguaranteedapproval",
+        "loan_age_months",
+        "loan_age",
+        "estimated_balance",
+        "residual_amount",
+        "guarantee_fee_proxy",
+    ]
+    data = ensure_credit_economic_features(data)
+    if active_holdout is not None and not active_holdout.empty:
+        active_holdout = ensure_credit_economic_features(active_holdout)
+        context["active_holdout"] = active_holdout
+
+    for required_col in required_economic_cols:
+        if required_col in data.columns and required_col not in selected_features:
+            selected_features = list(selected_features) + [required_col]
 
     modeled_features = project_feature_space(data, selected_features, fill_value=0.0)
     modeled_features[target_col] = data[target_col]

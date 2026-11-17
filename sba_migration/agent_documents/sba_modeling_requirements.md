@@ -1,31 +1,36 @@
 # SBA Modeling Requirements
 
+## Prologue: Why this is the recall-first screener design
+The original project objective was to build an operational SBA intervention model that could identify at-risk loans early enough to support action, while staying faithful to the data actually available in the project. We explored two stronger business-framed alternatives before settling on the final design:
+
+1. A cascading / two-stage screening design in which a first model filters the population and a second stage refines the candidate set using a utility-based rule.
+2. A loan-level utility-threshold policy that converts a calibrated default probability into an action decision using expected payback versus expected default loss.
+
+These approaches are reasonable in principle, and they were worth testing as a modeling experiment. However, in this SBA dataset the positive class is too sparse and the available features are not rich enough to support a stable second-stage model or a reliable economic decision rule without introducing substantial proxy error and leakage risk. In particular:
+
+- the distressed outcomes are a small minority of labeled loans;
+- the available data does not include robust loan-by-loan repayment schedules, true residual exposure, actual servicing costs, or SBA fee schedules;
+- a utility-driven or cascading design is therefore not well supported by the current feature set and would effectively be learning from proxies rather than true economic behavior;
+- without materially better features, the model is not able to produce a stable and defensible action target that is both interpretable and operationally useful.
+
+This is the reason the project settles on the original recall-maximizing screener design: a single-stage classifier trained on the available surveillance features, with a validation threshold chosen to maximize recall and recover as many true distressed loans as possible. This design is the best fit for the current data quality and feature availability.
+
 ## Purpose
-This document captures the final SBA modeling approach for the KMDS `kmds-modeling` framework. The selected design is a single-stage recall-first screening model: it ranks probability of default and selects the final operating threshold to maximize recall for downstream review, with the understanding that richer loan-level balance and cost data could be used later to support a utility-based operating policy.
+This document captures the selected SBA modeling approach for the KMDS `kmds-modeling` framework. The chosen design is a single-stage recall-maximizing screener, not a utility-tuned cascade. The model estimates the default probability for each loan and then applies a threshold selected on the validation set to maximize recall subject to the operational constraints of the available data.
 
 ## Data source
 - Use `featurization.notebook_utils` to resolve the featurization workspace and load the model-ready dataset.
 - The source dataset is the KMDS model-ready export from featurization.
-- The dataset contains `loan_status_r`, `borrower_latitude`, `borrower_longitude`, and the loan amount signal `grossapproval`.
+- The dataset contains the existing loan outcome, location, and amount features required for modeling, and it must also include the newly required loan-age and residual-balance attributes.
 - In the SBA dataset, `loan_status_r` values are:
   - `-1`: active loan subset
   - `0`: good loans
   - `1`: distressed / bad loans
 
-## Training / validation split
-- Remove the active loan subset (`loan_status_r == -1`) before model development.
-- Use the remaining labeled rows (`loan_status_r` in {0, 1}) for training and validation.
-- If `dataset_partition` is present in the model-ready data, use it as the canonical split source:
-  - `train`
-  - `validation`
-  - `test`
-  - `active`
-- Do not create a second random split inside the modeling package when the canonical partition already exists.
-
 ## Feature engineering requirements
 - Build a dedicated feature transformer within the framework.
 - Fit the transformer only on the training set and apply it to validation, test, and active rows.
-- Derive two geographic cluster-distance features from `borrower_latitude` and `borrower_longitude`:
+- Keep the geographic cluster-distance features from `borrower_latitude` and `borrower_longitude`:
   - `hdgc`: distance to the nearest good cluster
   - `hdbc`: distance to the nearest bad cluster
 - Use the good subset (`loan_status_r == 0`) and bad subset (`loan_status_r == 1`) within the training set to learn cluster structure.
@@ -33,99 +38,56 @@ This document captures the final SBA modeling approach for the KMDS `kmds-modeli
 - Prefer spectral clustering and use a spectral-gap statistic to pick cluster count when feasible.
 - If spectral clustering is not viable, fall back to density-based clustering using HDBSCAN.
 - The derived features should be computed from training-only cluster structure and then appended consistently to validation, test, and active rows.
-- Create a loan-age / exposure feature named `loan_age_months` when the raw dates are available. Use `firstdisbursementdate` if present; when missing, fall back to `approvaldate`. If both are missing, use a conservative default of 24 months to keep the feature usable.
-- Create an exposure-weighted utility feature named `default_utility_score` using the loan amount and the age-adjusted exposure term.
+- Add a new loan-age feature named `loan_age` that represents the number of scheduled payments that should have been made. Use the following rule:
+  - if `firstdisbursementdate` is available, compute the payment count from the difference between `asofdate` and `firstdisbursementdate`
+  - else use `approvaldate`
+  - if neither date is available, use a conservative fallback of 24 months
+  - the value should be stored as an integer count of payment periods in the same unit used by the loan product schedule (monthly where available)
+- Add a new balance feature named `estimated_balance` or `residual_amount`, whichever is available in the data. This is a required model feature because it represents the amount still exposed to loss or recovery.
+- If neither balance field is present, construct a proxy using the remaining principal logic consistent with the loan age and term, so the feature remains available for training.
+- Include `loan_age` and `estimated_balance` or `residual_amount` in both the training and scoring pipelines so the model sees both exposure and repayment age.
 
-## Recall-first screening policy
-The current operating policy is a single-stage recall-first screening design. The goal is to maximize the share of true defaults captured for downstream review rather than to optimize a business utility function based on loan-loss assumptions.
+## Selected operating design: single-stage recall-maximizing screener
+The final operating policy is to keep the modeling problem as a standard supervised default-risk screen, tuned to recall rather than a utility-derived action threshold.
 
-### Why this remains the default
-- The available SBA data does not consistently provide the loan-payment, remaining-balance, payoff, and amortization fields needed for a precise expected-loss calculation.
-- Without reliable loan-level cost and exposure data, a utility model is only a proxy and may be misleading.
-- For this project, the reliable and defensible default is to prioritize recall so that the review queue is broad enough to capture likely distressed loans.
+### Decision goal
+The primary goal is to recover the largest possible fraction of truly distressed loans while keeping the model transparent and consistent with the available data. The project does not currently have enough loan-level economic detail to justify a financially optimized per-loan thresholding rule. The screening model should therefore maximize recall on the validation set before the final test evaluation.
 
-### Final threshold policy
-- Tune the validation threshold to maximize recall while keeping precision at a usable level.
-- Keep enough sensitivity to recover the largest practical share of true defaults for downstream review workflows.
-- This is the project’s operating policy unless a future business requirement adds complete loan-level payment, balance, and cost information that supports a more precise utility model.
+### Validation thresholding rule
+- Train the candidate models on the canonical train split.
+- Calibrate probability outputs using isotonic regression.
+- On the validation set, sweep candidate thresholds over the calibrated probability scores.
+- Select the threshold that maximizes recall while respecting the project’s minimum operating constraints and the practical actionability of the resulting positive set.
+- Freeze that threshold before test-set evaluation.
+- Do not replace the threshold with a utility-derived formula unless a richer and more reliable economic feature set is later added to the project.
 
-## Modeling design
+This is the chosen operating design because it remains faithful to the actual modeling signal available in the data and because the existing feature set is too sparse for a stable utility-driven second-stage intervention policy.
 
-### Primary classifier: recall-driven screening model
-- The SBA model remains a single-stage classifier whose operating point is chosen to maximize recall for screening.
-- The model is still calibrated with probability outputs and tuned on validation data.
-- The threshold policy is chosen to favor coverage of likely defaulting loans rather than a business-loss optimization based on incomplete cost information.
-
-### Candidate models
-- Train and compare the candidate model families:
-  - Gradient Boosted Trees
-  - Random Forests
-- Use calibrated probability outputs for each candidate model.
-
-### Calibration and threshold tuning
-- Calibrate model probabilities with isotonic regression.
-- Evaluate candidate models on validation data using PR-AUC, precision, recall, and F2.
-- Tune the decision threshold on the validation set to maximize recall while keeping precision usable for review.
-- Final operating points emphasize screening coverage and should not pretend to be a precise loss-optimization policy without complete loan-cost data.
+## Training / validation split
+- Remove the active loan subset (`loan_status_r == -1`) before training.
+- The remaining dataset (`loan_status_r` in {0, 1}) is used for model development.
+- If `dataset_partition` is present in the model-ready data, use it as the canonical split source:
+  - `train`
+  - `validation`
+  - `test`
+  - `active`
+- Do not create a second random split inside the modeling package when the canonical partition already exists.
 
 ## Model development requirements
-- Read the model-ready source file and partition by `dataset_partition` when present.
-- Use the canonical labeled data for training and evaluation:
-  - train set for fitting
-  - validation set for threshold selection
-  - test set for final reporting
-  - active set for scoring only after tuning
-- Train the final classifier on the full labeled training set using the recall-first decision policy.
-- Select the final threshold based on validation performance with recall as the primary objective.
-- Report precision, recall, PR-AUC, balanced accuracy, F2, and Brier score on the test set using the final threshold.
-- Use the final summary to explain that richer loan-balance and cost data could support a later utility-based policy.
+- Train and compare two model families:
+  - Gradient Boosted Trees
+  - Random Forests
+- Use probability output from each candidate model.
+- Calibrate probability estimates using isotonic regression.
+- Use the validation set to select the threshold that maximizes recall and to compare candidate model behavior.
+- Use the final, fixed threshold on the held-out test set for unbiased evaluation.
+- Report the standard classification metrics, including precision, recall, PR-AUC, and balanced accuracy, alongside the final action count.
 
 ## Active set scoring
-- Transform the active set (`loan_status_r == -1` and `dataset_partition == "active"`) with the learned cluster-based features.
-- Score the active set with the final model.
-- Output the calibrated probability and final binary decision for the active population.
-- Final reporting should clearly distinguish:
-  - model score distribution
-  - recall-first threshold-selected positive predictions
-  - test-set performance summary
+- After calibration, score the active set using the frozen screening threshold.
+- Keep the active loan subset separate from training and evaluation.
+- Export the scored active set with the model probability, threshold decision, and supporting loan-level attributes for downstream review.
+- The active-set output is intended to support operational triage, not as a replacement for a richer economic decision model.
 
-## ML-Ops artifact output
-- Serialize all required artifacts into the ML-Ops export folder.
-- At minimum, write:
-  - trained model object
-  - fitted transformer pipeline
-  - calibrator
-  - threshold metadata
-  - model family and feature metadata
-  - validation performance metrics
-- Artifacts should be written in a standard format so downstream KMDS tools can consume them.
-
-## Requirements summary
-1. Load the model-ready dataset from the featurization workspace.
-2. Use `dataset_partition` as the canonical split source when present.
-3. Do not create a second random split inside the modeling package if the partition is already available.
-4. Build and apply the geographic feature transformer on the training set and then to validation, test, and active rows.
-5. Derive the two geographic features: `hdgc` and `hdbc`.
-6. Add `loan_age_months` when it is available and keep the date fallback rule (`firstdisbursementdate` -> `approvaldate` -> 24 months default).
-7. Prefer spectral clustering with spectral-gap selection for good/bad geographic clusters; fall back to HDBSCAN if needed.
-8. Train the final model as a recall-first screening classifier.
-9. Tune the threshold to maximize recall while keeping precision usable for review.
-10. Score the active set with the final model and emit the final defaulting decision.
-11. Serialize the trained model, calibrator, transformer, and metrics as ML-Ops artifacts.
-12. Note that a later utility-based policy may be introduced only when richer loan-balance and cost data become available.
-
-## Assumptions and clarifications
-- The model-ready dataset is expected in the featurization workspace resolved by the project tooling.
-- The SBA problem is binary classification for `loan_status_r` with active rows unlabeled.
-- Model development uses only labeled rows (`0` and `1`) for training and evaluation.
-- Active rows remain separate and are scored only after model tuning.
-- The selected design is a single-stage recall-first model for this project phase.
-- If `firstdisbursementdate` is missing, the fallback is `approvaldate`; if both are missing, use a conservative default age assumption to keep the screening model operational.
-- A future utility-based policy can be revisited only if reliable loan-balance, payment, and cost information is available in the data.eep the utility feature valid.
-## Implementation checkpoint
-This document is the basis for implementation. Once agreed, the next step is to implement:
-- `sba_modeling.SBAFeatureTransformer`
-- training/validation/test partitions and dataset pipeline
-- single-stage utility-based model training and calibration
-- validation-time threshold tuning for utility-based operating point
-- active-set scoring and artifact serialization
+## Practical interpretation
+This design is intentionally conservative: it maximizes the chance of catching the loans that matter most under the current feature set, while staying honest about the limits of the available data. The project explicitly recognizes that the utility-based and cascading approaches were explored, but the data is too sparse and too weakly specified for them to be the reliable default policy. The recall-first screener is therefore the correct production baseline for the current SBA migration.

@@ -2,10 +2,12 @@
   "model_names": {
     "stage_1": "gradient_boosting"
   },
-  "features": [],
+  "features": [
+    "loan_age_months"
+  ],
   "target": "loan_status_r",
   "thresholds": {
-    "stage_1": 0.010033444816053512
+    "stage_1": 0.005263157894736842
   },
   "stages": [
     "stage_1"

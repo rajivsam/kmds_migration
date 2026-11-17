@@ -25,6 +25,18 @@ This file captures the current workspace setup and the commands needed to reinit
   - `agent_documents/sba_problem_framing_collab.md`
 - The local modeling workflow must run from the `sba_migration` workspace, not the separate `kmds-modeling` repo, unless explicitly installed for this workspace.
 
+## Session update (most recent work)
+
+- Repaired the notebook execution path and restored the required migration metadata variables in `notebooks/clean_sba_dataset.ipynb` so the notebook runs cleanly again.
+- Added the core loan seasoning feature `loan_age_months` using the following rule:
+  - use `firstdisbursementdate` when available
+  - otherwise fall back to `approvaldate`
+  - compute the month difference against `asofdate`
+- Added `estimated_balance` as an approximate decisioning-only proxy feature, with the formula and a clear caveat that it is not a true outstanding-balance value.
+- Documented the balance proxy and its assumptions in `data_dictionary/sba_dd.csv`.
+- Fixed the dictionary formatting for the `ProcessingMethod` and `BusinessAge` entries so the type is explicitly shown in the description field.
+- Added an explicit notebook note explaining that `estimated_balance` is a rough estimate because the raw SBA dataset does not include amortization schedules, payment history, or actual unpaid principal.
+
 ## Important files
 
 - `config.yaml` — workspace-level KMDS configuration
