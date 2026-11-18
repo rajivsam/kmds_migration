@@ -11,7 +11,8 @@ This file captures the current workspace setup and the commands needed to reinit
   - workspace configuration through `config.yaml` and `model_config.yaml`
   - featurization using the KMDS pipeline and `featurizer_config.yaml`
   - local modeling via the implementation under `models/sba_example/`
-- Key target variables: `loan_status_r`, `borrower_latitude`, `borrower_longitude`, `hdgc`, `hdbc`
+- Key target variable: `loan_status_r`
+- Fixed screened predictors: `initialinterestrate`, `bankcity`, `approvaldate`, `terminmonths`, `bankname`
 
 ## Current stop point
 
@@ -148,11 +149,12 @@ Expected deliverable:
    - read `dataset_partition` from the featurized file and do not perform a second random split
    - filter active loans via `dataset_partition == "active"` (and keep `loan_status_r == -1` only there)
    - train/validate/test only on labeled rows (`0` and `1`)
-   - derive `hdgc` and `hdbc` from geographic cluster distance features
+   - use the fixed five-feature external screen
    - train gradient boosting and random forest candidates
-   - calibrate probabilities with isotonic regression
-   - choose threshold using ROC on validation
-   - freeze the final model and evaluate on test
+   - calibrate probabilities with isotonic regression using training-derived folds
+   - build validation cumulative gains and lift curves
+   - select the Stage-2 cutoff with the elbow method and freeze it
+   - evaluate the held-out test set without retuning
    - score the active set and export artifacts
 4. Export the final handoff bundle to the workspace output or ML-Ops directory as configured by the model config.
 

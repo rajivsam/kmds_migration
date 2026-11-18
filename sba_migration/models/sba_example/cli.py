@@ -24,15 +24,21 @@ def run(config, export_dir):
     click.echo("SBA modeling pipeline completed.")
     click.echo(results.to_string(index=False))
     if test_results is not None:
-        click.echo("Final single-stage recall-first test metrics:")
+        click.echo("Stage-3 test metrics using the frozen Stage-2 cutoff:")
         click.echo(
-            f"  predicted_positive={test_results['stage_1_predicted_positive']}, "
-            f"precision={test_results['stage_1_precision']:.4f}, "
-            f"recall={test_results['stage_1_recall']:.4f}, "
+            f"  predicted_positive={test_results['predicted_positive']}, "
+            f"reviewed_population_percent={test_results['reviewed_population_percent']:.2f}, "
+            f"precision={test_results['precision']:.4f}, "
+            f"recall={test_results['recall']:.4f}, "
             f"pr_auc={test_results['pr_auc']:.4f}, "
-            f"balanced_accuracy={test_results['balanced_accuracy']:.4f}, "
-            f"f2={test_results['f2']:.4f}, "
-            f"brier_score={test_results['brier_score']:.4f}"
+            f"balanced_accuracy={test_results['balanced_accuracy']:.4f}"
+        )
+        click.echo(
+            f"Validation cutoff: k={runner.cutoff_percent:.2f}%, "
+            f"precision={runner.cutoff_metadata_['precision']:.4f}, "
+            f"gains={runner.cutoff_metadata_['cumulative_gains_percent']:.2f}%, "
+            f"lift={runner.cutoff_metadata_['lift']:.4f}, "
+            f"p_threshold={runner.threshold:.6f}"
         )
     click.echo(f"Active set scored: {len(active_results)} rows")
 

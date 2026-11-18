@@ -1,58 +1,54 @@
-# SBA Modeling Workflow Summary
+# SBA Modeling Workflow Performance Summary
 
-## Objective
+## Prologue
 
-The goal of this project is to demonstrate a repeatable, enterprise-style machine learning workflow on a real-world SBA dataset, using the kind of operational steps expected in a modern modeling program: data preparation, feature engineering, model candidate selection, calibration, threshold tuning, artifact export, and human-in-the-loop review.
+Several modeling approaches were evaluated during this project, including broader feature engineering, recall-maximizing threshold sweeps, and more complex multi-stage and utility-oriented designs. The main limitation was the sparse nature of the available predictors and the low prevalence of distressed loans: traditional in-model feature selection was not stable enough to support a defensible operating policy.
 
-This is not a claim that the model is a final production risk engine. Rather, it is a demonstration that the workflow is robust and credible: the project follows a disciplined pipeline from source data to modeled outputs with governance around partitions, model selection, and reproducible artifacts.
+To address that limitation, the project used the [imbalanced feature screener](https://github.com/rajivsam/imbalanced_feature_screener/tree/master) to identify the five strongest predictors for this dataset. Those externally screened features were fixed for the model, and a calibrated Stage-1 model was used to rank validation loans by predicted default risk. The project then used cumulative gains and lift curves with an elbow method to tune the Stage-2 review cutoff. This feature-screening and gains-chart strategy produced the strongest, operationally actionable result: strong default capture without requiring a review of the full loan population.
 
-## What the workflow illustrates
+## Selected workflow
 
-The implementation demonstrates a full, practical ML lifecycle for an imbalanced credit-screening use case:
+The model uses the five externally screened predictors:
 
-- canonical dataset partitioning (`train`, `validation`, `test`, `active`)
-- feature derivation with a clean fit-on-train / apply-to-all pattern
-- model candidate comparison across multiple families
-- probability calibration to improve usable scores
-- threshold selection for operational decisioning
-- scoring of the active population for downstream use
-- serialization of model artifacts for an MLOps-like handoff
+- `initialinterestrate`
+- `bankcity`
+- `approvaldate`
+- `terminmonths`
+- `bankname`
 
-This is exactly the kind of workflow an enterprise team would expect to see for a real risk-screening problem: disciplined, interpretable, and reusable.
+Gradient boosted trees and random forests are trained on the canonical training partition. Probabilities are calibrated using isotonic regression, and the validation gains curve determines the frozen review cutoff.
 
-## Why the results are still useful
+## Validation cutoff
 
-The SBA dataset represents a rare-event classification problem. In the current out-of-time slices, default incidence is low, so a screening model is judged primarily on whether it captures a large share of true defaults without being so conservative that it becomes operationally unusable.
+The reproducible maximum-distance elbow selected `k = 17%` of the ranked validation population.
 
-With that context, the current test-set result is still useful:
+At this operating point:
 
-- the model recovers nearly all of the true positives at the selected operating threshold
-- the operating point is chosen to favor recall for screening
-- this is appropriate when the business objective is to identify high-risk loans for review rather than to produce a highly precise final adjudication decision
+- reviewed validation loans: 1,277
+- defaults captured: 554 of 689
+- cumulative gains / recall: 80.41%
+- precision: 43.38%
+- lift: 4.73
+- frozen calibrated probability threshold: 0.131353
 
-This makes the model a valid screening model, not a high-precision final decision engine. In a human-in-the-loop workflow, that tradeoff is often exactly what is desired: cast a wide but relevant net, then let review teams investigate the flagged cases.
+## Held-out test performance
 
-A utility-based policy remains a possible future improvement if richer loan-level balance, amortization, and cost data become available. For the current dataset, the recall-first policy is the more defensible baseline.
+The frozen 17% cutoff was applied unchanged to the test partition.
 
-## Test-set performance
-
-The actual performance numbers on the test set at the selected recall-first operating threshold are:
-
-- threshold: 0.005263
-- balanced accuracy: 0.4993
-- precision: 0.0251
-- recall: 0.9868
-- F2: 0.1139
-- Brier score: 0.0255
+- test rows: 7,508
+- actual defaults: 690
+- selected for review: 1,294
+- reviewed population: 17.23%
+- precision: 43.35%
+- recall: 81.30%
+- PR-AUC: 0.6963
+- balanced accuracy: 0.8528
+- F2: 0.6919
+- Brier score: 0.0585
+- frozen-percentile lift: 4.78
 
 ## Interpretation
 
-The model is not a strong highly precise classifier in the strict sense, and that is expected given the class rarity and the limited feature engineering available in this exercise. However, for screening, the result is materially useful because the recall is extremely high: it catches nearly all of the true positives and therefore helps prioritize the right loans for further review.
+The operating point is suitable for a human review queue: it captures approximately 81% of true test defaults while reviewing approximately 17% of the population. Among the loans flagged, approximately 43% are true defaults.
 
-This operating point intentionally favors recall-first screening. It is appropriate when the business objective is to cast a wide net for review and it is consistent with the project’s rare-event classification workflow. The precision remains low because the positive class is sparse and the model is being used to maximize coverage rather than final adjudication accuracy.
-
-If the team later obtains better loan-level balance/cost data, then a utility-driven threshold tuning could be revisited. But with the current data, the recall-first approach is the appropriate baseline and the best transparent choice.
-
-## Bottom line
-
-This project successfully demonstrates a repeatable enterprise-grade ML workflow on a real-world dataset, with emphasis on disciplined process and human-driven screening rather than a single headline accuracy metric. The test-set recall of 98.68% is the key result for this use case and demonstrates that the model remains highly useful as a screening tool even in a sparse-default environment. A future utility-based model may be worthwhile only when the loan-cost and remaining-balance data are available and reliable.
+These are screening metrics, not final adjudication metrics. The frozen threshold and feature screen should remain unchanged when comparing future runs unless the underlying requirements are deliberately revised.

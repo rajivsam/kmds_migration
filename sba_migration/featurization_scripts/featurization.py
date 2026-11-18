@@ -17,8 +17,7 @@ from tabular.target_encoding import (
     fit_target_encoder,
     transform_with_encoder,
 )
-from tabular.feature_space import select_model_features, project_feature_space
-from tabular.feature_space import plot_feature_selection_knee_curve
+from tabular.feature_space import project_feature_space
 
 
 STATE_CENTROIDS: Dict[str, Tuple[float, float]] = {
@@ -364,7 +363,19 @@ def loan_status_recoding(context: dict, stage_cfg: dict) -> pd.DataFrame:
     recoded_status = pd.Series(index=data.index, dtype=float)
     status_text = data['loanstatus'].astype(str).str.upper().str.strip()
 
-    active_pattern = r'ACTIVE|CURRENT|IN\s+DEFERMENT|DEFERMENT|CATCH[-\s]*UP'
+    exact_status_map = {
+        "COMMIT": -1,
+        "EXEMPT": -1,
+        "P I F": 0,
+        "PIF": 0,
+        "CANCLD": 0,
+        "CHGOFF": 1,
+    }
+    recoded_status.loc[status_text.isin(exact_status_map)] = status_text[
+        status_text.isin(exact_status_map)
+    ].map(exact_status_map)
+
+    active_pattern = r'ACTIVE|CURRENT|UNDISBURSED|IN\s+DEFERMENT|DEFERMENT|CATCH[-\s]*UP'
     closed_pattern = (
         r'CLOSED|CANCELED|NOT\s+FUNDED|PAID\s+IN\s+FULL|PAID\s+IN\s+FULL\s*\(LIQ\)|'
         r'PREPAID\s+IN\s+FULL|ASSET\s+SALE|PURCH\(NOT\s*C/O\)'
@@ -625,8 +636,7 @@ def target_encode_categorical_vars(context: dict, stage_cfg: dict) -> pd.DataFra
 
 def harmonize_and_project_feature_space(context: dict, stage_cfg: dict) -> pd.DataFrame:
     """
-    Learns a feature subset from train partition and projects modeled + active
-    data into a canonical feature space for downstream merge and scoring.
+    Projects the externally screened predictors into a canonical feature space.
     """
     data = context.get("data")
     if data is None or data.empty:
@@ -635,104 +645,27 @@ def harmonize_and_project_feature_space(context: dict, stage_cfg: dict) -> pd.Da
     target_col = stage_cfg.get("target_col", "loan_status_r")
     split_col = stage_cfg.get("split_col", "dataset_partition")
     partition_col = stage_cfg.get("output_partition_col", "dataset_partition")
-    min_unique = int(stage_cfg.get("min_unique", 2))
-    exclude_candidate_name_patterns = list(stage_cfg.get("exclude_candidate_name_patterns", []))
-    exclude_candidate_cols = set(stage_cfg.get("exclude_candidate_cols", []))
-    if not exclude_candidate_cols and not exclude_candidate_name_patterns:
+    selection_mode = str(stage_cfg.get("feature_selection_mode", "fixed"))
+    if selection_mode != "fixed":
         raise ValueError(
-            "Feature-space harmonization requires an explicit candidate exclusion policy. "
-            "Set 'exclude_candidate_cols' and/or 'exclude_candidate_name_patterns' in stage config."
+            "SBA feature-space harmonization supports only fixed externally screened "
+            f"selection, received feature_selection_mode={selection_mode!r}."
         )
-    resolver = context.get("resolver")
-    if resolver is None:
-        raise ValueError("PathCoordinator resolver missing from context.")
-    min_non_null_rate = float(resolver.feature_selection_min_non_null_rate)
+    required_predictors = list(stage_cfg.get("required_predictors", []))
+    if not required_predictors:
+        raise ValueError("Feature-space harmonization requires required_predictors.")
+    missing = [column for column in required_predictors if column not in data.columns]
+    if missing:
+        raise ValueError(f"Model-ready data is missing screened predictors: {missing}")
 
-    train_df = data.loc[data[split_col] == "train"]
-    if train_df.empty:
-        raise ValueError("Train split is empty; cannot perform feature selection.")
-
-    candidate_cols = [
-        c for c in data.columns
-        if c.endswith("_te") or c.endswith("_rcs") or pd.api.types.is_numeric_dtype(data[c])
-    ]
-    if exclude_candidate_cols:
-        candidate_cols = [c for c in candidate_cols if c not in exclude_candidate_cols]
-    for reserved in [target_col]:
-        if reserved in candidate_cols:
-            candidate_cols.remove(reserved)
-
-    selected_features = select_model_features(
-        train_df=train_df,
-        candidate_cols=candidate_cols,
-        target_col=target_col,
-        min_non_null_rate=min_non_null_rate,
-        min_unique=min_unique,
-        method=resolver.feature_selection_method,
-        top_k=resolver.feature_selection_top_k,
-        importance_floor=resolver.feature_selection_importance_floor,
-        tree_model=resolver.feature_selection_tree_model,
-        tree_n_estimators=resolver.feature_selection_tree_n_estimators,
-        tree_learning_rate=resolver.feature_selection_tree_learning_rate,
-        tree_max_depth=resolver.feature_selection_tree_max_depth,
-        tree_subsample=resolver.feature_selection_tree_subsample,
-        tree_random_state=resolver.feature_selection_tree_random_state,
-        exclude_candidate_name_patterns=exclude_candidate_name_patterns,
-        top_k_mode=resolver.feature_selection_top_k_mode,
-        top_k_min=resolver.feature_selection_top_k_min,
-        top_k_min_ratio=resolver.feature_selection_top_k_min_ratio,
-        top_k_max=resolver.feature_selection_top_k_max,
-        target_feature_count=resolver.feature_selection_target_feature_count,
-        kneedle_sensitivity=resolver.feature_selection_kneedle_sensitivity,
-        kneedle_curve=resolver.feature_selection_kneedle_curve,
-        kneedle_direction=resolver.feature_selection_kneedle_direction,
-        require_kneedle=resolver.feature_selection_require_kneedle,
-        diagnostics_out=context.setdefault("feature_selection_diagnostics", {}),
-    )
-    if not selected_features:
-        raise ValueError("No features selected for model space projection.")
-
+    selected_features = required_predictors
     context["selected_features"] = selected_features
-
-    diagnostics = context.get("feature_selection_diagnostics", {})
-    importance_series = diagnostics.get("importance_series")
-    selected_k = diagnostics.get("selected_k", len(selected_features))
-    print(
-        "   📊 Feature selection summary: "
-        f"candidates={len(candidate_cols)}, selected={len(selected_features)}, "
-        f"k={int(selected_k)}, mode={diagnostics.get('top_k_mode', 'unknown')}"
-    )
-    if importance_series is not None and len(importance_series) > 0:
-        knee_curve_file = stage_cfg.get("knee_curve_file", "feature_selection_knee_curve.png")
-        knee_curve_path = os.path.join(os.path.dirname(resolver.featurized_dataset_path), knee_curve_file)
-        plot_feature_selection_knee_curve(
-            importance_series=importance_series,
-            selected_k=int(selected_k),
-            output_path=knee_curve_path,
-            title="SBA Feature Importance Knee Curve",
-        )
-        context["feature_selection_knee_curve_path"] = knee_curve_path
-        print(f"   🖼️ Knee curve saved: {knee_curve_path}")
-
-    required_economic_cols = [
-        "grossapproval",
-        "initialinterestrate",
-        "terminmonths",
-        "sbaguaranteedapproval",
-        "loan_age_months",
-        "loan_age",
-        "estimated_balance",
-        "residual_amount",
-        "guarantee_fee_proxy",
-    ]
-    data = ensure_credit_economic_features(data)
-    if active_holdout is not None and not active_holdout.empty:
-        active_holdout = ensure_credit_economic_features(active_holdout)
-        context["active_holdout"] = active_holdout
-
-    for required_col in required_economic_cols:
-        if required_col in data.columns and required_col not in selected_features:
-            selected_features = list(selected_features) + [required_col]
+    context["feature_screen"] = {
+        "selection_mode": "fixed_external_screen",
+        "source": "https://github.com/rajivsam/imbalanced_feature_screener/tree/master",
+        "predictors": selected_features,
+    }
+    print(f"   📊 Fixed external feature screen: {', '.join(selected_features)}")
 
     modeled_features = project_feature_space(data, selected_features, fill_value=0.0)
     modeled_features[target_col] = data[target_col]

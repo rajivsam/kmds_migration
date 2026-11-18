@@ -19,20 +19,11 @@ experiment_settings:
     random_state: 42
   validation_fraction: 0.2
   primary_metric: "pr_auc"
-  default_loan_age_months: 24.0
-  default_loss_rate: 0.35
-  manual_review_cost: 1500.0
-  default_annuity_rate: 0.06
-  default_term_months: 120.0
-  default_guarantee_share: 0.75
-  default_guarantee_fee_rate: 0.0125
-  utility_safety_factor: 1.0
-  use_action_target: false
-  threshold_policy:
-    stage_1:
-      objective: "recall"
-      min_recall: 0.90
-      min_precision: 0.0
+  stage_2:
+    method: "max_distance_to_diagonal"
+    cutoff_step: 1.0
+    capacity_percent: null
+    tie_policy: "inclusive_score_threshold"
 
 candidates:
   - name: "gradient_boosting"

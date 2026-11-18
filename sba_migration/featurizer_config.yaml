@@ -1,1 +1,149 @@
-/home/rajiv/programming/featurization/featurizer_config.yaml
+working_dir: /home/rajiv/programming/kmds_migration/sba_migration
+pipeline:
+- name: Record ID Generation
+  method: record_id_definition
+  entity: System
+  sub_filter: System
+- name: Borrower Geo Coding
+  method: borrower_geo_coding
+  entity: geographic
+  sub_filter: Borrower
+- name: Prepare Categorical Data
+  method: prepare_categorical_data
+  entity: categorical
+  sub_filter: modeling
+  drop_filter:
+  - loanstatus
+  - loancondition
+  - naicscode
+  - borrcity
+  - borrstate
+  - borrzip
+  - projectstate
+  - asofdate
+  - program
+  - bankncuanumber
+  - soldsecmrktind
+  - naicsdescription
+  - locationid
+  - approvalfy
+  - borrname
+  - paidinfulldate
+  - chargeoffdate
+  - grosschargeoffamount
+  - approvaldate
+  - firstdisbursementdate
+- name: Prepare Numerical Data
+  method: prepare_numerical_data
+  entity: numerical
+  sub_filter: modeling
+  drop_filter:
+  - grosschargeoffamount
+  - asofdate
+  - program
+  - bankncuanumber
+  - soldsecmrktind
+  - naicsdescription
+  - locationid
+  - approvalfy
+  - borrname
+  - paidinfulldate
+  - chargeoffdate
+  - approvaldate
+  - firstdisbursementdate
+- name: Merge Categorical And Numerical
+  method: merge_categorical_and_numerical
+  entity: System
+  sub_filter: merge
+- name: Merge With Borrower Geo
+  method: merge_with_borrower_geo
+  entity: System
+  sub_filter: merge
+- name: Low Count Categorical Encoding
+  method: low_count_featurization_of_cat_vars
+  entity: categorical
+  sub_filter: low_count
+  drop_filter:
+  - loanstatus
+  - loancondition
+  - naicscode
+  - borrcity
+  - borrstate
+  - borrzip
+  - projectstate
+  - asofdate
+  - program
+  - bankncuanumber
+  - soldsecmrktind
+  - naicsdescription
+  - locationid
+  - approvalfy
+  - borrname
+  - paidinfulldate
+  - chargeoffdate
+  - grosschargeoffamount
+  - approvaldate
+  - firstdisbursementdate
+- name: Hierarchical NAICS Recoding
+  method: hierarchical_low_count_var_encoding
+  entity: categorical
+  sub_filter: naics
+  source_col: naicscode
+  output_col: naicscode_rcs
+  mask_char: '*'
+- name: Loan Status Recoding
+  method: loan_status_recoding
+  entity: System
+  sub_filter: Loan
+- name: Filter Modeling Universe
+  method: filter_modeling_universe
+  entity: System
+  sub_filter: Loan
+  target_col: loan_status_r
+  drop_class: -1
+- name: Train Validation Split
+  method: stratified_train_val_split
+  entity: System
+  sub_filter: Loan
+  target_col: loan_status_r
+  split_col: dataset_partition
+  legacy_split_col: dataset_split
+  random_state: 42
+  test_size: 0.2
+- name: Harmonize And Project Feature Space
+  method: harmonize_and_project_feature_space
+  entity: System
+  sub_filter: modeling
+  target_col: loan_status_r
+  split_col: dataset_partition
+  legacy_split_col: dataset_split
+  output_partition_col: dataset_partition
+  feature_selection_mode: fixed
+  required_predictors:
+  - initialinterestrate
+  - bankcity
+  - approvaldate
+  - terminmonths
+  - bankname
+- name: Merge Modeled And Active Partitions
+  method: merge_modeled_and_active_partitions
+  entity: System
+  sub_filter: modeling
+  allow_new_indices: true
+metadata_file: sba_loans_metadata_table.csv
+dd_cleaner_output_dir: dd_cleaner
+featurization_input_data: sba_loans_user_cleaned.csv
+featurization_output_dir: featurization
+quarantine_dir: featurization/quarantine
+featurized_data_file: featurized_data.csv
+model_ready_data_file: model_ready_numeric_data.csv
+feat_doc_directory: featurization_docs
+entity_assignment_output: entity_assignments.md
+script_dir: featurization_scripts
+script_name: featurization.py
+country_code: us
+structural_type: cross-sectional
+VALIDATION_SIZE: 0.2
+MODEL_READY_NUMERIC_ONLY: false
+OLLAMA_MODEL: llama3.2:latest
+MIN_SUPPORT_THRESHOLD_CAT_VARS: 5
