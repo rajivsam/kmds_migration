@@ -12,7 +12,7 @@ This file captures the current workspace setup and the commands needed to reinit
   - featurization using the KMDS pipeline and `featurizer_config.yaml`
   - local modeling via the implementation under `models/sba_example/`
 - Key target variable: `loan_status_r`
-- Fixed screened predictors: `initialinterestrate`, `bankcity`, `approvaldate`, `terminmonths`, `bankname`
+- Fixed screened predictors: `bankname`, `initialinterestrate`, `terminmonths`, `borrstreet`, `sbadistrictoffice`, `projectcounty`, `bankstate`, `borrcity`, `processingmethod`, `loan_age_months`
 
 ## Current stop point
 

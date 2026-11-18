@@ -6,15 +6,20 @@ The SBA implementation in this repository has been updated without requiring an 
 
 ## Problem
 
-`tabular.feature_space.select_model_features` currently learns a model-based feature subset. For sparse SBA outcomes, the project now uses a separately produced fixed screen:
+`tabular.feature_space.select_model_features` currently learns a model-based feature subset. For sparse SBA outcomes, the project now uses a separately produced fixed screen based on the latest externally screened pool:
 
-- `initialinterestrate`
-- `bankcity`
-- `approvaldate`
-- `terminmonths`
 - `bankname`
+- `initialinterestrate`
+- `terminmonths`
+- `borrstreet`
+- `sbadistrictoffice`
+- `projectcounty`
+- `bankstate`
+- `borrcity`
+- `processingmethod`
+- `loan_age_months`
 
-Traditional feature selection must not rerun against this screen. The model-ready projection must preserve these raw fields so the modeling package can fit train-only imputation and categorical encoding.
+Traditional feature selection must not rerun against this screen. The model-ready projection must preserve these raw fields so the modeling package can fit train-only imputation and categorical encoding without re-learning a feature subset.
 
 ## Package change
 
@@ -46,11 +51,16 @@ Allow a pipeline stage to declare:
 ```yaml
 feature_selection_mode: fixed
 required_predictors:
-  - initialinterestrate
-  - bankcity
-  - approvaldate
-  - terminmonths
   - bankname
+  - initialinterestrate
+  - terminmonths
+  - borrstreet
+  - sbadistrictoffice
+  - projectcounty
+  - bankstate
+  - borrcity
+  - processingmethod
+  - loan_age_months
 ```
 
 Existing learned-selection configurations must remain unchanged when the new mode is absent or set to `learned`.
@@ -73,5 +83,5 @@ Existing learned-selection configurations must remain unchanged when the new mod
 Run the relevant package tests plus an SBA featurization regeneration, then confirm the model-ready header contains:
 
 ```text
-initialinterestrate,bankcity,approvaldate,terminmonths,bankname,loan_status_r,dataset_partition
+bankname,initialinterestrate,terminmonths,borrstreet,sbadistrictoffice,projectcounty,bankstate,borrcity,processingmethod,loan_age_months,loan_status_r,dataset_partition
 ```

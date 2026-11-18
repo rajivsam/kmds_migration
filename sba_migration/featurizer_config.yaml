@@ -120,11 +120,16 @@ pipeline:
   output_partition_col: dataset_partition
   feature_selection_mode: fixed
   required_predictors:
-  - initialinterestrate
-  - bankcity
-  - approvaldate
-  - terminmonths
   - bankname
+  - initialinterestrate
+  - terminmonths
+  - borrstreet
+  - sbadistrictoffice
+  - projectcounty
+  - bankstate
+  - borrcity
+  - processingmethod
+  - loan_age_months
 - name: Merge Modeled And Active Partitions
   method: merge_modeled_and_active_partitions
   entity: System

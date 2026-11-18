@@ -10,18 +10,42 @@ class SBAScreenedFeatureTransformer(BaseFeatureTransformer, BaseEstimator, Trans
     """Preprocess the fixed predictor screen without learning a new feature subset."""
 
     raw_feature_names_ = [
-        "initialinterestrate",
-        "bankcity",
-        "approvaldate",
-        "terminmonths",
         "bankname",
+        "initialinterestrate",
+        "terminmonths",
+        "borrstreet",
+        "sbadistrictoffice",
+        "projectcounty",
+        "bankstate",
+        "borrcity",
+        "processingmethod",
+        "loan_age_months",
+    ]
+    categorical_columns_ = [
+        "bankname",
+        "borrstreet",
+        "sbadistrictoffice",
+        "projectcounty",
+        "bankstate",
+        "borrcity",
+        "processingmethod",
+    ]
+    numeric_columns_ = [
+        "initialinterestrate",
+        "terminmonths",
+        "loan_age_months",
     ]
     feature_names_ = [
-        "initialinterestrate",
-        "bankcity_encoded",
-        "approvaldate_days",
-        "terminmonths",
         "bankname_encoded",
+        "initialinterestrate",
+        "terminmonths",
+        "borrstreet_encoded",
+        "sbadistrictoffice_encoded",
+        "projectcounty_encoded",
+        "bankstate_encoded",
+        "borrcity_encoded",
+        "processingmethod_encoded",
+        "loan_age_months",
     ]
 
     def fit(self, X: pd.DataFrame, y: pd.Series = None):
@@ -30,20 +54,12 @@ class SBAScreenedFeatureTransformer(BaseFeatureTransformer, BaseEstimator, Trans
             raise ValueError(f"Missing required screened predictors: {missing}")
 
         self.numeric_medians_ = {
-            "initialinterestrate": float(
-                pd.to_numeric(X["initialinterestrate"], errors="coerce").median()
-            ),
-            "terminmonths": float(
-                pd.to_numeric(X["terminmonths"], errors="coerce").median()
-            ),
+            column: float(pd.to_numeric(X[column], errors="coerce").median())
+            for column in self.numeric_columns_
         }
 
-        approval_dates = pd.to_datetime(X["approvaldate"], errors="coerce")
-        approval_days = (approval_dates - pd.Timestamp("1970-01-01")).dt.days
-        self.approvaldate_median_ = float(approval_days.median())
-
         categorical = pd.DataFrame(index=X.index)
-        for column in ("bankcity", "bankname"):
+        for column in self.categorical_columns_:
             categorical[column] = X[column].fillna("__MISSING__").astype(str)
 
         self.categorical_encoder_ = OrdinalEncoder(
@@ -51,7 +67,7 @@ class SBAScreenedFeatureTransformer(BaseFeatureTransformer, BaseEstimator, Trans
             unknown_value=np.nan,
             dtype=float,
         )
-        self.categorical_encoder_.fit(categorical[["bankcity", "bankname"]])
+        self.categorical_encoder_.fit(categorical[self.categorical_columns_])
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -63,26 +79,28 @@ class SBAScreenedFeatureTransformer(BaseFeatureTransformer, BaseEstimator, Trans
             raise ValueError(f"Missing required screened predictors: {missing}")
 
         categorical = pd.DataFrame(index=X.index)
-        for column in ("bankcity", "bankname"):
+        for column in self.categorical_columns_:
             categorical[column] = X[column].fillna("__MISSING__").astype(str)
-        encoded = self.categorical_encoder_.transform(categorical[["bankcity", "bankname"]])
+        encoded = self.categorical_encoder_.transform(categorical[self.categorical_columns_])
         encoded = np.nan_to_num(encoded, nan=-1.0)
 
-        approval_dates = pd.to_datetime(X["approvaldate"], errors="coerce")
-        approval_days = (
-            approval_dates - pd.Timestamp("1970-01-01")
-        ).dt.days.fillna(self.approvaldate_median_)
-
         transformed = pd.DataFrame(index=X.index)
+        transformed["bankname_encoded"] = encoded[:, 0]
         transformed["initialinterestrate"] = pd.to_numeric(
             X["initialinterestrate"], errors="coerce"
         ).fillna(self.numeric_medians_["initialinterestrate"])
-        transformed["bankcity_encoded"] = encoded[:, 0]
-        transformed["approvaldate_days"] = approval_days.astype(float)
         transformed["terminmonths"] = pd.to_numeric(
             X["terminmonths"], errors="coerce"
         ).fillna(self.numeric_medians_["terminmonths"])
-        transformed["bankname_encoded"] = encoded[:, 1]
+        transformed["borrstreet_encoded"] = encoded[:, 1]
+        transformed["sbadistrictoffice_encoded"] = encoded[:, 2]
+        transformed["projectcounty_encoded"] = encoded[:, 3]
+        transformed["bankstate_encoded"] = encoded[:, 4]
+        transformed["borrcity_encoded"] = encoded[:, 5]
+        transformed["processingmethod_encoded"] = encoded[:, 6]
+        transformed["loan_age_months"] = pd.to_numeric(
+            X["loan_age_months"], errors="coerce"
+        ).fillna(self.numeric_medians_["loan_age_months"])
         return transformed[self.feature_names_]
 
 
