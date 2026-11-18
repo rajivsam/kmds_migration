@@ -12,7 +12,7 @@ This file captures the current workspace setup and the commands needed to reinit
   - featurization using the KMDS pipeline and `featurizer_config.yaml`
   - local modeling via the implementation under `models/sba_example/`
 - Key target variable: `loan_status_r`
-- Fixed screened predictors: `bankname`, `initialinterestrate`, `terminmonths`, `borrstreet`, `sbadistrictoffice`, `projectcounty`, `bankstate`, `borrcity`, `processingmethod`, `loan_age_months`
+- Cleaning retains the full normalized schema plus derived fields; feature selection is deferred to featurization.
 
 ## Current stop point
 
@@ -28,15 +28,23 @@ This file captures the current workspace setup and the commands needed to reinit
 
 ## Session update (most recent work)
 
-- Repaired the notebook execution path and restored the required migration metadata variables in `notebooks/clean_sba_dataset.ipynb` so the notebook runs cleanly again.
-- Added the core loan seasoning feature `loan_age_months` using the following rule:
-  - use `firstdisbursementdate` when available
-  - otherwise fall back to `approvaldate`
-  - compute the month difference against `asofdate`
-- Added `estimated_balance` as an approximate decisioning-only proxy feature, with the formula and a clear caveat that it is not a true outstanding-balance value.
-- Documented the balance proxy and its assumptions in `data_dictionary/sba_dd.csv`.
-- Fixed the dictionary formatting for the `ProcessingMethod` and `BusinessAge` entries so the type is explicitly shown in the description field.
-- Added an explicit notebook note explaining that `estimated_balance` is a rough estimate because the raw SBA dataset does not include amortization schedules, payment history, or actual unpaid principal.
+- Updated `notebooks/clean_sba_dataset.ipynb` to produce an evaluable terminal-outcome universe.
+- Finalized the SBA development-data contract:
+  - retain only `PIF` and `CHGOFF`; exclude `EXEMPT` active loans because their eventual outcome is unknown
+  - exclude `COMMIT` because it is undisbursed and `CANCLD` because it is cancelled
+  - recode the target as `loan_status_r`: `0 = paid in full`, `1 = charged off`
+  - compute `loan_age_months` from `AsOfDate` using `FirstDisbursementDate` when available, otherwise `ApprovalDate`
+  - retain all 44 cleaned columns and defer feature selection to the featurization pipeline
+  - create a reproducible stratified 80%/10%/10% train/validation/test split with random seed 42
+- Exported the canonical raw development splits under `documents/dd_cleaner/`:
+  - `sba_user_cleaned_raw_training.csv`: 60,075 rows
+  - `sba_user_cleaned_raw_validation.csv`: 7,509 rows
+  - `sba_user_cleaned_raw_test.csv`: 7,510 rows
+- Validated the terminal-outcome universe:
+  - paid in full: 68,201
+  - charged off: 6,893
+  - total: 75,094 rows
+- Confirmed all three split files contain 44 columns, preserve both target classes, are disjoint, and together contain the complete terminal-outcome universe.
 
 ## Important files
 
@@ -51,6 +59,9 @@ This file captures the current workspace setup and the commands needed to reinit
 - `agent_documents/spatial_featurization_design.md` — geographic feature design context
 - `models/sba_example/` — local SBA model implementation and candidate classes
 - `data/featurization/` — featurization output directory
+- `documents/dd_cleaner/sba_user_cleaned_raw_training.csv` — canonical raw training split
+- `documents/dd_cleaner/sba_user_cleaned_raw_validation.csv` — canonical raw validation split
+- `documents/dd_cleaner/sba_user_cleaned_raw_test.csv` — canonical raw held-out test split
 
 ## Environment setup
 
@@ -83,8 +94,10 @@ These steps ensure the workspace points at the correct SBA project, bootstraps d
 
 ## Data preparation workflow
 
-1. Clean the raw SBA dataset using:
+1. Clean and split the raw SBA dataset using:
    - `notebooks/clean_sba_dataset.ipynb`
+   - keep only observed terminal outcomes (`PIF` and `CHGOFF`)
+   - use the generated training, validation, and test CSV files as the canonical development inputs
 2. Derive geographic clustering features using:
    - `notebooks/clustering_feature_derivation.ipynb`
 3. Review the feature advisor example to choose or confirm the final featurization plan:
@@ -93,22 +106,21 @@ These steps ensure the workspace points at the correct SBA project, bootstraps d
 
 ## Canonical dataset contract
 
-The featurization output and the modeling input must use the same row-level partition assignment. This is now a required contract for the project.
+The three persisted raw splits in `documents/dd_cleaner/` are the canonical development partitions. Featurization and modeling must preserve these assignments rather than re-splitting rows.
 
-The canonical split column is:
+When featurization produces a combined dataset, the canonical split column is:
 - `dataset_partition`
 
 Allowed values:
 - `train`
 - `validation`
 - `test`
-- `active`
 
 Rules:
-- the partition assignment is created during featurization
-- modeling reads that same file without re-splitting the data
+- the notebook creates the row-level assignment through the persisted 80/10/10 split
+- combined featurization output must tag each row with its corresponding persisted split
+- modeling reads those assignments without re-splitting the data
 - no hidden random split is allowed inside the modeling package when `dataset_partition` is present
-- `loan_status_r == -1` rows remain in the `active` partition for scoring only
 - labeled rows (`0` and `1`) are used only in `train`, `validation`, or `test`
 
 ## Featurization execution
@@ -134,7 +146,7 @@ PY
 
 Expected deliverable:
 - `data/featurization/model_ready_numeric_data.csv`
-- modeling columns ready for training and active-set scoring
+- modeling columns ready for training and terminal-outcome evaluation
 - a canonical `dataset_partition` column that is the single source of truth for the modeling split
 
 ## Modeling workflow
@@ -146,16 +158,15 @@ Expected deliverable:
    - `agent_documents/test_train_split_rework.md`
 2. Run the local modeling workflow under `models/sba_example/`.
 3. Use the model-ready dataset and keep these requirements:
-   - read `dataset_partition` from the featurized file and do not perform a second random split
-   - filter active loans via `dataset_partition == "active"` (and keep `loan_status_r == -1` only there)
-   - train/validate/test only on labeled rows (`0` and `1`)
-   - use the fixed five-feature external screen
+   - preserve the notebook's persisted train/validation/test assignment and do not perform a second random split
+   - train, validate, and test only on terminal-outcome rows (`0` and `1`)
+   - use only the features produced and approved by the featurization pipeline
    - train gradient boosting and random forest candidates
    - calibrate probabilities with isotonic regression using training-derived folds
    - build validation cumulative gains and lift curves
    - select the Stage-2 cutoff with the elbow method and freeze it
    - evaluate the held-out test set without retuning
-   - score the active set and export artifacts
+   - export evaluation artifacts; active-loan scoring can be added later using a separately supplied active-loan snapshot
 4. Export the final handoff bundle to the workspace output or ML-Ops directory as configured by the model config.
 
 ## Recommended next-session restart sequence
@@ -183,7 +194,7 @@ ls data/featurization
 ## Notes
 
 - Keep the modeling work anchored to the local workspace instead of the external `kmds-modeling` repo.
-- The active-set scoring step is a key requirement: unlabeled rows are not used in training but must be scored after the model is tuned.
+- Active/`EXEMPT` loans are excluded from this project's evaluation data because their eventual outcome is unknown; a future production scoring dataset can be prepared separately after the model is trained and evaluated.
 - If runtime issues appear, start by checking the active Python environment, the installed package, and the path in `model_config.yaml`/`config.yaml`.
 - Treat `agent_documents/` as the canonical requirements/reference set for this migration.
 

@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "dd-parser-cleaner==1.2.0",
+    "jinja2>=3.1.6",
     "kmds-featurization>=0.4",
     "kmds-modeling>=0.3",
 ]
