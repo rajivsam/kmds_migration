@@ -10,6 +10,7 @@ KMDS is not just a technical framework — it is a repeatable consulting methodo
 - **Outcome**: Repeatable workflow for imbalanced classification.  
 - **Transferability**: Applicable to churn prediction, fraud detection, and adverse drug reactions.  
 - **Deep Dive**: [SBA workflow](sba_migration/documents/sba_development_example_full_doc.md)
+- **Modeling Overview**: [KMDS SBA modeling approach](sba_migration/documents/sba_modelling_overview.md)
 
 ---
 
