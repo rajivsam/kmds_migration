@@ -18,11 +18,13 @@ KMDS is not just a technical framework — it is a repeatable consulting methodo
 ---
 
 ## Olist Retail Dataset
-- **Context**: E‑commerce transactions with heterogeneous data (orders, reviews, product categories).  
-- **KMDS Solution**: Structured customer orders as the unit of analysis, captured order timelines, integrated product and review features.  
-- **Outcome**: Segmented retail sales into actionable clusters, built forecasting workflows.  
-- **Transferability**: Inventory forecasting, customer segmentation, demand planning.  
-- **Deep Dive**: [Olist workflow](olist_migration/documents/olist_development_example_full_doc.md)
+- **Context**: High-dimensional e-commerce transaction history spanning multiple products, markets, and time periods.
+- **KMDS Solution**: Scoped the analysis to the complete 2017 window and the São Paulo market, then transformed item-level transactions into a week-by-SKU revenue matrix for unsupervised temporal segmentation.
+- **Outcome**: Found that 8,661 of 9,367 SKUs (92.5%) form one broad temporal group, while 706 SKUs form smaller groups that can be investigated for differentiated assortment, merchandising, and replenishment policies.
+- **Transferability**: Regional assortment planning, demand-regime discovery, merchandising, inventory-policy analysis, and long-tail SKU management.
+- **Deep Dive**: [Olist regional temporal SKU segmentation](olist_migration/documents/olist_usecase_summary.md)
+- **Executive Summary**: [Olist use case executive summary](olist_migration/documents/exec_summary.md)
+- **Implementation**: [Olist workflow](olist_migration/documents/olist_development_example_full_doc.md)
 
 ---
 
@@ -89,7 +91,7 @@ This is still evolving, but it represents a concrete move toward a more standard
    1. Churn prediction
    2. Fraud detection
    3. Adverse reaction to a drug
-2. The Olist dataset: Olist data (from Kaggle) for retail sales segmentation. See [Segmentation as a Use Case](olist_migration/documents/segmentation_as_usecase.md) for business context and the [Olist workflow document](olist_migration/documents/olist_development_example_full_doc.md) for implementation details.
+2. The Olist dataset: Olist data (from Kaggle) for regional temporal SKU segmentation. See the [Olist regional temporal SKU segmentation summary](olist_migration/documents/olist_usecase_summary.md) for the canonical retail problem, methodology, measured results, and KMDS framing. The [executive summary](olist_migration/documents/exec_summary.md) provides a shorter website-ready version, while the [Olist workflow document](olist_migration/documents/olist_development_example_full_doc.md) contains implementation details.
 3. The California Housing dataset: A tabular regression example in which median house value is predicted from numeric housing attributes. See the [California Housing workflow document](california_housing/documents/california_housing_development_example_full_doc.md) and the project README in [california_housing/README.md](california_housing/README.md).
 4. The ITSM dataset: IT service ticket data for survival analysis of resolution performance. See [Create ITSM Survival Pipeline](itsm_analysis/notebooks/create_itsm_survival_pipeline.ipynb) and [Create ITSM Survival Kaplan-Meier Model](itsm_analysis/notebooks/create_KM_models.ipynb).
 
