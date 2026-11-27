@@ -9,6 +9,9 @@ This workspace is the second instantiation of a real dataset modeled with KMDS t
 - Longitudinal feature engineering for weekly product affinity
 - Spectral clustering and cluster advisor profiling
 - KMDS helper artifact generation and knowledge graph integration
+- Pre-clustering geometry auditing with `cluster-geometry-profiler` to separate true cluster structure from sparse or redundant product columns
+
+The analytics narrative is centered on a simple principle: validation informs modeling. Before any cluster assignment is interpreted, the raw 52 x 9,367 product-week matrix is screened for sparsity, zero-spread features, and high Spearman redundancy. Only after that geometry audit do we choose and apply the clustering method that is consistent with the data’s structure. The profiler then reports structural diagnostics such as condition number, local intrinsic dimension, participation ratio, and feature-level cluster separation so the narrative clearly distinguishes data hygiene, method selection, and downstream cluster interpretation.
 
 ## Key files
 

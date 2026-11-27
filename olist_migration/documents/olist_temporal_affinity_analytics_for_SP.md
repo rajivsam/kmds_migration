@@ -76,6 +76,33 @@ The final approach was:
 
 This approach was implemented in `models/spectral_clustering.py` and executed from the `notebooks/modeling_spectral_clustering.ipynb` notebook.
 
+### 3a. Validate the geometry before selecting the model
+
+The product-week representation is sparse and high-dimensional, so the analysis should be framed as a validation-informed modeling problem rather than a simple one-shot clustering exercise. We do not start from a model and then try to explain it. We begin by auditing the geometry and only then choose the clustering method that matches the observed structure.
+
+The profiler applies three required non-parametric gates before geometry diagnostics:
+
+- `1_sparsity`: remove degenerate or near-constant product columns that add little structure;
+- `2_zero_spread`: remove zero-IQR / zero-MAD columns that are effectively constant for clustering;
+- `3_spearman_redundancy`: remove ultra-redundant proxies when pairwise absolute Spearman correlation exceeds 0.95.
+
+For the São Paulo 2017 matrix, this screening removed the vast majority of weak or redundant product columns while preserving the underlying weekly demand signal. The local profile shows the following progression:
+
+- 9,367 original product features
+- 870 retained features after screening
+- 7 reduced geometry dimensions used by the final diagnostic embedding
+
+This matters because the narrative is not “we ran 4 clusters and found groups.” The more defensible story is: the dataset was first audited for geometric noise and redundancy, the model family was then selected to be consistent with the observed manifold structure, and only after that did we interpret the cluster assignments. That distinction is especially important in a sparse retail matrix where a few broad, evergreen products otherwise dominate the geometry.
+
+The package also produces cluster-conditioned diagnostics that help explain why the segmentation is meaningful. These include:
+
+- cluster mutual information and Kruskal-Wallis epsilon squared for retained features;
+- dispersion reduction and entropy summaries for the retained product dimensions;
+- geometry diagnostics such as condition number, participation ratio, local intrinsic dimension, and geodesic/euclidean ratio;
+- a drop report and filtered dataset that record the exact features removed at each stage.
+
+This makes the interpretation more precise: the dominant cluster reflects the broad baseline demand regime, while the smaller groups correspond to product-week patterns that survive the screening gates and retain demonstrable separation in the audited geometry.
+
 ## Output and Visualization
 
 The project produced the following outputs under `models/`:
