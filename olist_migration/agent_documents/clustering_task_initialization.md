@@ -40,7 +40,7 @@ algorithm:
    - `B = D_W^{-1/2} A D_P^{-1/2}`
 4. Compute the SVD of `B`.
 5. Assemble the joint embedding matrix `Z` from scaled week and product singular vectors.
-6. Use the largest singular-value gap to select the K for KMeans instead of a fixed cluster constant. For the current matrix, the largest positive gap is between the second and third singular values, so the spectral-gap heuristic selects `k = 2`.
+6. Use a symmetric-normalized-Laplacian eigengap rule instead of a fixed cluster constant. Preserve the primary `k=2` gap as the theoretical macro-partition, then select the first substantial secondary gap at least 75% as large as the primary. The current provisional solution is `k=4`.
 7. Run `KMeans` on `Z` to produce week and product cluster labels.
 
 ## Output Artifacts

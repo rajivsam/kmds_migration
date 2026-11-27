@@ -22,7 +22,12 @@ project:
 algorithm:
   model_family: spectral_coclustering
   n_clusters: null
-  embedding_dim: 4
+  min_clusters: 2
+  max_clusters: 10
+  mutual_knn_neighbors: 10
+  local_sigma_neighbor: 7
+  feature_screening_report: data/SP_2017_cluster_feature_report.json
+  embedding_dim: null
   random_state: 42
   use_spectral_gap_analysis: true
 

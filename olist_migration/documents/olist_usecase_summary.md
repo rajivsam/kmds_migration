@@ -38,18 +38,26 @@ The report diagnoses a nonlinear manifold and records seven reduced diagnostic d
 
 ## Current result
 
-The current notebook execution loads the raw São Paulo 2017 product-by-week matrix, applies the three required `cluster_feature_analysis` screening gates, and then runs a spectral clustering model whose cluster count is selected from the largest gap in the normalized singular spectrum. On the current matrix this heuristic selects `k = 2`.
+The current notebook execution loads the raw São Paulo 2017 product-by-week matrix and applies the three required `cluster_feature_analysis` screening gates. It then constructs a mutual 10-nearest-neighbor graph using cosine distance and per-week local RBF scaling, with each point's sigma fitted from its seventh-nearest-neighbor distance. The symmetric normalized Laplacian is evaluated rather than the singular values of the bipartite matrix.
+
+In theory, the standard eigengap heuristic identifies the dominant `k=2` macro-partition. Practical spectral clustering also investigates secondary eigengaps when they expose finer, useful structure. The model applies a declared secondary-gap rule: select the first later gap that is at least 75% as large as the primary gap. The `k=4` gap is 0.0686, or 81% of the primary 0.0846 gap, so `k=4` is the single provisional solution presented by this project.
 
 The resulting week-cluster counts are:
 
 | Cluster | Weeks | Share of year |
 | --- | ---: | ---: |
-| 0 | 51 | 98.1% |
-| 1 | 1 | 1.9% |
+| 0 | 17 | 32.7% |
+| 1 | 18 | 34.6% |
+| 2 | 9 | 17.3% |
+| 3 | 8 | 15.4% |
 
-This is a very uneven split, but it is the actual result produced by the current notebook run. The model is not interpreting a four-regime solution; it is using the spectral-gap statistic to choose the number of clusters in a data-driven way.
+This is an eigengap-derived four-regime model, not a blend of validation metrics. Geometric validation favors `k=4` relative to its neighboring candidates: silhouette is 0.657, Davies-Bouldin is 0.580, and Calinski-Harabasz is 104.55. The `k=2` silhouette is not used as a competing proof because its one-dimensional embedding can make coarse separation look artificially ideal. The local-sigma perturbation check is stable (neighbor ranks 6-8 produce ARI 1.0).
 
-The product-side output is also a co-cluster diagnostic rather than a business segmentation of all 9,367 SKUs. The generated product cluster counts are 866 products in cluster 0 and 4 products in cluster 1, which reflects the collaborative embedding structure, not a production product taxonomy. Product IDs are retained explanatory features for week-level separation, not the primary target of interpretation.
+The stricter 50-run, 80% week-subsampling check gives mean ARI approximately 0.57. That is moderate rather than the >0.75-0.80 benchmark for a strongly stable segmentation. The four-regime result is therefore defensible as an exploratory planning segmentation, but not yet as a production-stable taxonomy.
+
+The provisional four clusters are operationally distinguishable by revenue and activity breadth: mean weekly revenue is approximately 32.1k, 60.1k, 26.1k, and 43.9k for clusters 0-3, while mean active products are approximately 235, 440, 175, and 322. These profiles provide utility beyond the coarse split, while requiring calendar and category validation before policy use.
+
+The output is week clustering, not a product taxonomy. The 870 retained product IDs are explanatory features for week-level separation; the model does not assign all 9,367 source SKUs to business product clusters.
 
 ## Retained-feature profiling
 
@@ -97,8 +105,11 @@ Canonical evidence:
 - [`SP_2017_filtered_original_features.csv`](../data/SP_2017_filtered_original_features.csv)
 - [`spectral_gap.csv`](../models/spectral_gap.csv)
 - [`week_clusters.csv`](../models/week_clusters.csv)
-- [`cluster_counts.csv`](../models/cluster_counts.csv)
+- [`week_affinity.csv`](../models/week_affinity.csv)
+- [`spectral_gap_stability.csv`](../models/spectral_gap_stability.csv)
+- [`cluster_validation.csv`](../models/cluster_validation.csv)
+- [`week_cluster_domain_profile.csv`](../models/week_cluster_domain_profile.csv)
 
 Earlier `models/product_clusters.csv` and related co-clustering outputs belong to a previous unpruned experiment. Preserve them as historical evidence, but do not combine their product-cluster counts with the current week-regime result.
 
-The current artifacts do not demonstrate cluster stability, a causal calendar explanation, realized inventory savings, or forecast uplift. Inventory economics are outside the available data.
+The artifacts do not establish stability across years or seasonal regimes, a causal calendar explanation, realized inventory savings, or forecast uplift. Inventory economics are outside the available data.

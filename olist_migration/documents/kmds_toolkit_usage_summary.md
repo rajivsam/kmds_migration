@@ -31,7 +31,7 @@ This document records the current Olist workflow and the responsibility of each 
 5. **Modeling implementation**
    - Clusters 52 weekly observations over the 870 retained product features.
    - The geometry report recommends spectral clustering or HDBSCAN for the diagnosed nonlinear manifold.
-   - The persisted filtered dataset contains four week clusters with sizes 23, 12, 9, and 8.
+   - The persisted filtered dataset contains four week clusters with sizes 17, 18, 9, and 8.
 
 6. **`kmds-data-helper`**
    - Ingests generated project summaries into the KMDS knowledge graph.
@@ -75,7 +75,7 @@ Verified screening progression:
 
 ### 4. Interpret the current result
 
-The filtered dataset is 52-by-870 with one cluster column. The profiler report has a 870-row retained-feature profile and an 8,497-row drop report. The four persisted week-cluster sizes are 23, 12, 9, and 8.
+The filtered dataset is 52-by-870 with one cluster column. The profiler report has a 870-row retained-feature profile and an 8,497-row drop report. The provisional spectral solution has four week-cluster sizes of 17, 18, 9, and 8. The `k=4` choice comes from a substantial secondary eigengap, with moderate 80% subsampling ARI documented as a limitation.
 
 Retained product IDs are features that differentiate weeks. They are not current product-cluster assignments.
 

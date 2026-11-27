@@ -2,7 +2,7 @@
 
 ## Verified result
 
-The current analysis audits the São Paulo 2017 week-by-product matrix with `cluster-geometry-profiler` and then clusters 52 weekly observations over the retained original product features. The cluster count is selected from the largest gap in the normalized singular spectrum rather than from a hard-coded constant. On the current matrix, the largest positive gap is between the second and third singular values, so the spectral-gap heuristic selects `k = 2` for the KMeans stage.
+The current analysis audits the São Paulo 2017 week-by-product matrix with `cluster-geometry-profiler` and then clusters 52 weekly observations over the retained original product features. The implementation builds a mutual 10-nearest-neighbor graph with self-tuning local RBF scaling and evaluates the symmetric normalized Laplacian. The primary eigengap is `k=2`. The provisional operational solution is the first substantial secondary eigengap, `k=4`: its 0.0686 gap is 81% of the 0.0846 primary gap.
 
 The final persisted outputs therefore show:
 
@@ -14,7 +14,8 @@ The final persisted outputs therefore show:
 | Total profiler pruning | 90.7% |
 | Reduced diagnostic dimensions | 7 |
 | Week observations | 52 |
-| Spectral-gap-based cluster count | 2 |
+| Primary eigengap | 2 |
+| Provisional secondary-eigengap solution | 4 |
 
 ## Screening observations
 
@@ -42,11 +43,13 @@ It also preserves normalized entropy and cluster-conditioned median, MAD, and IQ
 
 ## Business interpretation boundary
 
-- The largest week regime contains 23 of 52 weeks, but it is not automatically an “evergreen” segment.
+- The four week-regime sizes are 17, 18, 9, and 8; none is a 51-week majority.
+- The local-sigma perturbation check is strong (ARI 1.0 for ranks 6-8), while 50-run 80% week subsampling has mean ARI approximately 0.57.
+- The result is therefore provisional and exploratory, not a production-stable taxonomy.
 - The smaller week regimes identify periods for investigation, not confirmed holiday or promotion effects.
 - Retained product IDs are explanatory features of the week regimes; they are not product-cluster assignments.
 - Product, category, calendar, price, margin, stock, and promotion profiling is required before changing an operating policy.
 
 ## Historical artifacts
 
-The previous `models/product_clusters.csv` and its 8,661-SKU dominant-cluster observation came from an earlier 9,367-column co-clustering workflow. Do not combine those counts with the current four week-regime result or describe them as post-screening outcomes.
+The previous `models/product_clusters.csv` and its 8,661-SKU dominant-cluster observation came from an earlier 9,367-column co-clustering workflow. Do not combine those counts with the current provisional four week-regime result or describe them as post-screening outcomes.

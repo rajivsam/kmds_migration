@@ -85,7 +85,7 @@ The profiler audits 9,367 candidate product columns, retains 870, and records
 all 8,497 removals by screening gate and rationale.
 
 The retained 52-by-870 matrix has four persisted week clusters with sizes
-23, 12, 9, and 8. Current outputs are:
+17, 18, 9, and 8. Current outputs are:
 
 - `data/SP_2017_cluster_feature_report.json`
 - `data/SP_2017_dropped_features.csv`

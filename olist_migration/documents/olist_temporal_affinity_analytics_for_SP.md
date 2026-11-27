@@ -47,10 +47,12 @@ Useful diagnostics include:
 
 ### 3. Cluster week observations
 
-The current filtered dataset contains one row per week and 870 retained product features. The exported `cluster` field partitions the 52 rows into four regimes with sizes:
+The current model constructs a mutual 10-nearest-neighbor graph with per-week local RBF scaling and a symmetric normalized Laplacian. The primary eigengap is `k=2`. The first substantial secondary eigengap passes the declared 75%-of-primary rule at `k=4`, producing the provisional operational solution.
 
-- cluster 0: 23 weeks;
-- cluster 1: 12 weeks;
+The exported week partition has sizes:
+
+- cluster 0: 17 weeks;
+- cluster 1: 18 weeks;
 - cluster 2: 9 weeks; and
 - cluster 3: 8 weeks.
 
@@ -76,7 +78,7 @@ Before action, analysts should:
 
 1. map row order to ISO week labels in the reporting layer;
 2. enrich retained products with category and margin data;
-3. check cluster stability under repeated runs and reasonable cluster counts;
+3. treat moderate week-subsampling ARI as a limitation and check stability on additional data;
 4. link week regimes to calendar events; and
 5. compare any proposed differentiated policy with the existing operating rule.
 

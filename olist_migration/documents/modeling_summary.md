@@ -32,17 +32,17 @@ The 8,497 dropped features are recorded with their gate, statistic, threshold, r
 
 The retained matrix is diagnosed as a nonlinear manifold. The current analysis is therefore geometry-aware rather than a default Euclidean clustering of all raw columns. The profiler recommends spectral clustering or HDBSCAN for this geometry and reports seven reduced diagnostic dimensions.
 
-The cluster count is not hard-coded in the implementation. Instead, the pipeline computes the normalized affinity spectrum, evaluates the largest singular-value gap, and selects the cluster count from that spectral-gap heuristic. For the current matrix, the largest positive gap occurs between the second and third singular values, which yields a spectral-gap-selected cluster count of 2 rather than a fixed value such as 16. The resulting labels are therefore data-driven and re-evaluated whenever the matrix changes.
+The cluster count is not hard-coded. The implementation builds a mutual 10-nearest-neighbor graph with self-tuning local RBF bandwidth and evaluates the symmetric normalized Laplacian. The primary eigengap gives `k=2`; the first later gap meeting the declared 75%-of-primary threshold gives the provisional operational selection `k=4` (gap 0.0686 versus 0.0846).
 
 ## Post-clustering evaluation
 
 Evaluation is diagnostic rather than a supervised score:
 
 - geometry statistics support the selected method family;
-- cluster sizes describe the observed partition;
+- the provisional partition contains 17, 18, 9, and 8 weeks;
 - Kruskal-Wallis epsilon squared and mutual information rank retained-feature separation;
 - dispersion reduction and median/MAD/IQR summaries characterize cluster-conditioned behavior; and
-- repeatability and stability still require explicit validation.
+- bandwidth sensitivity is strong (ARI 1.0 for sigma-neighbor ranks 6-8), while 50-run 80% week-subsampling stability is moderate (mean ARI about 0.57); `k=4` is therefore provisional rather than production-stable.
 
 ## Canonical outputs
 
@@ -66,7 +66,7 @@ The current evidence supports:
 It does not establish:
 
 - semantic labels for the regimes;
-- that clusters are stable across seeds or cluster counts;
+- that the four regimes are stable across years or under strong data perturbation;
 - realized forecast, inventory, or margin improvement; or
 - a direct product-level segmentation policy.
 

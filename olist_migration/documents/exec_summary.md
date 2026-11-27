@@ -23,11 +23,11 @@ The persisted audit reduces **9,367 candidate product features to 870 retained f
 - **52 week observations** are clustered.
 - **870 retained product features** are used in the analysis.
 - **8,497 product columns (90.7%)** are removed by the three screening gates.
-- The observed week-cluster sizes are **23, 12, 9, and 8**.
+- The observed week-cluster sizes are **17, 18, 9, and 8**.
 - The filtered export contains 52 rows, 870 original retained feature values, and one cluster column.
 - Every retained feature is profiled; the report includes 870 post-clustering feature profiles.
 
-The measured result is a four-regime weekly segmentation supported by screened product behavior. It is not a clustering of all 9,367 SKUs. Retained product IDs are model features, not cluster members.
+The provisional measured result is a four-regime weekly segmentation supported by a declared secondary eigengap, geometric validation, local-bandwidth stability, and distinguishable demand profiles. The primary eigengap remains `k=2`; the selected `k=4` is provisional because 80% week-subsampling stability is moderate. It is not a clustering of all 9,367 SKUs. Retained product IDs are model features, not cluster members.
 
 ## Why it is actionable
 

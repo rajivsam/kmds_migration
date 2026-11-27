@@ -1,12 +1,18 @@
-# Spectral Co-Clustering Artifacts
-
-This output was generated from the Olist SP 2017 weekly product matrix using a normalized bipartite spectral co-clustering algorithm.
+# Spectral Clustering Artifacts
 
 - Input dataset: /home/rajiv/programming/kmds_migration/olist_migration/data/./SP_2017_freq_prod_weekly_sales.csv
-- Cluster count selected from the spectral gap heuristic: 2
-- Saved week clusters: models/week_clusters.csv
-- Saved product clusters: models/product_clusters.csv
+- Screened features: 870
+- Graph: mutual 10-NN with local RBF sigma from neighbor 7
+- Median local sigma: 0.8441
+- Laplacian: symmetric normalized
+- Primary eigengap candidate: 2
+- Selected first substantial secondary eigengap: 4
+- Mean adjacent-sigma ARI stability: 1.0000
+- Mean 50-run subsample ARI for selected K: 0.5742
 - Saved spectral gap analysis: models/spectral_gap.csv
+- Saved local-sigma stability: models/spectral_gap_stability.csv
+- Saved geometric and subsample validation: models/cluster_validation.csv
+- Saved domain profile: models/week_cluster_domain_profile.csv
+- Saved week affinity: models/week_affinity.csv
+- Saved week clusters: models/week_clusters.csv
 - Saved week embeddings: models/week_embeddings.csv
-- Saved product embeddings: models/product_embeddings.csv
-- Saved cluster counts: models/cluster_counts.csv
