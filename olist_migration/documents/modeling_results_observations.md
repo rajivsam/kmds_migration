@@ -1,37 +1,53 @@
 # Modeling Results Observations
 
-## Summary
-The spectral co-clustering analysis of Olist SP 2017 reveals clear temporal affinity structures between specific weeks of the year and product activity profiles. Different times of the year are associated with different groups of products, which supports using a temporal-product joint view rather than a flat product ranking alone.
+## Verified result
 
-## Key Observations
+The current analysis audits the São Paulo 2017 week-by-product matrix with `cluster-geometry-profiler` and then clusters 52 weekly observations over 870 retained original product features.
 
-- The clustering produced a small number of large week clusters and many smaller, more specific clusters.
-- One dominant week cluster contains 21 of the 52 weeks, suggesting a broad baseline demand regime.
-- Another significant week cluster contains 11 weeks, and a handful of smaller clusters capture more specialized seasonal patterns.
-- Product cluster sizes are highly imbalanced: one cluster includes 8,661 products, which likely corresponds to the baseline set of commonly purchased or evergreen items.
-- A second large product cluster contains 420 products, while another cluster contains 150 products, indicating two additional mid-sized affinity groups.
-- Several very small product clusters (with 1–14 products) are present, which likely represent highly specialized or seasonal item sets.
+The final persisted outputs show:
 
-## Interpretation
+| Item | Current result |
+| --- | ---: |
+| Candidate product features | 9,367 |
+| Retained product features | 870 |
+| Dropped product features | 8,497 |
+| Total profiler pruning | 90.7% |
+| Reduced diagnostic dimensions | 7 |
+| Week observations | 52 |
+| Week clusters | 4 |
+| Cluster sizes | 23, 12, 9, 8 |
 
-- The largest product cluster appears to represent the store’s baseline inventory — the core products that are purchased regularly across many weeks.
-- Smaller product clusters are likely driven by temporal spikes or niche seasonal demand, such as holiday items, promotional bundles, or product-specific campaigns.
-- The week clusters align with different demand regimes: a majority of weeks share a common baseline affinity, while a few weeks form distinct clusters with unique product preferences.
+## Screening observations
 
-## Business Implications
+The screening gates are label-independent and sequential, so each percentage uses the input to that stage:
 
-- Baseline inventory planning should be driven by the largest product cluster, as it reflects the core buy-list for São Paulo shoppers.
-- Staffing and logistics planning can lean on the largest week cluster for normal operating capacity, while reserving additional flexibility for the weeks in smaller clusters.
-- Promotional planning should focus on the small, specialized clusters — these are candidate windows for targeted campaigns or product-specific offers.
-- Budget forecasts can differentiate baseline demand from seasonal deviation by viewing the large cluster as the steady-state baseline and the smaller clusters as variance contributors.
+1. Sparsity removes 6,647 of 9,367 candidates (71.0%), leaving 2,720.
+2. Zero spread removes 1,450 of 2,720 candidates (53.3%), leaving 1,270.
+3. Spearman redundancy removes 400 of 1,270 candidates (31.5%), leaving 870.
 
-## Practical Takeaways
+Together, these gates remove 8,497 of the original 9,367 columns. The drop export records a gate, statistic, threshold, rationale, and proxy where applicable for every removed feature.
 
-- Use the large product cluster as the default assortment for the SP weekly inventory model.
-- Treat the smaller week/product clusters as signal for event-driven or seasonal adjustments.
-- This analysis supports a two-tier operational plan: baseline operations plus cluster-triggered surge planning.
-- Future work can map these clusters to calendar events, holidays, and promotional periods for sharper planning.
+## Geometry observations
 
-## Conclusion
+The profiler diagnoses a **nonlinear-manifold** geometry and recommends a geometry-aware clustering family rather than treating Euclidean geometry as self-evident. The report records a local intrinsic dimension of approximately 5.37, a participation ratio of approximately 44, and a geodesic/euclidean ratio of approximately 1.44.
 
-The Olist SP 2017 clustering results highlight that week-of-year and product affinity are not uniform. A large baseline cluster captures the typical shopping basket, while smaller clusters expose distinct temporal demand patterns. These observations can directly inform inventory, staffing, and budgeting decisions for São Paulo operations.
+## Post-clustering observations
+
+All 870 retained product features are ranked in the retained-feature profile. The ranking uses:
+
+- Kruskal-Wallis epsilon squared;
+- cluster mutual information; and
+- dispersion reduction.
+
+It also preserves normalized entropy and cluster-conditioned median, MAD, and IQR summaries. These are descriptions of feature separation after clustering, not causal claims about why demand changed.
+
+## Business interpretation boundary
+
+- The largest week regime contains 23 of 52 weeks, but it is not automatically an “evergreen” segment.
+- The smaller week regimes identify periods for investigation, not confirmed holiday or promotion effects.
+- Retained product IDs are explanatory features of the week regimes; they are not product-cluster assignments.
+- Product, category, calendar, price, margin, stock, and promotion profiling is required before changing an operating policy.
+
+## Historical artifacts
+
+The previous `models/product_clusters.csv` and its 8,661-SKU dominant-cluster observation came from an earlier 9,367-column co-clustering workflow. Do not combine those counts with the current four week-regime result or describe them as post-screening outcomes.

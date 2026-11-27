@@ -1,80 +1,69 @@
-# Olist Featurization Pipeline
-
-This document describes the Olist featurization pipeline for the SP 2017 clustering dataset. The pipeline is intentionally focused on raw-to-prepared feature generation, not model training.
+# Olist Featurization and Analysis Pipeline
 
 ## Pipeline intent
 
-The goal is to build the exact dataset required by the final spectral coclustering notebook: a clean SP 2017 order-level dataset and a product-week sales matrix.
+This pipeline converts the Olist transaction sources into a São Paulo 2017 weekly product-revenue matrix and a screened representation suitable for geometry-aware clustering.
 
-## PathCoordinator and configuration
+## Configuration and path resolution
 
-The pipeline uses `featurizer_config.yaml` to centralize paths, raw file names, and output artifacts. The implementation now uses the KMDS `dd_cleaner.notebook_utils` `PathCoordinator` contract instead of hardcoded file paths. That means the pipeline resolves all input files through the KMDS workspace configuration and loads the cleaned orders dataset directly from the cleaner output when available.
+`featurizer_config.yaml` centralizes the input and output paths. The implementation uses the KMDS `dd_cleaner.notebook_utils.PathCoordinator` contract, loading the cleaned orders authority dataset when available and falling back to configured raw inputs only when required.
 
-The current workflow is:
-- `classify-entities` and `clean-dataset --config config.yaml --action full` run for orders and customers data to generate the cleaned authority dataset.
-- `olist_order_items_dataset_raw.csv` remains a simple raw join input and does not require cleaning.
-- `featurization_scripts/featurization.py` now uses the `PathCoordinator` interface to load the cleaned dataset from `data/dd_cleaner/olist_daily_orders_prepared_clean.csv` when present, and falls back to raw input only if needed.
-
-## Stage contract
-
-Each stage follows the contract: `method(context, stage_cfg) -> DataFrame`.
-- `context` holds the resolved paths and the current working dataset.
-- `stage_cfg` is the stage dictionary from the config pipeline list.
-
-## Stages
+## Preparation stages
 
 1. `load_raw_data`
-   - Loads `olist_orders_dataset_raw.csv`, `olist_order_items_dataset_raw.csv`, and `olist_customers_dataset_raw.csv`.
-   - Merges orders and order items.
-   - Adds customer geography from the customers table.
-
+   - Load orders, order items, and customers.
+   - Join transaction details and customer geography.
 2. `build_order_level_dataset`
-   - Ensures timestamp parsing.
-   - Produces `olist_daily_orders_prepared.csv`.
-
+   - Parse timestamps and construct the prepared order-level data.
 3. `derive_sp_2017_subset`
-   - Adds `year`, `month`, and `woy` fields.
-   - Filters to `customer_state == 'SP'` and `year == 2017`.
-   - Produces `SP_2017_orders_filtered_prepared.csv`.
-
+   - Add year, month, and ISO week fields.
+   - Select São Paulo transactions from 2017.
 4. `build_sp_weekly_product_matrix`
-   - Aggregates weekly revenue into `SP_2017_weekly_revenue_prepared.csv`.
-   - Builds the product-week matrix and saves both CSV and parquet artifacts.
+   - Aggregate weekly revenue.
+   - Pivot product IDs into candidate feature columns.
 
-## Feature advisor results
+The primary prepared matrix is `data/SP_2017_freq_prod_weekly_sales_prepared.csv`: 52 week rows and 9,367 product-revenue candidates.
 
-The feature advisor service was executed using rule-based recommendations for a graph-modeling intent. The generated recommendations are available under `data/data/feature_advisor/feature_advisor_recommendations.md`.
+## Feature-advisor output
 
-The advisor output for this dataset suggests:
-- `low_count_cat_var_encoding + target_encoding` for categorical fields such as `order_id`, `customer_id`, `order_purchase_timestamp`, `product_id`, `customer_city`, and `customer_state`.
-- `No encoding required` for numeric fields such as `order_item_id`, `price`, `customer_zip_code_prefix`, `freq_cust`, and `freq_purch_prod`.
-- `Review metadata` for time-derived fields `year`, `month`, and `woy`, since they do not fit a standard categorical/numeric/text featurization pattern in the advisor rules.
+The KMDS feature advisor provides encoding recommendations for the transactional metadata. That output is useful for understanding the order-level preparation stages, but the weekly matrix already encodes product activity as numeric feature columns. The feature-advisor recommendation is not a substitute for pre-clustering feature hygiene.
 
-These recommendations were generated from the feature advisor service with `model_intent='graph'` and the current metadata table.
+The advisor artifact remains at `data/data/feature_advisor/feature_advisor_recommendations.md`.
 
-## Unsupervised graph model decision
+## Profiler screening
 
-This pipeline is designed for an unsupervised, graph-based analysis rather than a supervised prediction model. That means:
-- The focus is on building the node/edge-level data representation needed for the spectral coclustering workflow.
-- No explicit feature selection stage is performed in this iteration.
-- The final representation is the product-week revenue matrix used by the SP 2017 spectral coclustering notebook.
+The downstream `cluster-geometry-profiler` package from [`cluster_feature_analysis`](https://github.com/rajivsam/cluster_feature_analysis) audits the 52-by-9,367 matrix:
 
-Given the unsupervised nature, we do not apply a train/validation feature selection step. Instead, the emphasis is on preserving the raw graph structure and the prepared weekly product matrix that feeds the clustering algorithm.
+- sparsity: 9,367 to 2,720 features;
+- zero spread: 2,720 to 1,270 features;
+- Spearman redundancy: 1,270 to 870 features.
 
-## Output artifacts
+The 870 retained features, not the original 9,367 candidate columns, form the current clustering basis. Seven reduced dimensions are reported for geometry diagnosis. The profiler exports retained original values rather than relabeling transformed coordinates as source features.
 
-- `data/olist_daily_orders_prepared.csv`
-- `data/SP_2017_orders_filtered_prepared.csv`
-- `data/SP_2017_weekly_revenue_prepared.csv`
-- `data/SP_2017_freq_prod_weekly_sales_prepared.csv`
-- `data/SP_2017_freq_prod_weekly_sales_prepared.parquet`
+## Post-screen outputs
+
+- `data/SP_2017_cluster_feature_report.json`
+- `data/SP_2017_dropped_features.csv`
+- `data/SP_2017_filtered_original_features.csv`
+
+The filtered dataset contains 52 rows, 870 retained product features, and one cluster label. The report contains 8,497 drop records and 870 retained-feature profiles.
 
 ## Usage
 
-Run the pipeline via the notebook or by executing:
+Run the preparation pipeline with:
 
 ```bash
-python featurization_scripts/featurization.py
+.venv/bin/python featurization_scripts/featurization.py
 ```
 
-This pipeline is designed to support the final clustering notebook without adding any modeling logic.
+Then run the notebook or client workflow that uses `ClusterGeometryProfiler` to regenerate the report, drop file, and filtered dataset. Validate that:
+
+- the input matrix still has 52 weekly observations;
+- retained feature names match the report;
+- the filtered feature count is 870;
+- every original feature is accounted for as retained or dropped; and
+- any persisted cluster and figure outputs come from the same executed analysis run.
+
+## Design boundary
+
+Featurization creates candidate product-week features. The profiler decides which candidates enter the clustering geometry. Clustering assigns labels to week observations. Post-clustering profiling explains feature separation. These are separate stages and should not be documented as a single feature-selection/modeling step.

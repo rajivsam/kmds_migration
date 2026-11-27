@@ -1,59 +1,43 @@
 ---
-## The Reality of Inventory Segmentation as an SCM Problem
+## Inventory segmentation as a supply-chain problem
 
-In modern retail and manufacturing, companies manage thousands or millions of SKUs across multiple distribution centers. Treating all products identically is financially impossible and operationally inefficient. [3, 6, 7, 8, 9]
+Retailers manage large, heterogeneous assortments across distribution networks. A uniform operating policy ignores differences in demand frequency, seasonality, revenue, and volatility. Static ABC analysis is useful when a single value or volume criterion is sufficient, but it does not represent temporal demand structure by itself.
 
-According to insights published by the [Association for Supply Chain Management](https://www.ascm.org/), managing highly variable, seasonal demand patterns across huge distribution networks requires advanced segmentation to [dynamically rationalize the inventory mix and set proper stocking targets](https://www.ascm.org/ascm-insights/what-can-machine-learning-do-for-your-supply-chain/).
+Unsupervised segmentation can help discover groups for further investigation. It is not an inventory policy on its own: cluster structure must be joined to margin, lead time, service targets, inventory position, and demand-forecast performance.
 
-Failures in this area result in what professionals call the “long tail” inventory trap, where an unmanaged range of products inflates warehouse costs while failing to satisfy core consumer demand. [8, 10, 11]
----
-## Machine Learning vs. Static ABC Analysis
+## Why clustering must follow feature hygiene
 
-While traditional ABC Analysis scales inventory focus strictly based on a single parameter (typically total revenue or transaction volume via the 80/20 Pareto principle), it struggles in modern enterprise environments. [3, 12, 13]
+The Olist São Paulo 2017 matrix begins with 9,367 sparse product-revenue columns and only 52 weekly observations. If all columns are passed directly to clustering, near-constant, extremely sparse, or redundant columns can dominate the geometry without carrying a useful demand signal.
 
-The table below breaks down the rationale for utilizing Machine Learning (ML) clustering models over static, threshold-based filtering: [14, 15]
+The current workflow uses `cluster-geometry-profiler` to screen:
 
+- sparse or nearly degenerate columns;
+- zero-spread columns; and
+- highly redundant Spearman proxies.
 
-| Feature [3, 7, 10, 12, 14, 15, 16, 17, 18, 19] | Static ABC / XYZ Analysis                                                                                       | Machine Learning (e.g., K-Sparsity, K-Means Clustering)                                                      |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Data Dimensions                                | Single or dual-criteria. Usually limited to cost or volume.                                                     | Multi-criteria. Concurrently weights margin, lead times, volatility, and order frequencies.                  |
-| Threshold Logic                                | Rigid and fixed. Human analysts guess arbitrary split percentages (e.g., 80/15/5).                              | Data-driven borders. Discovers non-linear, mathematical boundaries natively within dataset structures.       |
-| Adaptability                                   | Time-consuming updates. Becomes rapidly obsolete as market trends shift unless manually redone.                 | Real-time adjustment. Automatically moves SKUs between segments as demand patterns evolve.                   |
-| Handling Volatility                            | Fails on seasonal goods. Classifies a summer product as a “C” item during winter, ruining spring preparation. | Pattern-aware. Tracks historical patterns and shifts categories predictively before demand peaks.            |
-| Labor Scale                                    | High manual effort. Requires extensive data manipulation in spreadsheets for large inventories.                 | Automated processing. Efficiently maps millions of SKUs simultaneously without manual scoring interventions. |
+This reduces the analytical basis to 870 retained product features. The profiler diagnoses nonlinear geometry, reports a seven-dimensional reduced diagnostic representation, and supports post-clustering profiling of the retained features.
 
-## Core Architectural Advantage
+## What is clustered in this implementation
 
-Static thresholds introduce significant human bias when weighting different factors. For example, deciding whether a low-cost item with an unstable 60-day vendor lead time belongs in Category B or C is often arbitrary. [14]
+The rows of the retained 52-by-870 matrix are weeks. The four current cluster labels therefore identify weekly demand regimes, not membership of 9,367 SKUs in product clusters.
 
-ML algorithms (like spectral clustering) eliminate this by [measuring pure mathematical distances between multi-dimensional item behaviors](https://academic.oup.com/imaman/advance-article/doi/10.1093/imaman/dpag002/8435240?searchresult=1).
+This distinction keeps the business claim aligned with the evidence:
 
-In this example, [spectral clustering](../notebooks/modeling_spectral_clustering.ipynb) was used for this purpose. This groups products with similar demand together.
+- retained product IDs are explanatory features;
+- week observations receive cluster labels;
+- feature profiles identify products associated with regime separation; and
+- operational meaning still has to be validated.
 
-See [the use case implementation document](olist_temporal_affinity_analytics_for_SP.md) for the implementation details.
+## Evaluation
 
----
+The segmentation should be evaluated by:
 
-[6] [https://jmsr-online.com](https://jmsr-online.com/article/optimizing-supply-chain-management-through-machine-learning-applications-in-e-commerce-380/)
+- repeatability across random states;
+- stability across reasonable cluster counts;
+- interpretable week and retained-feature profiles;
+- separation that survives geometry-appropriate validation; and
+- improved planning decisions against an existing policy.
 
-[7] [https://www.sciencedirect.com](https://www.sciencedirect.com/science/article/abs/pii/S2214785322061144)
+Inventory savings, service-level improvements, or forecast uplift are not established by cluster presence alone.
 
-[8] [https://www.youtube.com](https://www.youtube.com/watch?v=zct3uvg0VQs)
-
-[9] [https://www.supplychain247.com](https://www.supplychain247.com/article/autonomous_control_towers_in_retail_consumer_packaged_goods_supply_chains)
-
-[10] [https://www.ascm.org](https://www.ascm.org/ascm-insights/what-can-machine-learning-do-for-your-supply-chain/)
-
-[11] [https://www.youtube.com](https://www.youtube.com/watch?v=jwaLXv1U07k)
-
-[12] [https://www.youtube.com](https://www.youtube.com/watch?v=IzPw02jAtkU&t=17)
-
-[13] [https://dl.acm.org](https://dl.acm.org/doi/10.1145/3674029.3674036)
-
-[14] [https://academic.oup.com](https://academic.oup.com/imaman/advance-article/doi/10.1093/imaman/dpag002/8435240?searchresult=1)
-
-[15] [https://www.netstock.com](https://www.netstock.com/blog/ai-powered-abc-classification/)
-
-[16] [https://www.sciencedirect.com](https://www.sciencedirect.com/science/article/abs/pii/S0957417410009358)
-
-[17] [https://bizom.com](https://bizom.com/blog/top-7-inventory-management-challenges-and-solutions/)
+See [the implementation summary](olist_temporal_affinity_analytics_for_SP.md) and [the full use case](olist_usecase_summary.md).

@@ -1,84 +1,78 @@
-# Olist Marketplace Analytics
+# Olist Marketplace Modeling Summary
 
 ## Problem statement
 
-Olist is a major online marketplace operating across Latin America, and the São Paulo market is the dominant regional demand center in the public dataset. The analytical objective is not to build a predictive classification model, but to characterize temporal product affinity in São Paulo during 2017 and to identify recurring demand regimes over the calendar year. This is operationally relevant for inventory planning, merchandising, staffing, and budget allocation because retail demand is shaped by both baseline consumption and seasonal or promotional spikes.
+The objective is to discover demand regimes across the 52 weeks of São Paulo 2017 without imposing a target variable or treating thousands of sparse product columns as equally informative.
 
-## Dataset and scope
+## Dataset and analytical grain
 
-This case study uses the public Olist Brazilian E-Commerce dataset, with the analysis restricted to the São Paulo market in 2017. The project integrates order, order-item, and customer records to construct a weekly product activity view for the selected geography and period. The focus on a single region and a single calendar year reduces confounding from structural shifts in market composition and ensures that the resulting affinity patterns reflect a stable operating window.
+The source workflow creates a 52-row by 9,367-column weekly product-revenue matrix. Rows are weeks; columns are product IDs; cells contain summed item-price revenue.
 
-The analytical unit is a product-week matrix in which rows correspond to weeks of the year and columns correspond to products, with entries representing weekly product activity or revenue. This framing is appropriate for a temporal affinity problem because it preserves the joint structure between time and product demand rather than collapsing the analysis to a single aggregate product ranking.
+This orientation is important:
 
-## Preprocessing choices
+- source columns are Olist order, item, and customer fields;
+- candidate features are the 9,367 product-revenue columns;
+- retained features are the 870 columns that survive profiler screening;
+- reduced coordinates are seven diagnostic dimensions; and
+- clustered observations are the 52 weeks.
 
-The raw Olist data are cleaned and normalized through the KMDS workflow before modeling. The preprocessing pipeline assembles the relevant order-level features, joins transaction details to product information, and filters the dataset to the São Paulo subset for the 2017 study window. This yields a cleaned transaction table suitable for downstream aggregation and feature generation.
+## Preprocessing
 
-The project then constructs weekly product summaries from the filtered data, with explicit thresholds applied to suppress very low-volume, noisy product-week observations. This step is essential in a marketplace setting with a long tail of infrequent products, where a small number of high-volume items would otherwise dominate the analysis and obscure the main temporal patterns. The resulting prepared outputs include the weekly product revenue matrix and the downstream affinity table used for clustering.
+The KMDS preparation workflow cleans and joins the relevant Olist tables, selects São Paulo 2017, and aggregates item prices into the weekly product matrix.
 
-## Feature engineering and representation choices
+The geometry profiler then applies:
 
-The central representation is a wide weekly product matrix rather than a conventional one-row-per-customer feature table. Each week is represented as a vector over products, and each product is represented as a time-varying demand profile across the year. This yields a bipartite structure in which week-level and product-level behavior are analyzed jointly.
+1. sparsity screening: 9,367 to 2,720;
+2. zero-spread screening: 2,720 to 1,270; and
+3. Spearman-redundancy screening: 1,270 to 870.
 
-To preserve interpretability and reduce the influence of globally dominant products, the weekly product matrix is normalized and thresholded before spectral analysis. This keeps the signal focused on relative demand structure rather than raw scale, allowing clusters to reflect temporal affinity regimes rather than simple volume effects. The representation is therefore intentionally compact, domain-aligned, and transparent to stakeholder review.
+The 8,497 dropped features are recorded with their gate, statistic, threshold, rationale, and proxy where applicable. Filtered exports contain the original values of the retained features, not embedding coordinates.
 
-## Modeling choices and why they were selected
+## Model selection
 
-The project uses spectral co-clustering on the normalized week-product affinity matrix. This modeling choice is well suited to the problem because the data are naturally represented as a bipartite graph: weeks are connected to products through shared demand behavior, and the goal is to identify blocks of coherent temporal-product structure. Spectral methods are appropriate here because they operate on the eigenstructure of the similarity graph and are less sensitive than centroid-based methods to the irregular geometry induced by heavy-tailed marketplace demand.
+The retained matrix is diagnosed as a nonlinear manifold. The current analysis is therefore geometry-aware rather than a default Euclidean clustering of all raw columns. The profiler recommends spectral clustering or HDBSCAN for this geometry and reports seven reduced diagnostic dimensions.
 
-The number of clusters is selected using the spectral gap, which provides a data-driven indication of the natural separation in the underlying graph structure. In practice, this yields a dominant baseline cluster of broadly active products and smaller clusters representing more specialized or seasonal demand regimes. This is a better fit for the business problem than a single aggregate ranking because it preserves the temporal organization of demand.
+The persisted filtered export contains four week clusters with sizes 23, 12, 9, and 8. No semantic names are inferred from the numeric labels alone.
 
-## Evaluation criteria
+## Post-clustering evaluation
 
-The evaluation is based on structural interpretability and operational usefulness rather than on a predictive accuracy metric. The primary criteria are whether the identified clusters are stable, well separated, and aligned with meaningful calendar-based demand patterns. The spectral gap helps assess whether the selected cluster count reflects a real signal in the data rather than an arbitrary partition.
+Evaluation is diagnostic rather than a supervised score:
 
-The resulting clusters are then assessed in terms of their business meaning: do they correspond to baseline demand, holiday-driven surges, or niche seasonal products? This is the relevant evaluation standard for an exploratory analytics workflow, where the goal is not to optimize a supervised score but to make demand structure visible and actionable.
+- geometry statistics support the selected method family;
+- cluster sizes describe the observed partition;
+- Kruskal-Wallis epsilon squared and mutual information rank retained-feature separation;
+- dispersion reduction and median/MAD/IQR summaries characterize cluster-conditioned behavior; and
+- repeatability and stability still require explicit validation.
 
-## Key outputs
+## Canonical outputs
 
-The Olist migration workflow produces a set of artifacts that make the analysis reproducible and auditable. The main data products include the cleaned São Paulo weekly product matrix and the revenue-based product-week output used for clustering:
+- [`SP_2017_cluster_feature_report.json`](../data/SP_2017_cluster_feature_report.json)
+- [`SP_2017_dropped_features.csv`](../data/SP_2017_dropped_features.csv)
+- [`SP_2017_filtered_original_features.csv`](../data/SP_2017_filtered_original_features.csv)
+- [`SP_2017_freq_prod_weekly_sales_prepared.csv`](../data/SP_2017_freq_prod_weekly_sales_prepared.csv)
 
-- data/SP_2017_weekly_product_revenue_by_product_id.csv
-- data/SP_2017_freq_prod_weekly_sales_prepared.csv
+## Legacy outputs
 
-The modeling outputs retained in the workspace include:
+The earlier `models/` spectral co-clustering artifacts cluster both sides of the unpruned bipartite matrix and report product memberships across 9,367 SKUs. They answer a different question and predate the current feature-hygiene workflow. Keep them for provenance, but do not present their 8,661-product dominant cluster or other product counts as current results.
 
-- models/spectral_gap.csv
-- models/week_clusters.csv
-- models/product_clusters.csv
-- models/cluster_counts.csv
-- models/week_embeddings.csv
-- models/product_embeddings.csv
-- models/spectral_clustering_summary.md
+## Interpretation boundary
 
-These artifacts document the normalized affinity matrix, the cluster assignments, and the spectral evidence used to support the final demand-segmentation interpretation.
+The current evidence supports:
 
-## Interpretation for stakeholders
+- four observed week regimes;
+- an auditable 870-feature basis; and
+- ranked retained products for regime explanation.
 
-From an operational perspective, the Olist case study demonstrates how KMDS can convert raw marketplace data into interpretable demand regimes. The dominant cluster identifies the steady-state product base that is repeatedly active across many weeks, while smaller clusters highlight periods and products associated with seasonal or promotion-driven variation. This distinction is valuable because it separates the predictable baseline from temporary surges that may require different inventory, staffing, or marketing responses.
+It does not establish:
 
-For managers, the resulting structure is actionable. It supports inventory planning by identifying which products should be treated as baseline demand versus event-driven demand, and it supports staffing and budgeting decisions by showing when the year is characterized by distinct operational regimes. The use of a transparent, documented workflow allows stakeholders to understand not only what the model finds, but why it finds it.
+- semantic labels for the regimes;
+- that clusters are stable across seeds or cluster counts;
+- realized forecast, inventory, or margin improvement; or
+- a direct product-level segmentation policy.
 
-## Design decisions that were revisited or changed
+## Related implementation references
 
-The most important design choice in this project was to frame the problem as a week-product affinity analysis rather than as a flat product ranking or a conventional time-series forecasting task. This preserves the joint structure between calendar timing and product demand, which is essential for understanding market dynamics in a retail setting.
-
-A second major decision was to threshold and normalize the demand matrix to prevent high-volume evergreen products from dominating the clustering signal. This was not a cosmetic choice: without it, the analysis would primarily recover the most common products rather than the temporal buying regimes that are operationally relevant. The project also restricted analysis to São Paulo in 2017 because that period provides complete data coverage and a coherent business window for interpretation.
-
-## Links to notebooks / scripts / outputs
-
-- Data-preparation notebook: notebooks/raw_datafile_creation.ipynb
-- Modeling notebook: notebooks/modeling_spectral_clustering.ipynb
-- Modeling advisor notebook: notebooks/modeling_clustering_advisor.ipynb
-- Featurization script: featurization_scripts/featurization.py
-- Configuration: config.yaml
-- Featurizer configuration: featurizer_config.yaml
-- Modeling configuration: modeling_config.yaml
-- Prepared affinity data: data/SP_2017_freq_prod_weekly_sales_prepared.csv
-- Weekly revenue matrix: data/SP_2017_weekly_product_revenue_by_product_id.csv
-- Spectral clustering summary: models/spectral_clustering_summary.md
-- Cluster outputs: models/week_clusters.csv, models/product_clusters.csv, models/cluster_counts.csv
-
-## Summary
-
-The Olist marketplace case study shows how KMDS supports a scientifically defensible and operationally useful analysis of temporal demand structure. By combining a disciplined data-preparation pipeline, a domain-specific product-week representation, and spectral co-clustering, the workflow makes heterogeneous demand patterns explicit without sacrificing interpretability. The resulting analysis supports reproducible decision-making for inventory, staffing, and promotion planning in a real market environment, while preserving the provenance of the modeling choices that produced the final insight.
+- [Featurization pipeline](olist_featurization_pipeline.md)
+- [Temporal analytics method](olist_temporal_affinity_analytics_for_SP.md)
+- [Use-case summary](olist_usecase_summary.md)
+- [Modeling observations](modeling_results_observations.md)
