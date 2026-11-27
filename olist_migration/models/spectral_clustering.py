@@ -5,6 +5,7 @@ from typing import Dict, Optional, Tuple
 import numpy as np
 import pandas as pd
 import yaml
+from cluster_profiler import ClusterGeometryProfiler
 from sklearn.cluster import KMeans
 
 from kmds_modeling.core.notebook_utils import build_notebook_resolver
@@ -53,6 +54,20 @@ def _build_spectral_gap_df(singular_values: np.ndarray) -> pd.DataFrame:
     )
 
 
+def _select_cluster_count_from_spectral_gap(singular_values: np.ndarray, min_clusters: int = 2) -> int:
+    if singular_values.size < 2:
+        return max(1, min_clusters)
+
+    gaps = np.diff(singular_values)
+    if np.all(gaps <= 0):
+        return max(2, min_clusters)
+
+    best_index = int(np.argmax(gaps))
+    n_clusters = best_index + 1
+    n_clusters = max(min_clusters, min(int(n_clusters), singular_values.size - 1))
+    return n_clusters
+
+
 def _build_joint_embedding(
     U: np.ndarray,
     Vt: np.ndarray,
@@ -86,6 +101,30 @@ def _to_dataframe(embedding: np.ndarray, names: list[str], prefix: str) -> pd.Da
     return df
 
 
+def _prepare_model_matrix(df: pd.DataFrame, random_state: int) -> pd.DataFrame:
+    """Screen the raw product matrix for sparse, zero-spread, and redundant features before clustering."""
+    dropped_names = {"woy", "cluster"}
+    candidate_df = df.drop(columns=[col for col in df.columns if col in dropped_names], errors="ignore")
+    candidate_df = candidate_df.loc[:, ~candidate_df.columns.str.startswith("Unnamed: ", na=False)]
+    if candidate_df.empty:
+        raise ValueError("No candidate product features remain after geometry screening.")
+
+    profiler = ClusterGeometryProfiler(random_state=random_state).fit_audit(
+        candidate_df,
+        invariance="none",
+        feature_names=candidate_df.columns.tolist(),
+    )
+    retained = profiler.retained_feature_names
+    retained = [col for col in retained if col in candidate_df.columns]
+    if not retained:
+        raise ValueError("ClusterGeometryProfiler did not retain any features for clustering.")
+
+    geometry_filtered = candidate_df[retained].copy()
+    if "woy" in df.columns:
+        geometry_filtered.insert(0, "woy", df["woy"].astype(str).values)
+    return geometry_filtered
+
+
 def run_spectral_clustering(
     config_path: str,
     output_dir: Optional[str] = None,
@@ -99,10 +138,16 @@ def run_spectral_clustering(
     resolver = build_notebook_resolver(str(workspace_root), config_name=config_path.name)
 
     df = _read_dataset(Path(resolver.model_ready_dataset_path))
-    if "woy" not in df.columns:
-        raise ValueError("Expected 'woy' column in the model-ready dataset.")
+    if "cluster" in df.columns:
+        df = df.drop(columns=["cluster"])
+    if "Unnamed: 0" in df.columns:
+        df = df.drop(columns=["Unnamed: 0"])
 
-    feature_df = df.drop(columns=["woy"])  # Each column corresponds to product activity.
+    if "woy" not in df.columns:
+        raise ValueError("Expected 'woy' column in the model-ready dataset after geometry screening.")
+
+    df = _prepare_model_matrix(df, int(random_state))
+    feature_df = df.drop(columns=["woy"])  # Each column corresponds to retained product activity.
     product_labels = feature_df.columns.tolist()
     week_labels = df["woy"].astype(str).tolist()
     A = _build_tfidf_matrix(feature_df) if use_tfidf else feature_df.fillna(0).astype(float).values
@@ -111,11 +156,18 @@ def run_spectral_clustering(
     U, singular_values, Vt = np.linalg.svd(B, full_matrices=False)
     gap_df = _build_spectral_gap_df(singular_values)
 
+    config = _load_config(str(config_path))
+    use_spectral_gap = bool(config.get("algorithm", {}).get("use_spectral_gap_analysis", True))
+
     if n_clusters is None:
-        config = _load_config(str(config_path))
-        n_clusters = int(config.get("algorithm", {}).get("n_clusters", 16))
+        if use_spectral_gap:
+            n_clusters = _select_cluster_count_from_spectral_gap(singular_values)
+        else:
+            n_clusters = config.get("algorithm", {}).get("n_clusters")
+            if n_clusters is None:
+                n_clusters = 2
+            n_clusters = int(n_clusters)
     if embedding_dim is None:
-        config = _load_config(str(config_path))
         embedding_dim = int(config.get("algorithm", {}).get("embedding_dim", 4))
 
     Z, Ul, Vl = _build_joint_embedding(U, Vt, D1_inv_sqrt, D2_inv_sqrt, int(embedding_dim))
@@ -162,6 +214,7 @@ def run_spectral_clustering(
         "This output was generated from the Olist SP 2017 weekly product matrix using a normalized bipartite spectral co-clustering algorithm.",
         "",
         f"- Input dataset: {resolver.model_ready_dataset_path}",
+        f"- Cluster count selected from the spectral gap heuristic: {n_clusters}",
         f"- Saved week clusters: {week_clusters_path}",
         f"- Saved product clusters: {product_clusters_path}",
         f"- Saved spectral gap analysis: {gap_path}",

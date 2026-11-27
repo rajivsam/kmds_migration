@@ -2,9 +2,9 @@
 
 ## Verified result
 
-The current analysis audits the São Paulo 2017 week-by-product matrix with `cluster-geometry-profiler` and then clusters 52 weekly observations over 870 retained original product features.
+The current analysis audits the São Paulo 2017 week-by-product matrix with `cluster-geometry-profiler` and then clusters 52 weekly observations over the retained original product features. The cluster count is selected from the largest gap in the normalized singular spectrum rather than from a hard-coded constant. On the current matrix, the largest positive gap is between the second and third singular values, so the spectral-gap heuristic selects `k = 2` for the KMeans stage.
 
-The final persisted outputs show:
+The final persisted outputs therefore show:
 
 | Item | Current result |
 | --- | ---: |
@@ -14,8 +14,7 @@ The final persisted outputs show:
 | Total profiler pruning | 90.7% |
 | Reduced diagnostic dimensions | 7 |
 | Week observations | 52 |
-| Week clusters | 4 |
-| Cluster sizes | 23, 12, 9, 8 |
+| Spectral-gap-based cluster count | 2 |
 
 ## Screening observations
 

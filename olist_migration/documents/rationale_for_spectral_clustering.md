@@ -42,16 +42,9 @@ The 8,497 dropped columns are still documented in the drop report. Removing them
 
 ## Current result
 
-The filtered result contains four week regimes:
+The data-driven cluster count is selected from the largest singular-gap in the normalized affinity spectrum instead of a fixed `n_clusters` value. In the current matrix, the largest positive gap sits between the second and third singular values, so the spectral-gap heuristic selects `k = 2` for the KMeans stage. This keeps the split tied to the observed geometry of the weekly product matrix and makes the partition reproducible when the dataset changes.
 
-| Cluster | Week count |
-| --- | ---: |
-| 0 | 23 |
-| 1 | 12 |
-| 2 | 9 |
-| 3 | 8 |
-
-These labels are exploratory identifiers. The retained-feature report, week-to-calendar mapping, repeatability checks, and business enrichment are required before assigning semantic names.
+The retained-feature report, week-to-calendar mapping, repeatability checks, and business enrichment remain required before assigning semantic names to any labeling produced by the spectral-gap heuristic.
 
 ## Evaluation
 

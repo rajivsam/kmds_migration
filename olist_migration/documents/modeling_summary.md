@@ -32,7 +32,7 @@ The 8,497 dropped features are recorded with their gate, statistic, threshold, r
 
 The retained matrix is diagnosed as a nonlinear manifold. The current analysis is therefore geometry-aware rather than a default Euclidean clustering of all raw columns. The profiler recommends spectral clustering or HDBSCAN for this geometry and reports seven reduced diagnostic dimensions.
 
-The persisted filtered export contains four week clusters with sizes 23, 12, 9, and 8. No semantic names are inferred from the numeric labels alone.
+The cluster count is not hard-coded in the implementation. Instead, the pipeline computes the normalized affinity spectrum, evaluates the largest singular-value gap, and selects the cluster count from that spectral-gap heuristic. For the current matrix, the largest positive gap occurs between the second and third singular values, which yields a spectral-gap-selected cluster count of 2 rather than a fixed value such as 16. The resulting labels are therefore data-driven and re-evaluated whenever the matrix changes.
 
 ## Post-clustering evaluation
 

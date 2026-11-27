@@ -27,7 +27,7 @@ project:
 
 algorithm:
   model_family: spectral_coclustering
-  n_clusters: 16
+  n_clusters: null
   embedding_dim: 4
   random_state: 42
   use_spectral_gap_analysis: true
@@ -40,7 +40,8 @@ algorithm:
    - `B = D_W^{-1/2} A D_P^{-1/2}`
 4. Compute the SVD of `B`.
 5. Assemble the joint embedding matrix `Z` from scaled week and product singular vectors.
-6. Run `KMeans` on `Z` to produce week and product cluster labels.
+6. Use the largest singular-value gap to select the K for KMeans instead of a fixed cluster constant. For the current matrix, the largest positive gap is between the second and third singular values, so the spectral-gap heuristic selects `k = 2`.
+7. Run `KMeans` on `Z` to produce week and product cluster labels.
 
 ## Output Artifacts
 - `models/spectral_gap.csv`

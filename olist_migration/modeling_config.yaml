@@ -1,13 +1,13 @@
 working_dir: /home/rajiv/programming/kmds_migration/olist_migration
 index_column: woy
-model_ready_data_file: SP_2017_freq_prod_weekly_sales_prepared.csv
+model_ready_data_file: SP_2017_freq_prod_weekly_sales.csv
 featurization_output_dir: "."
 modeling_output_dir: models
 
 data:
   working_dir: /home/rajiv/programming/kmds_migration/olist_migration
   index_column: woy
-  model_ready_data_file: SP_2017_freq_prod_weekly_sales_prepared.csv
+  model_ready_data_file: SP_2017_freq_prod_weekly_sales.csv
   featurization_output_dir: "."
   modeling_output_dir: models
 
@@ -21,7 +21,7 @@ project:
 
 algorithm:
   model_family: spectral_coclustering
-  n_clusters: 16
+  n_clusters: null
   embedding_dim: 4
   random_state: 42
   use_spectral_gap_analysis: true
@@ -30,7 +30,7 @@ candidates:
   - name: spectral_clustering
     class_path: models.spectral_clustering.run_spectral_clustering
     hyperparameters:
-      n_clusters: 16
+      n_clusters: null
       embedding_dim: 4
       random_state: 42
       use_tfidf: true
